@@ -34,6 +34,8 @@ const bossHealthFill = document.getElementById("bossHealthFill");
 
 const homeLeaderboard = document.getElementById("homeLeaderboard");
 const gameOverLeaderboard = document.getElementById("gameOverLeaderboard");
+const showHomeLeaderboardBtn = document.getElementById("showHomeLeaderboardBtn");
+const showGameOverLeaderboardBtn = document.getElementById("showGameOverLeaderboardBtn");
 
 if (highScoreText) {
   highScoreText.textContent = highScore;
