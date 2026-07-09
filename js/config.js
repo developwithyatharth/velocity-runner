@@ -1,5 +1,5 @@
 /* config.js
-   Game constants and basic settings
+   Game constants
 */
 
 const lanes = [-3, 0, 3];
