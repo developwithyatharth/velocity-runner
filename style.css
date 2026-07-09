@@ -675,3 +675,25 @@ button:active {
   color: #00f5ff;
   text-shadow: 0 0 10px rgba(0, 245, 255, 0.7);
 }
+.start-box select {
+  width: 100%;
+  max-width: 320px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0, 245, 255, 0.45);
+  border-radius: 14px;
+  background: rgba(3, 8, 24, 0.82);
+  color: #ffffff;
+  outline: none;
+  font-size: 15px;
+  box-shadow: 0 0 18px rgba(0, 245, 255, 0.16);
+}
+
+.start-box select:focus {
+  border-color: #ffd166;
+  box-shadow: 0 0 22px rgba(255, 209, 102, 0.28);
+}
+
+.start-box select option {
+  background: #060b1e;
+  color: #ffffff;
+}
