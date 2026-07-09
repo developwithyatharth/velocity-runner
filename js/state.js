@@ -19,6 +19,7 @@ let gameOver = false;
 let animationId = null;
 
 let runnerName = "Aarav Astra";
+
 let selectedDifficulty = "normal";
 let difficultySettings = {
   startSpeed: START_SPEED,
