@@ -19,6 +19,14 @@ let gameOver = false;
 let animationId = null;
 
 let runnerName = "Aarav Astra";
+let selectedDifficulty = "normal";
+let difficultySettings = {
+  startSpeed: START_SPEED,
+  obstacleMultiplier: 1,
+  droneAttackMultiplier: 1,
+  bossAttackMultiplier: 1
+};
+
 let currentLane = 1;
 
 let playerY = 1;
