@@ -7,6 +7,7 @@ const gameScreen = document.getElementById("gameScreen");
 const gameOverScreen = document.getElementById("gameOverScreen");
 
 const runnerNameInput = document.getElementById("runnerNameInput");
+const difficultySelect = document.getElementById("difficultySelect");
 const runnerNameText = document.getElementById("runnerName");
 const distanceText = document.getElementById("distance");
 const shardsText = document.getElementById("shards");
