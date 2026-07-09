@@ -345,6 +345,7 @@ if (finalDifficultyText) {
 if (highScoreText) highScoreText.textContent = highScore;
 
 renderLeaderboards();
+setupLeaderboardCloseButtons();
 
 showScreen(gameOverScreen);
 }
