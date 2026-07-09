@@ -697,3 +697,50 @@ button:active {
   background: #060b1e;
   color: #ffffff;
 }
+.leaderboard-card {
+  width: min(520px, 95%);
+  margin: 24px auto 0;
+  padding: 18px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 209, 102, 0.28);
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 0 22px rgba(255, 209, 102, 0.12);
+}
+
+.leaderboard-card h3 {
+  color: #ffd166;
+  margin-bottom: 12px;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.leaderboard-card ol {
+  list-style-position: inside;
+  display: grid;
+  gap: 8px;
+}
+
+.leaderboard-card li {
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: rgba(0, 245, 255, 0.075);
+  color: #eaf9ff;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.leaderboard-card li b {
+  color: #ffd166;
+}
+
+.leaderboard-card .empty-score {
+  color: rgba(255, 255, 255, 0.65);
+  list-style: none;
+  text-align: center;
+}
+
+.gameover-leaderboard {
+  margin-top: 20px;
+  margin-bottom: 6px;
+}
