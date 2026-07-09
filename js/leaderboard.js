@@ -87,16 +87,54 @@ function renderLeaderboards() {
   renderLeaderboardList(homeLeaderboard);
   renderLeaderboardList(gameOverLeaderboard);
 }
-function setupLeaderboardCloseButtons() {
+function showLeaderboardCard(card) {
+  if (card) {
+    card.classList.remove("leaderboard-hidden");
+  }
+}
+
+function hideLeaderboardCard(card) {
+  if (card) {
+    card.classList.add("leaderboard-hidden");
+  }
+}
+
+function clearLeaderboardScores() {
+  const confirmClear = confirm("Do you really want to clear all leaderboard scores?");
+
+  if (!confirmClear) return;
+
+  localStorage.removeItem(LEADERBOARD_KEY);
+  renderLeaderboards();
+
+  showLeaderboardCard(homeLeaderboardCard);
+  showLeaderboardCard(gameOverLeaderboardCard);
+}
+
+function setupLeaderboardControls() {
   const closeButtons = document.querySelectorAll(".leaderboard-close");
+  const clearButtons = document.querySelectorAll(".leaderboard-clear");
 
   closeButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       const card = button.closest(".leaderboard-card");
-
-      if (card) {
-        card.classList.add("leaderboard-hidden");
-      }
+      hideLeaderboardCard(card);
     });
   });
+
+  clearButtons.forEach(function (button) {
+    button.addEventListener("click", clearLeaderboardScores);
+  });
+
+  if (showHomeLeaderboardBtn) {
+    showHomeLeaderboardBtn.addEventListener("click", function () {
+      showLeaderboardCard(homeLeaderboardCard);
+    });
+  }
+
+  if (showGameOverLeaderboardBtn) {
+    showGameOverLeaderboardBtn.addEventListener("click", function () {
+      showLeaderboardCard(gameOverLeaderboardCard);
+    });
+  }
 }
