@@ -64,6 +64,9 @@ function startGame() {
   if (runnerNameText) {
     runnerNameText.textContent = runnerName;
   }
+   if (difficultyText) {
+  difficultyText.textContent = getDifficultyLabel(selectedDifficulty);
+}
 
   if (animationId) {
     cancelAnimationFrame(animationId);
@@ -332,11 +335,18 @@ function endGame() {
     player.visible = true;
   }
 
-  if (finalDistanceText) finalDistanceText.textContent = finalDistance;
-  if (finalShardsText) finalShardsText.textContent = shards;
-  if (highScoreText) highScoreText.textContent = highScore;
+  saveScoreToLeaderboard(finalDistance, shards, runnerName, selectedDifficulty);
 
-  showScreen(gameOverScreen);
+if (finalDistanceText) finalDistanceText.textContent = finalDistance;
+if (finalShardsText) finalShardsText.textContent = shards;
+if (finalDifficultyText) {
+  finalDifficultyText.textContent = getDifficultyLabel(selectedDifficulty);
+}
+if (highScoreText) highScoreText.textContent = highScore;
+
+renderLeaderboards();
+
+showScreen(gameOverScreen);
 }
 
 function goHome() {
@@ -349,6 +359,7 @@ function goHome() {
     animationId = null;
   }
 
+  renderLeaderboards();
   showScreen(homeScreen);
 }
 
@@ -457,3 +468,4 @@ if (homeBtn) {
 if (shootBtn) {
   shootBtn.addEventListener("click", shoot);
 }
+renderLeaderboards();
