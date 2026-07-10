@@ -28,6 +28,7 @@ function shoot() {
   bullets.push(bullet);
   bulletGroup.add(bullet);
 
+  triggerCameraShake(0.035);
   setMission("Shoot fired", 40);
 }
 
