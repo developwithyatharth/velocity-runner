@@ -121,6 +121,7 @@ function dash() {
   if (!gameRunning || gamePaused) return;
 
   speed += 0.18;
+  triggerCameraShake(0.1);
 
   if (abilityText) {
     abilityText.textContent = "Surya Dash Activated";
@@ -181,6 +182,7 @@ function damagePlayer(amount) {
     updateShieldStatus();
     invincibleTimer = 45;
     createExplosion(player.position.x, player.position.y + 1.2, player.position.z);
+    triggerCameraShake(0.18);
     setMission("Shield absorbed damage", 90);
     return;
   }
@@ -190,6 +192,7 @@ function damagePlayer(amount) {
   updateCoreHealth();
 
   createExplosion(player.position.x, player.position.y + 1.2, player.position.z);
+  triggerCameraShake(0.3);
   setMission("Core damaged", 85);
 
   if (coreHealth <= 0) {
