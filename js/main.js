@@ -208,10 +208,16 @@ scene.add(purpleLight);
   scene.add(bulletGroup);
   scene.add(empGroup);
 
-  createRoad();
+createRoad();
 createPlayer();
+
 createDrone();
 createBoss();
+
+/* Phase 1C enemy visual upgrades */
+upgradeDroneVisuals();
+upgradeBossVisuals();
+
 createCity();
 createRain();
 createSkySymbols();
@@ -246,6 +252,9 @@ function updateGame() {
 updateDrone();
 updateMovingWorld();
 updateNeoAryavartaVisuals();
+
+/* Animate upgraded drone and boss */
+updateEnemyVisuals();
 
   spawnTimer++;
   shardTimer++;
