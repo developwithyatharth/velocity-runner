@@ -1417,6 +1417,7 @@ function jump() {
   ) {
     velocityY = 0.78;
     isJumping = true;
+    playJumpSound();
 
     triggerCameraShake(0.035);
   }
@@ -1435,6 +1436,7 @@ function slide() {
 
   isSliding = true;
   slideTimer = 34;
+  playSlideSound();
 
   triggerCameraShake(0.028);
 }
@@ -1451,6 +1453,7 @@ function dash() {
 
   speed += 0.18;
   dashTrailTimer = 34;
+  playDashSound();
 
   triggerCameraShake(0.09);
 
@@ -1995,6 +1998,7 @@ function damagePlayer(amount) {
 
   if (shieldActive) {
     shieldActive = false;
+     playShieldSound();
 
     updateShieldStatus();
 
@@ -2029,6 +2033,7 @@ function damagePlayer(amount) {
   invincibleTimer = 75;
 
   updateCoreHealth();
+  playDamageSound();
 
 
   createExplosion(
