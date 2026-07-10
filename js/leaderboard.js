@@ -1,33 +1,66 @@
 /* leaderboard.js
-   Local leaderboard using browser localStorage
+   Local leaderboard system
+
+   Features:
+   - Saves top runs in localStorage
+   - Shows home leaderboard
+   - Shows game-over leaderboard
+   - Shows in-game leaderboard popup
+   - Close leaderboard buttons
+   - Reopen leaderboard buttons
+   - Clear scores option
 */
 
 function getDifficultyLabel(level) {
-  if (level === "easy") return "Easy Runner";
-  if (level === "hard") return "Hard Legend";
+  if (level === "easy") {
+    return "Easy Runner";
+  }
+
+  if (level === "hard") {
+    return "Hard Legend";
+  }
+
   return "Normal Warrior";
 }
 
 function getLeaderboard() {
-  const saved = localStorage.getItem(LEADERBOARD_KEY);
+  const savedLeaderboard =
+    localStorage.getItem(LEADERBOARD_KEY);
 
-  if (!saved) {
+  if (!savedLeaderboard) {
     return [];
   }
 
   try {
-    const data = JSON.parse(saved);
-    return Array.isArray(data) ? data : [];
+    const parsedLeaderboard =
+      JSON.parse(savedLeaderboard);
+
+    return Array.isArray(parsedLeaderboard)
+      ? parsedLeaderboard
+      : [];
   } catch (error) {
+    console.warn(
+      "Leaderboard data could not be read.",
+      error
+    );
+
     return [];
   }
 }
 
-function saveLeaderboard(list) {
-  localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(list));
+function saveLeaderboard(leaderboard) {
+  localStorage.setItem(
+    LEADERBOARD_KEY,
+    JSON.stringify(leaderboard)
+  );
 }
 
-function saveScoreToLeaderboard(distanceScore, shardScore, playerName, difficultyLevel) {
+function saveScoreToLeaderboard(
+  distanceScore,
+  shardScore,
+  playerName,
+  difficultyLevel
+) {
   const leaderboard = getLeaderboard();
 
   const runData = {
@@ -40,44 +73,80 @@ function saveScoreToLeaderboard(distanceScore, shardScore, playerName, difficult
 
   leaderboard.push(runData);
 
-  leaderboard.sort(function (a, b) {
-    return b.distance - a.distance;
+  leaderboard.sort(function (firstRun, secondRun) {
+    if (secondRun.distance !== firstRun.distance) {
+      return secondRun.distance - firstRun.distance;
+    }
+
+    return secondRun.shards - firstRun.shards;
   });
 
-  const topRuns = leaderboard.slice(0, LEADERBOARD_LIMIT);
+  const topRuns = leaderboard.slice(
+    0,
+    LEADERBOARD_LIMIT
+  );
 
   saveLeaderboard(topRuns);
 }
 
 function renderLeaderboardList(targetElement) {
-  if (!targetElement) return;
+  if (!targetElement) {
+    return;
+  }
 
   const leaderboard = getLeaderboard();
 
   targetElement.innerHTML = "";
 
   if (leaderboard.length === 0) {
-    const emptyItem = document.createElement("li");
+    const emptyItem =
+      document.createElement("li");
+
     emptyItem.className = "empty-score";
-    emptyItem.textContent = "No runs yet. Become the first champion.";
+
+    emptyItem.textContent =
+      "No runs yet. Become the first champion.";
+
     targetElement.appendChild(emptyItem);
+
     return;
   }
 
-  leaderboard.forEach(function (run) {
+  leaderboard.forEach(function (run, index) {
     const item = document.createElement("li");
 
+    const rank = index + 1;
+
+    const safeName =
+      typeof run.name === "string" && run.name.trim()
+        ? run.name.trim()
+        : "Unknown Runner";
+
+    const safeDistance =
+      Number(run.distance) || 0;
+
+    const safeShards =
+      Number(run.shards) || 0;
+
+    const difficultyLabel =
+      getDifficultyLabel(run.difficulty);
+
+    const dateLabel =
+      run.date || "Unknown date";
+
     item.innerHTML =
-      "<b>" +
-      run.name +
-      "</b> — " +
-      run.distance +
-      "m | " +
-      run.shards +
+      "<b>#" +
+      rank +
+      " " +
+      safeName +
+      "</b><br>" +
+      safeDistance +
+      " m | " +
+      safeShards +
       " shards | " +
-      getDifficultyLabel(run.difficulty) +
+      difficultyLabel +
       " | " +
-      run.date;
+      dateLabel;
 
     targetElement.appendChild(item);
   });
@@ -86,55 +155,156 @@ function renderLeaderboardList(targetElement) {
 function renderLeaderboards() {
   renderLeaderboardList(homeLeaderboard);
   renderLeaderboardList(gameOverLeaderboard);
+  renderLeaderboardList(gameLeaderboard);
 }
+
 function showLeaderboardCard(card) {
-  if (card) {
-    card.classList.remove("leaderboard-hidden");
+  if (!card) {
+    return;
   }
+
+  card.classList.remove("leaderboard-hidden");
 }
 
 function hideLeaderboardCard(card) {
-  if (card) {
-    card.classList.add("leaderboard-hidden");
+  if (!card) {
+    return;
   }
+
+  card.classList.add("leaderboard-hidden");
+}
+
+function openGameLeaderboard() {
+  if (!gameLeaderboardCard) {
+    return;
+  }
+
+  renderLeaderboardList(gameLeaderboard);
+
+  showLeaderboardCard(gameLeaderboardCard);
+}
+
+function closeGameLeaderboard() {
+  hideLeaderboardCard(gameLeaderboardCard);
 }
 
 function clearLeaderboardScores() {
-  const confirmClear = confirm("Do you really want to clear all leaderboard scores?");
+  const confirmClear = confirm(
+    "Do you really want to clear all leaderboard scores?"
+  );
 
-  if (!confirmClear) return;
+  if (!confirmClear) {
+    return;
+  }
 
   localStorage.removeItem(LEADERBOARD_KEY);
+
+  renderLeaderboards();
+}
+
+function clearGameLeaderboard() {
+  const confirmClear = confirm(
+    "Do you really want to clear all leaderboard scores?"
+  );
+
+  if (!confirmClear) {
+    return;
+  }
+
+  localStorage.removeItem(LEADERBOARD_KEY);
+
   renderLeaderboards();
 
-  showLeaderboardCard(homeLeaderboardCard);
-  showLeaderboardCard(gameOverLeaderboardCard);
+  showLeaderboardCard(gameLeaderboardCard);
 }
 
 function setupLeaderboardControls() {
-  const closeButtons = document.querySelectorAll(".leaderboard-close");
-  const clearButtons = document.querySelectorAll(".leaderboard-clear");
+  const closeButtons =
+    document.querySelectorAll(
+      ".leaderboard-close"
+    );
+
+  const clearButtons =
+    document.querySelectorAll(
+      ".leaderboard-clear"
+    );
 
   closeButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      const card = button.closest(".leaderboard-card");
-      hideLeaderboardCard(card);
-    });
+    button.addEventListener(
+      "click",
+      function () {
+        const card =
+          button.closest(
+            ".leaderboard-card"
+          );
+
+        hideLeaderboardCard(card);
+      }
+    );
   });
 
   clearButtons.forEach(function (button) {
-    button.addEventListener("click", clearLeaderboardScores);
+    if (
+      button.id ===
+      "clearGameLeaderboardBtn"
+    ) {
+      return;
+    }
+
+    button.addEventListener(
+      "click",
+      clearLeaderboardScores
+    );
   });
 
   if (showHomeLeaderboardBtn) {
-    showHomeLeaderboardBtn.addEventListener("click", function () {
-      showLeaderboardCard(homeLeaderboardCard);
-    });
+    showHomeLeaderboardBtn.addEventListener(
+      "click",
+      function () {
+        renderLeaderboardList(
+          homeLeaderboard
+        );
+
+        showLeaderboardCard(
+          homeLeaderboardCard
+        );
+      }
+    );
   }
 
   if (showGameOverLeaderboardBtn) {
-    showGameOverLeaderboardBtn.addEventListener("click", function () {
-      showLeaderboardCard(gameOverLeaderboardCard);
-    });
+    showGameOverLeaderboardBtn.addEventListener(
+      "click",
+      function () {
+        renderLeaderboardList(
+          gameOverLeaderboard
+        );
+
+        showLeaderboardCard(
+          gameOverLeaderboardCard
+        );
+      }
+    );
+  }
+
+  if (showGameLeaderboardBtn) {
+    showGameLeaderboardBtn.addEventListener(
+      "click",
+      openGameLeaderboard
+    );
+  }
+
+  if (closeGameLeaderboardBtn) {
+    closeGameLeaderboardBtn.addEventListener(
+      "click",
+      closeGameLeaderboard
+    );
+  }
+
+  if (clearGameLeaderboardBtn) {
+    clearGameLeaderboardBtn.addEventListener(
+      "click",
+      clearGameLeaderboard
+    );
   }
 }
