@@ -209,12 +209,16 @@ function initThree() {
   scene.add(empGroup);
 
   createRoad();
-  createPlayer();
-  createDrone();
-  createBoss();
-  createCity();
-  createRain();
-  createSkySymbols();
+createPlayer();
+createDrone();
+createBoss();
+createCity();
+createRain();
+createSkySymbols();
+
+/* Phase 1 visual foundation */
+createNeoAryavartaVisuals();
+initPostProcessing();
 
   window.removeEventListener("resize", onResize);
   window.addEventListener("resize", onResize);
@@ -239,8 +243,9 @@ function updateGame() {
   if (shardsText) shardsText.textContent = shards;
 
   updatePlayer();
-  updateDrone();
-  updateMovingWorld();
+updateDrone();
+updateMovingWorld();
+updateNeoAryavartaVisuals();
 
   spawnTimer++;
   shardTimer++;
@@ -279,10 +284,7 @@ function updateGame() {
   updatePowerUps();
   updateMissionText();
 
-  camera.position.x += (player.position.x * 0.3 - camera.position.x) * 0.08;
-  camera.position.y = 5.2;
-  camera.position.z = 9.2;
-  camera.lookAt(player.position.x, 0.45, -13);
+  updateCinematicCamera();
 }
 
 function updateMissionText() {
@@ -311,11 +313,9 @@ function animate() {
   if (!gameRunning) return;
 
   animationId = requestAnimationFrame(animate);
+   
   updateGame();
-
-  if (renderer && scene && camera) {
-    renderer.render(scene, camera);
-  }
+  renderGameFrame();
 }
 
 function endGame() {
@@ -379,7 +379,17 @@ function onResize() {
 
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+  );
+
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, 2)
+  );
+
+  resizePostProcessing();
 }
 
 /* Controls */
