@@ -71,7 +71,7 @@ function createNeoAryavartaVisuals() {
   createNeoSpires();
   createFlyingVehicles();
   createAtmosphereParticles();
-  createHorizonSurya();
+  // createHorizonSurya();
 }
 
 /* -----------------------------------------
@@ -96,12 +96,12 @@ function createSingleNeoGate(index) {
   const secondaryColor = index % 3 === 0 ? 0x8f2cff : 0x00bfff;
 
   const pillarMaterial = new THREE.MeshStandardMaterial({
-    color: 0x08142c,
-    metalness: 0.78,
-    roughness: 0.2,
-    emissive: primaryColor,
-    emissiveIntensity: 0.26
-  });
+  color: 0x08142c,
+  metalness: 0.78,
+  roughness: 0.2,
+  emissive: primaryColor,
+  emissiveIntensity: 0.12
+});
 
   const primaryGlowMaterial = new THREE.MeshBasicMaterial({
     color: primaryColor
@@ -156,27 +156,23 @@ function createSingleNeoGate(index) {
     gate.add(lowerRing);
   });
 
-  /* Upper arch */
+  /* Top beam instead of glowing circular arch */
 
-  const arch = new THREE.Mesh(
-    new THREE.TorusGeometry(5.55, 0.13, 14, 70, Math.PI),
-    primaryGlowMaterial
-  );
+const topBeam = new THREE.Mesh(
+  new THREE.BoxGeometry(10.8, 0.22, 0.42),
+  primaryGlowMaterial
+);
 
-  arch.position.y = 5.35;
-  gate.add(arch);
+topBeam.position.set(0, 5.35, 0);
+gate.add(topBeam);
 
-  /* Central chakra */
+const topAccent = new THREE.Mesh(
+  new THREE.BoxGeometry(9.8, 0.08, 0.55),
+  secondaryGlowMaterial
+);
 
-  const chakra = createCyberChakra(primaryColor, secondaryColor);
-
-  chakra.position.set(0, 5.1, 0);
-  chakra.scale.set(0.85, 0.85, 0.85);
-
-  gate.add(chakra);
-
-  return gate;
-}
+topAccent.position.set(0, 5.62, 0);
+gate.add(topAccent);
 
 function createCyberChakra(primaryColor, secondaryColor) {
   const chakra = new THREE.Group();
