@@ -58,15 +58,15 @@ function initPostProcessing() {
     renderScenePass = new THREE.RenderPass(scene, camera);
 
     bloomPass = new THREE.UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.82,
-      0.42,
-      0.18
-    );
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  0.38,
+  0.22,
+  0.45
+);
 
-    bloomPass.threshold = 0.17;
-    bloomPass.strength = 0.82;
-    bloomPass.radius = 0.38;
+bloomPass.threshold = 0.42;
+bloomPass.strength = 0.38;
+bloomPass.radius = 0.18;
 
     composer.addPass(renderScenePass);
     composer.addPass(bloomPass);
