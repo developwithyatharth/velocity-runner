@@ -118,6 +118,7 @@ function destroyDrone() {
   }
 
   createExplosion(drone.position.x, drone.position.y, drone.position.z);
+  triggerCameraShake(0.18);
 
   setTimeout(() => {
     if (abilityText) {
@@ -256,6 +257,7 @@ function damageBoss(amount) {
   if (boss) {
     createExplosion(boss.position.x, 5.4, boss.position.z + 0.8);
   }
+   triggerCameraShake(0.07);
 
   if (bossHealth <= 0) {
     endBossEvent();
