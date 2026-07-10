@@ -798,3 +798,86 @@ button:active {
 .leaderboard-clear:hover {
   background: rgba(255, 51, 85, 0.35);
 }
+/* =========================================
+   IN-GAME LEADERBOARD
+========================================= */
+
+.game-leaderboard-toggle {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 30;
+
+  padding: 11px 17px;
+  border-radius: 999px;
+
+  color: #071022;
+  font-size: 13px;
+  font-weight: 800;
+
+  background: linear-gradient(
+    135deg,
+    #ffd166,
+    #00f5ff
+  );
+
+  box-shadow:
+    0 0 16px rgba(0, 245, 255, 0.35),
+    0 0 18px rgba(255, 209, 102, 0.25);
+}
+
+/* Move HUD downward so it does not cover the button */
+
+#gameScreen .hud {
+  top: 72px;
+}
+
+/* Leaderboard popup panel */
+
+.in-game-leaderboard {
+  position: absolute;
+  top: 72px;
+  left: 16px;
+  z-index: 40;
+
+  width: min(420px, calc(100vw - 32px));
+  max-height: 72vh;
+
+  margin: 0;
+  overflow-y: auto;
+
+  background: rgba(3, 8, 25, 0.96);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 209, 102, 0.38);
+
+  box-shadow:
+    0 0 30px rgba(0, 245, 255, 0.16),
+    0 0 22px rgba(255, 209, 102, 0.12);
+}
+
+/* Leaderboard closed by default */
+
+.leaderboard-hidden {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .game-leaderboard-toggle {
+    top: 10px;
+    left: 10px;
+    padding: 9px 13px;
+    font-size: 11px;
+  }
+
+  #gameScreen .hud {
+    top: 60px;
+  }
+
+  .in-game-leaderboard {
+    top: 60px;
+    left: 10px;
+    width: calc(100vw - 20px);
+    max-height: 68vh;
+  }
+}
