@@ -169,28 +169,28 @@ function initThree() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true;
 
-  const ambient = new THREE.AmbientLight(0x9feaff, 1.5);
-  scene.add(ambient);
+  const ambient = new THREE.AmbientLight(0x9feaff, 0.95);
+scene.add(ambient);
 
-  const bharatGlow = new THREE.HemisphereLight(0x00eaff, 0xffaa00, 1.7);
-  scene.add(bharatGlow);
+const bharatGlow = new THREE.HemisphereLight(0x00eaff, 0xffaa00, 0.95);
+scene.add(bharatGlow);
 
-  const mainLight = new THREE.DirectionalLight(0xffffff, 1.4);
-  mainLight.position.set(5, 12, 8);
-  mainLight.castShadow = true;
-  scene.add(mainLight);
+const mainLight = new THREE.DirectionalLight(0xffffff, 1.05);
+mainLight.position.set(5, 12, 8);
+mainLight.castShadow = true;
+scene.add(mainLight);
 
-  const cyanLight = new THREE.PointLight(0x00f5ff, 3.5, 55);
-  cyanLight.position.set(-5, 5, -8);
-  scene.add(cyanLight);
+const cyanLight = new THREE.PointLight(0x00f5ff, 1.4, 40);
+cyanLight.position.set(-5, 5, -8);
+scene.add(cyanLight);
 
-  const goldLight = new THREE.PointLight(0xffd166, 3.2, 55);
-  goldLight.position.set(0, 5, -22);
-  scene.add(goldLight);
+const goldLight = new THREE.PointLight(0xffd166, 1.2, 40);
+goldLight.position.set(0, 5, -22);
+scene.add(goldLight);
 
-  const purpleLight = new THREE.PointLight(0x8f2cff, 3.2, 55);
-  purpleLight.position.set(5, 5, -35);
-  scene.add(purpleLight);
+const purpleLight = new THREE.PointLight(0x8f2cff, 1.15, 40);
+purpleLight.position.set(5, 5, -35);
+scene.add(purpleLight);
 
   roadGroup = new THREE.Group();
   obstacleGroup = new THREE.Group();
