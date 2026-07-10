@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="Velocity Runner: Rise of Bharat — a futuristic 3D endless runner set in Neo Aryavarta."
+  />
+
+  <title>Velocity Runner: Rise of Bharat</title>
+
+  <link rel="stylesheet" href="style.css?v=visual6" />
+</head>
+
+<body>
+
+  <!-- =====================================================
+       HOME SCREEN
+  ====================================================== -->
+
+  <section id="homeScreen" class="screen active">
+
+    <div class="home-bg-glow"></div>
+
+    <div class="hero-card">
+
+      <div class="logo-orb"></div>
+
+      <p class="eyebrow">
+        Neo Aryavarta 2149
+      </p>
+
+      <h1>
+        Velocity Runner:
+        <br />
+        <span>Rise of Bharat</span>
+      </h1>
+
+      <h2>
+        When the world falls, Bharat still runs.
+      </h2>
+
+      <p class="story">
+        Play as <b>Aarav Astra</b>, the last runner carrying
+        the glowing <b>Surya Core</b> through an AI-controlled
+        futuristic city ruled by <b>Trinetra</b>.
+      </p>
+
+      <!-- PLAYER DETAILS -->
+
+      <div class="start-box">
+
+        <input
+          type="text"
+          id="runnerNameInput"
+          placeholder="Enter runner name"
+          maxlength="18"
+          autocomplete="off"
+        />
+
+        <select id="difficultySelect">
+          <option value="">
+            Select difficulty
+          </option>
+
+          <option value="easy">
+            Easy Runner
+          </option>
+
+          <option value="normal">
+            Normal Warrior
+          </option>
+
+          <option value="hard">
+            Hard Legend
+          </option>
+        </select>
+
+        <button
+          id="startBtn"
+          type="button"
+          disabled
+        >
+          Start Run
+        </button>
+
+      </div>
+
+      <!-- CONTROLS -->
+
+      <div class="controls-info">
+
+        <p>
+          <b>PC:</b>
+          ← → Move |
+          Space Jump |
+          ↓ Slide |
+          Shift Dash |
+          F Shoot
+        </p>
+
+        <p>
+          <b>Mobile:</b>
+          Swipe left/right/up/down |
+          Double tap Dash |
+          Shoot button
+        </p>
+
+      </div>
+
+      <!-- FEATURES -->
+
+      <div class="feature-row">
+        <span>3 Lanes</span>
+        <span>Surya Dash</span>
+        <span>Drone Combat</span>
+        <span>Boss Events</span>
+        <span>Power-Ups</span>
+      </div>
+
+      <!-- HOME LEADERBOARD BUTTON -->
+
+      <div class="leaderboard-actions">
+
+        <button
+          type="button"
+          id="showHomeLeaderboardBtn"
+          class="leaderboard-show-btn"
+        >
+          🏆 Show Champions
+        </button>
+
+      </div>
+
+      <!-- HOME LEADERBOARD -->
+
+      <div
+        class="leaderboard-card leaderboard-hidden"
+        id="homeLeaderboardCard"
+      >
+
+        <button
+          type="button"
+          class="leaderboard-close"
+          aria-label="Close leaderboard"
+        >
+          ×
+        </button>
+
+        <h3>Local Champions</h3>
+
+        <ol id="homeLeaderboard"></ol>
+
+        <button
+          type="button"
+          class="leaderboard-clear"
+        >
+          Clear Scores
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       GAME SCREEN
+  ====================================================== -->
+
+  <section id="gameScreen" class="screen">
+
+    <!-- 3D GAME CANVAS -->
+
+    <canvas id="gameCanvas"></canvas>
+
+
+    <!-- TOP-LEFT LEADERBOARD BUTTON -->
+
+    <button
+      type="button"
+      id="showGameLeaderboardBtn"
+      class="game-leaderboard-toggle"
+    >
+      🏆 Top Runs
+    </button>
+
+
+    <!-- IN-GAME LEADERBOARD POPUP -->
+
+    <div
+      id="gameLeaderboardCard"
+      class="leaderboard-card in-game-leaderboard leaderboard-hidden"
+    >
+
+      <button
+        type="button"
+        id="closeGameLeaderboardBtn"
+        class="leaderboard-close"
+        aria-label="Close leaderboard"
+      >
+        ×
+      </button>
+
+      <h3>Top Runs</h3>
+
+      <ol id="gameLeaderboard"></ol>
+
+      <button
+        type="button"
+        id="clearGameLeaderboardBtn"
+        class="leaderboard-clear"
+      >
+        Clear Scores
+      </button>
+
+    </div>
+
+
+    <!-- GAME HUD -->
+
+    <div class="hud">
+
+      <div>
+        Runner:
+        <b id="runnerName">Aarav Astra</b>
+      </div>
+
+      <div>
+        Distance:
+        <b id="distance">0</b> m
+      </div>
+
+      <div>
+        Surya Shards:
+        <b id="shards">0</b>
+      </div>
+
+      <div>
+        High Score:
+        <b id="highScore">0</b> m
+      </div>
+
+      <div>
+        Difficulty:
+        <b id="difficultyText">Normal Warrior</b>
+      </div>
+
+      <div class="core-stat">
+        Core Health:
+        <b id="coreHealth">100</b>%
+      </div>
+
+      <div>
+        Shield:
+        <b id="shieldStatus">Empty</b>
+      </div>
+
+    </div>
+
+
+    <!-- ABILITY STATUS -->
+
+    <div
+      id="abilityText"
+      class="ability"
+    >
+      Surya Dash Ready
+    </div>
+
+
+    <!-- MISSION STATUS -->
+
+    <div
+      id="missionText"
+      class="mission"
+    >
+      Protect the Surya Core
+    </div>
+
+
+    <!-- BOSS HEALTH -->
+
+    <div
+      id="bossUI"
+      class="boss-ui"
+    >
+
+      <div class="boss-title">
+        AI Guardian
+      </div>
+
+      <div class="boss-bar">
+        <div id="bossHealthFill"></div>
+      </div>
+
+    </div>
+
+
+    <!-- SHOOT BUTTON -->
+
+    <button
+      id="shootBtn"
+      type="button"
+      class="shoot-btn"
+    >
+      Shoot
+    </button>
+
+
+    <!-- PAUSE BUTTON -->
+
+    <button
+      id="pauseBtn"
+      type="button"
+      class="pause-btn"
+    >
+      Pause
+    </button>
+
+  </section>
+
+
+  <!-- =====================================================
+       GAME OVER SCREEN
+  ====================================================== -->
+
+  <section id="gameOverScreen" class="screen">
+
+    <div class="game-over-card">
+
+      <p class="eyebrow">
+        Quantum Link Broken
+      </p>
+
+      <h1>
+        Run Ended
+      </h1>
+
+      <p>
+        Distance:
+        <b id="finalDistance">0</b> m
+      </p>
+
+      <p>
+        Surya Shards:
+        <b id="finalShards">0</b>
+      </p>
+
+      <p>
+        Difficulty:
+        <b id="finalDifficulty">Normal Warrior</b>
+      </p>
+
+
+      <!-- GAME-OVER LEADERBOARD BUTTON -->
+
+      <button
+        type="button"
+        id="showGameOverLeaderboardBtn"
+        class="leaderboard-show-btn"
+      >
+        🏆 Show Top Runs
+      </button>
+
+
+      <!-- GAME-OVER LEADERBOARD -->
+
+      <div
+        class="leaderboard-card gameover-leaderboard leaderboard-hidden"
+        id="gameOverLeaderboardCard"
+      >
+
+        <button
+          type="button"
+          class="leaderboard-close"
+          aria-label="Close leaderboard"
+        >
+          ×
+        </button>
+
+        <h3>Top Runs</h3>
+
+        <ol id="gameOverLeaderboard"></ol>
+
+        <button
+          type="button"
+          class="leaderboard-clear"
+        >
+          Clear Scores
+        </button>
+
+      </div>
+
+
+      <!-- GAME-OVER BUTTONS -->
+
+      <div class="game-over-buttons">
+
+        <button
+          id="restartBtn"
+          type="button"
+        >
+          Run Again
+        </button>
+
+        <button
+          id="homeBtn"
+          type="button"
+        >
+          Home
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       THREE.JS
+  ====================================================== -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+
+  <!-- =====================================================
+       THREE.JS POST-PROCESSING
+  ====================================================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+
+
+  <!-- =====================================================
+       VELOCITY RUNNER MODULES
+  ====================================================== -->
+
+  <script src="js/config.js?v=visual6"></script>
+
+  <script src="js/state.js?v=visual6"></script>
+
+  <script src="js/ui.js?v=visual6"></script>
+
+  <script src="js/leaderboard.js?v=visual6"></script>
+
+  <script src="js/world.js?v=visual6"></script>
+
+  <script src="js/player.js?v=visual6"></script>
+
+  <script src="js/enemies.js?v=visual6"></script>
+
+  <script src="js/combat.js?v=visual6"></script>
+
+  <script src="js/powerups.js?v=visual6"></script>
+
+  <script src="js/visuals.js?v=visual6"></script>
+
+  <script src="js/effects.js?v=visual6"></script>
+
+  <!-- MAIN.JS MUST ALWAYS BE LAST -->
+
+  <script src="js/main.js?v=visual6"></script>
+
+</body>
+</html>
