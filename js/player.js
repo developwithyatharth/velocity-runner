@@ -1,290 +1,737 @@
-/* player.js
+/* =========================================================
+   player.js
    Velocity Runner: Rise of Bharat
 
-   Phase 1B:
-   - Detailed cyber runner
-   - Running animation
-   - Jump animation
-   - Slide animation
-   - Lane-change leaning
-   - Surya Core pulse
-   - Energy trail
-*/
+   Human Aarav Astra Upgrade
+   - Athletic human proportions
+   - Visible face and black hair
+   - Futuristic fitted running suit
+   - Natural arm and leg movement
+   - Human jump and slide poses
+   - Surya Core and energy trail
+========================================================= */
 
-/* =====================================================
+
+/* =========================================================
    PLAYER ANIMATION STATE
-===================================================== */
+========================================================= */
 
 let playerRunClock = 0;
+
 let playerTrailGroup = null;
 let playerTrailSegments = [];
+
 let dashTrailTimer = 0;
 
-/* =====================================================
-   CREATE PLAYER
-===================================================== */
+
+/* =========================================================
+   CREATE HUMAN PLAYER
+========================================================= */
 
 function createPlayer() {
+  /*
+    Remove an older player if createPlayer() is called again.
+  */
+
+  if (player && scene) {
+    scene.remove(player);
+  }
+
+  if (playerTrailGroup && scene) {
+    scene.remove(playerTrailGroup);
+  }
+
+  playerTrailSegments = [];
+  playerTrailGroup = null;
+
   player = new THREE.Group();
 
-  const bodyRoot = new THREE.Group();
-  player.add(bodyRoot);
+  const humanBody = new THREE.Group();
+  player.add(humanBody);
 
-  /* Main materials */
 
-  const armourMaterial = new THREE.MeshStandardMaterial({
-    color: 0x082c63,
-    metalness: 0.72,
-    roughness: 0.22,
-    emissive: 0x00396f,
-    emissiveIntensity: 0.22
+  /* =====================================================
+     MATERIALS
+  ===================================================== */
+
+  const skinMaterial = new THREE.MeshStandardMaterial({
+    color: 0xb8754d,
+    roughness: 0.72,
+    metalness: 0
   });
 
-  const darkArmourMaterial = new THREE.MeshStandardMaterial({
-    color: 0x031226,
-    metalness: 0.78,
-    roughness: 0.25,
-    emissive: 0x00172e,
-    emissiveIntensity: 0.16
+  const skinLightMaterial = new THREE.MeshStandardMaterial({
+    color: 0xc8875d,
+    roughness: 0.75,
+    metalness: 0
   });
 
-  const cyanGlowMaterial = new THREE.MeshBasicMaterial({
-    color: 0x00c5dd,
+  const hairMaterial = new THREE.MeshStandardMaterial({
+    color: 0x111117,
+    roughness: 0.9,
+    metalness: 0
+  });
+
+  const suitMaterial = new THREE.MeshStandardMaterial({
+    color: 0x071b38,
+    roughness: 0.68,
+    metalness: 0.08,
+    emissive: 0x001a35,
+    emissiveIntensity: 0.08
+  });
+
+  const secondarySuitMaterial = new THREE.MeshStandardMaterial({
+    color: 0x102d54,
+    roughness: 0.64,
+    metalness: 0.1,
+    emissive: 0x002349,
+    emissiveIntensity: 0.06
+  });
+
+  const darkFabricMaterial = new THREE.MeshStandardMaterial({
+    color: 0x040a16,
+    roughness: 0.78,
+    metalness: 0.04
+  });
+
+  const shoeMaterial = new THREE.MeshStandardMaterial({
+    color: 0x071020,
+    roughness: 0.55,
+    metalness: 0.16
+  });
+
+  const cyanMaterial = new THREE.MeshBasicMaterial({
+    color: 0x00d9ef,
     transparent: true,
     opacity: 0.82
   });
 
-  const goldGlowMaterial = new THREE.MeshBasicMaterial({
-    color: 0xe6aa38,
+  const goldMaterial = new THREE.MeshBasicMaterial({
+    color: 0xf2b544,
     transparent: true,
-    opacity: 0.9
+    opacity: 0.88
   });
 
-  const purpleGlowMaterial = new THREE.MeshBasicMaterial({
-    color: 0x8450cf,
-    transparent: true,
-    opacity: 0.72
+  const eyeMaterial = new THREE.MeshStandardMaterial({
+    color: 0x24140d,
+    roughness: 0.7
   });
+
+  const whiteMaterial = new THREE.MeshStandardMaterial({
+    color: 0xf2eee6,
+    roughness: 0.75
+  });
+
 
   /* =====================================================
-     TORSO
+     HIPS AND WAIST
+  ===================================================== */
+
+  const hips = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      0.31,
+      0.35,
+      0.42,
+      18
+    ),
+    suitMaterial
+  );
+
+  hips.position.y = 1.05;
+  hips.scale.z = 0.82;
+  hips.castShadow = true;
+
+  humanBody.add(hips);
+
+
+  const waist = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      0.29,
+      0.31,
+      0.28,
+      18
+    ),
+    darkFabricMaterial
+  );
+
+  waist.position.y = 1.35;
+  waist.scale.z = 0.82;
+
+  humanBody.add(waist);
+
+
+  const beltLine = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.56,
+      0.055,
+      0.39
+    ),
+    goldMaterial
+  );
+
+  beltLine.position.set(
+    0,
+    1.27,
+    -0.02
+  );
+
+  humanBody.add(beltLine);
+
+
+  /* =====================================================
+     HUMAN TORSO
   ===================================================== */
 
   const torso = new THREE.Mesh(
-    new THREE.BoxGeometry(0.82, 1.05, 0.48),
-    armourMaterial
+    new THREE.CylinderGeometry(
+      0.43,
+      0.3,
+      1.05,
+      20
+    ),
+    suitMaterial
   );
 
-  torso.position.y = 1.55;
+  torso.position.y = 1.86;
+  torso.scale.z = 0.72;
   torso.castShadow = true;
 
-  bodyRoot.add(torso);
+  humanBody.add(torso);
 
-  const chestPlate = new THREE.Mesh(
-    new THREE.BoxGeometry(0.58, 0.58, 0.12),
-    darkArmourMaterial
+
+  /*
+    Soft chest shape to make the torso look less cylindrical.
+  */
+
+  const chestShape = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.42,
+      22,
+      18
+    ),
+    secondarySuitMaterial
   );
 
-  chestPlate.position.set(0, 1.62, 0.31);
-  chestPlate.rotation.x = -0.08;
-
-  bodyRoot.add(chestPlate);
-
-  const chestEnergyLine = new THREE.Mesh(
-    new THREE.BoxGeometry(0.1, 0.7, 0.045),
-    cyanGlowMaterial
+  chestShape.scale.set(
+    1,
+    0.62,
+    0.68
   );
 
-  chestEnergyLine.position.set(0, 1.58, 0.39);
-
-  bodyRoot.add(chestEnergyLine);
-
-  /* Shoulder armour */
-
-  const leftShoulderPlate = new THREE.Mesh(
-    new THREE.BoxGeometry(0.42, 0.22, 0.5),
-    armourMaterial
+  chestShape.position.set(
+    0,
+    2.04,
+    -0.02
   );
 
-  leftShoulderPlate.position.set(-0.57, 1.95, 0);
-  leftShoulderPlate.rotation.z = -0.18;
+  chestShape.castShadow = true;
+  humanBody.add(chestShape);
 
-  bodyRoot.add(leftShoulderPlate);
 
-  const rightShoulderPlate = leftShoulderPlate.clone();
-
-  rightShoulderPlate.position.x = 0.57;
-  rightShoulderPlate.rotation.z = 0.18;
-
-  bodyRoot.add(rightShoulderPlate);
-
-  /* Waist */
-
-  const waist = new THREE.Mesh(
-    new THREE.BoxGeometry(0.65, 0.26, 0.4),
-    darkArmourMaterial
+  const abdomen = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      0.3,
+      0.28,
+      0.48,
+      18
+    ),
+    darkFabricMaterial
   );
 
-  waist.position.y = 0.93;
-  bodyRoot.add(waist);
+  abdomen.position.y = 1.5;
+  abdomen.scale.z = 0.78;
 
-  const waistGlow = new THREE.Mesh(
-    new THREE.BoxGeometry(0.52, 0.06, 0.44),
-    goldGlowMaterial
+  humanBody.add(abdomen);
+
+
+  /*
+    Futuristic energy lines on clothing.
+  */
+
+  const chestLineLeft = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.045,
+      0.64,
+      0.035
+    ),
+    cyanMaterial
   );
 
-  waistGlow.position.y = 1;
-  bodyRoot.add(waistGlow);
+  chestLineLeft.position.set(
+    -0.18,
+    1.9,
+    -0.31
+  );
+
+  chestLineLeft.rotation.z = -0.18;
+
+  humanBody.add(chestLineLeft);
+
+
+  const chestLineRight = chestLineLeft.clone();
+
+  chestLineRight.position.x = 0.18;
+  chestLineRight.rotation.z = 0.18;
+
+  humanBody.add(chestLineRight);
+
 
   /* =====================================================
-     HEAD AND HELMET
+     NECK
+  ===================================================== */
+
+  const neck = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      0.13,
+      0.15,
+      0.28,
+      16
+    ),
+    skinMaterial
+  );
+
+  neck.position.y = 2.48;
+  neck.castShadow = true;
+
+  humanBody.add(neck);
+
+
+  /* =====================================================
+     HUMAN HEAD
   ===================================================== */
 
   const headGroup = new THREE.Group();
-  headGroup.position.y = 2.38;
+  headGroup.position.y = 2.83;
 
-  bodyRoot.add(headGroup);
+  humanBody.add(headGroup);
 
-  const helmet = new THREE.Mesh(
-    new THREE.SphereGeometry(0.36, 24, 24),
-    darkArmourMaterial
+
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.29,
+      26,
+      22
+    ),
+    skinLightMaterial
   );
 
-  helmet.scale.set(1, 1.08, 0.95);
-  helmet.castShadow = true;
-
-  headGroup.add(helmet);
-
-  const faceGuard = new THREE.Mesh(
-    new THREE.BoxGeometry(0.53, 0.27, 0.11),
-    armourMaterial
+  head.scale.set(
+    0.9,
+    1.08,
+    0.92
   );
 
-  faceGuard.position.set(0, -0.08, 0.31);
+  head.castShadow = true;
+  headGroup.add(head);
 
-  headGroup.add(faceGuard);
 
-  const visor = new THREE.Mesh(
-    new THREE.BoxGeometry(0.55, 0.1, 0.05),
-    cyanGlowMaterial
+  /*
+    Hair cap.
+  */
+
+  const hairCap = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.3,
+      24,
+      18,
+      0,
+      Math.PI * 2,
+      0,
+      Math.PI * 0.55
+    ),
+    hairMaterial
   );
 
-  visor.position.set(0, 0.07, 0.38);
-
-  headGroup.add(visor);
-
-  const helmetCrest = new THREE.Mesh(
-    new THREE.ConeGeometry(0.11, 0.45, 4),
-    goldGlowMaterial
+  hairCap.scale.set(
+    0.94,
+    0.86,
+    0.95
   );
 
-  helmetCrest.position.set(0, 0.48, -0.02);
-  helmetCrest.rotation.y = Math.PI / 4;
+  hairCap.position.y = 0.09;
+  headGroup.add(hairCap);
 
-  headGroup.add(helmetCrest);
+
+  /*
+    Front hair sections.
+  */
+
+  const hairFrontLeft = new THREE.Mesh(
+    new THREE.ConeGeometry(
+      0.075,
+      0.22,
+      5
+    ),
+    hairMaterial
+  );
+
+  hairFrontLeft.position.set(
+    -0.1,
+    0.23,
+    -0.23
+  );
+
+  hairFrontLeft.rotation.x = 0.6;
+  hairFrontLeft.rotation.z = -0.18;
+
+  headGroup.add(hairFrontLeft);
+
+
+  const hairFrontRight = hairFrontLeft.clone();
+
+  hairFrontRight.position.x = 0.08;
+  hairFrontRight.rotation.z = 0.16;
+
+  headGroup.add(hairFrontRight);
+
+
+  /*
+    Ears.
+  */
+
+  const leftEar = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.055,
+      14,
+      12
+    ),
+    skinMaterial
+  );
+
+  leftEar.scale.set(
+    0.48,
+    1,
+    0.62
+  );
+
+  leftEar.position.set(
+    -0.275,
+    0,
+    0
+  );
+
+  headGroup.add(leftEar);
+
+
+  const rightEar = leftEar.clone();
+  rightEar.position.x = 0.275;
+
+  headGroup.add(rightEar);
+
+
+  /*
+    Face points toward the road: negative Z direction.
+  */
+
+  const leftEyeWhite = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.034,
+      12,
+      10
+    ),
+    whiteMaterial
+  );
+
+  leftEyeWhite.scale.set(
+    1.25,
+    0.65,
+    0.38
+  );
+
+  leftEyeWhite.position.set(
+    -0.09,
+    0.045,
+    -0.263
+  );
+
+  headGroup.add(leftEyeWhite);
+
+
+  const rightEyeWhite = leftEyeWhite.clone();
+  rightEyeWhite.position.x = 0.09;
+
+  headGroup.add(rightEyeWhite);
+
+
+  const leftEye = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.018,
+      10,
+      8
+    ),
+    eyeMaterial
+  );
+
+  leftEye.position.set(
+    -0.09,
+    0.045,
+    -0.286
+  );
+
+  headGroup.add(leftEye);
+
+
+  const rightEye = leftEye.clone();
+  rightEye.position.x = 0.09;
+
+  headGroup.add(rightEye);
+
+
+  const nose = new THREE.Mesh(
+    new THREE.ConeGeometry(
+      0.04,
+      0.12,
+      10
+    ),
+    skinMaterial
+  );
+
+  nose.position.set(
+    0,
+    -0.015,
+    -0.304
+  );
+
+  nose.rotation.x = -Math.PI / 2;
+
+  headGroup.add(nose);
+
+
+  const mouth = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.1,
+      0.018,
+      0.012
+    ),
+    new THREE.MeshBasicMaterial({
+      color: 0x7b372d
+    })
+  );
+
+  mouth.position.set(
+    0,
+    -0.12,
+    -0.292
+  );
+
+  headGroup.add(mouth);
+
+
+  /*
+    Small cyan communication device near the ear.
+  */
+
+  const communicationDevice = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.045,
+      0.13,
+      0.07
+    ),
+    cyanMaterial
+  );
+
+  communicationDevice.position.set(
+    0.29,
+    -0.015,
+    -0.02
+  );
+
+  headGroup.add(communicationDevice);
+
 
   /* =====================================================
-     ARMS
+     HUMAN ARMS
   ===================================================== */
 
-  const leftArm = createCyberArm(
-    armourMaterial,
-    darkArmourMaterial,
-    cyanGlowMaterial
+  const leftArm = createHumanArm({
+    side: -1,
+    skinMaterial: skinMaterial,
+    suitMaterial: secondarySuitMaterial,
+    darkMaterial: darkFabricMaterial,
+    glowMaterial: cyanMaterial
+  });
+
+  leftArm.position.set(
+    -0.46,
+    2.22,
+    0
   );
 
-  leftArm.position.set(-0.55, 1.9, 0);
-  bodyRoot.add(leftArm);
+  humanBody.add(leftArm);
 
-  const rightArm = createCyberArm(
-    armourMaterial,
-    darkArmourMaterial,
-    goldGlowMaterial
+
+  const rightArm = createHumanArm({
+    side: 1,
+    skinMaterial: skinMaterial,
+    suitMaterial: secondarySuitMaterial,
+    darkMaterial: darkFabricMaterial,
+    glowMaterial: goldMaterial
+  });
+
+  rightArm.position.set(
+    0.46,
+    2.22,
+    0
   );
 
-  rightArm.position.set(0.55, 1.9, 0);
-  bodyRoot.add(rightArm);
+  humanBody.add(rightArm);
+
 
   /* =====================================================
-     LEGS
+     HUMAN LEGS
   ===================================================== */
 
-  const leftLeg = createCyberLeg(
-    armourMaterial,
-    darkArmourMaterial,
-    cyanGlowMaterial
+  const leftLeg = createHumanLeg({
+    side: -1,
+    suitMaterial: suitMaterial,
+    darkMaterial: darkFabricMaterial,
+    shoeMaterial: shoeMaterial,
+    glowMaterial: cyanMaterial
+  });
+
+  leftLeg.position.set(
+    -0.19,
+    1.04,
+    0
   );
 
-  leftLeg.position.set(-0.23, 0.92, 0);
-  bodyRoot.add(leftLeg);
+  humanBody.add(leftLeg);
 
-  const rightLeg = createCyberLeg(
-    armourMaterial,
-    darkArmourMaterial,
-    goldGlowMaterial
+
+  const rightLeg = createHumanLeg({
+    side: 1,
+    suitMaterial: suitMaterial,
+    darkMaterial: darkFabricMaterial,
+    shoeMaterial: shoeMaterial,
+    glowMaterial: goldMaterial
+  });
+
+  rightLeg.position.set(
+    0.19,
+    1.04,
+    0
   );
 
-  rightLeg.position.set(0.23, 0.92, 0);
-  bodyRoot.add(rightLeg);
+  humanBody.add(rightLeg);
+
 
   /* =====================================================
      SURYA CORE
   ===================================================== */
 
   suryaCore = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(0.25, 1),
-    goldGlowMaterial
+    new THREE.IcosahedronGeometry(
+      0.16,
+      1
+    ),
+    goldMaterial
   );
 
-  suryaCore.position.set(0, 1.63, 0.46);
-  bodyRoot.add(suryaCore);
+  /*
+    Negative Z is the front of the runner.
+  */
+
+  suryaCore.position.set(
+    0,
+    1.98,
+    -0.34
+  );
+
+  humanBody.add(suryaCore);
+
 
   const coreFrame = new THREE.Mesh(
-    new THREE.OctahedronGeometry(0.35, 0),
+    new THREE.OctahedronGeometry(
+      0.24,
+      0
+    ),
     new THREE.MeshBasicMaterial({
-      color: 0x00a9c4,
+      color: 0x00d9ef,
       wireframe: true,
       transparent: true,
-      opacity: 0.72
+      opacity: 0.62
     })
   );
 
-  coreFrame.position.copy(suryaCore.position);
-  bodyRoot.add(coreFrame);
+  coreFrame.position.copy(
+    suryaCore.position
+  );
+
+  humanBody.add(coreFrame);
+
 
   const coreLight = new THREE.PointLight(
-    0xe6aa38,
-    2.2,
-    11
+    0xf2b544,
+    1.25,
+    6
   );
 
-  coreLight.position.set(0, 1.63, 0.58);
-  bodyRoot.add(coreLight);
+  coreLight.position.set(
+    0,
+    1.98,
+    -0.42
+  );
+
+  humanBody.add(coreLight);
+
+
+  /*
+    Small Bharat-inspired sun rays around the core.
+  */
+
+  const coreRayGroup = new THREE.Group();
+
+  for (let rayIndex = 0; rayIndex < 8; rayIndex++) {
+    const ray = new THREE.Mesh(
+      new THREE.BoxGeometry(
+        0.035,
+        0.11,
+        0.025
+      ),
+      goldMaterial
+    );
+
+    ray.position.y = 0.27;
+
+    const rayPivot = new THREE.Group();
+
+    rayPivot.rotation.z =
+      rayIndex * Math.PI / 4;
+
+    rayPivot.add(ray);
+    coreRayGroup.add(rayPivot);
+  }
+
+  coreRayGroup.position.copy(
+    suryaCore.position
+  );
+
+  coreRayGroup.position.z -= 0.015;
+
+  humanBody.add(coreRayGroup);
+
 
   /* =====================================================
-     BACK ENERGY UNIT
+     BACK ENERGY STRIP
   ===================================================== */
 
-  const backpack = new THREE.Mesh(
-    new THREE.BoxGeometry(0.48, 0.72, 0.18),
-    darkArmourMaterial
+  const backStrip = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.11,
+      0.75,
+      0.035
+    ),
+    cyanMaterial
   );
 
-  backpack.position.set(0, 1.55, -0.34);
-  bodyRoot.add(backpack);
-
-  const leftBackLight = new THREE.Mesh(
-    new THREE.BoxGeometry(0.08, 0.48, 0.06),
-    purpleGlowMaterial
+  backStrip.position.set(
+    0,
+    1.89,
+    0.31
   );
 
-  leftBackLight.position.set(-0.14, 1.55, -0.45);
-  bodyRoot.add(leftBackLight);
+  humanBody.add(backStrip);
 
-  const rightBackLight = leftBackLight.clone();
-  rightBackLight.position.x = 0.14;
-
-  bodyRoot.add(rightBackLight);
 
   /* =====================================================
      GROUND SHADOW
@@ -293,12 +740,15 @@ function createPlayer() {
   const shadowMaterial = new THREE.MeshBasicMaterial({
     color: 0x000000,
     transparent: true,
-    opacity: 0.35,
+    opacity: 0.32,
     depthWrite: false
   });
 
   const shadow = new THREE.Mesh(
-    new THREE.CircleGeometry(0.72, 24),
+    new THREE.CircleGeometry(
+      0.62,
+      28
+    ),
     shadowMaterial
   );
 
@@ -307,22 +757,45 @@ function createPlayer() {
 
   player.add(shadow);
 
-  /* Save animation rig */
+
+  /* =====================================================
+     STORE HUMAN ANIMATION RIG
+  ===================================================== */
 
   player.userData.rig = {
-    bodyRoot: bodyRoot,
+    humanBody: humanBody,
+
+    hips: hips,
     torso: torso,
+    chestShape: chestShape,
     headGroup: headGroup,
+
     leftArm: leftArm,
     rightArm: rightArm,
+
+    leftForearm: leftArm.userData.forearmPivot,
+    rightForearm: rightArm.userData.forearmPivot,
+
     leftLeg: leftLeg,
     rightLeg: rightLeg,
+
+    leftLowerLeg: leftLeg.userData.lowerLegPivot,
+    rightLowerLeg: rightLeg.userData.lowerLegPivot,
+
+    leftFoot: leftLeg.userData.footPivot,
+    rightFoot: rightLeg.userData.footPivot,
+
     coreFrame: coreFrame,
+    coreRayGroup: coreRayGroup,
     coreLight: coreLight,
+
     shadow: shadow
   };
 
-  player.userData.previousX = lanes[currentLane];
+
+  player.userData.previousX =
+    lanes[currentLane];
+
 
   player.position.set(
     lanes[currentLane],
@@ -330,219 +803,582 @@ function createPlayer() {
     0
   );
 
+
+  /*
+    Slightly scale the character without making him bulky.
+  */
+
+  player.scale.set(
+    1.03,
+    1.03,
+    1.03
+  );
+
+
   scene.add(player);
 
   createPlayerEnergyTrail();
 }
 
-/* =====================================================
-   CREATE ARM
-===================================================== */
 
-function createCyberArm(
-  armourMaterial,
-  darkMaterial,
-  glowMaterial
-) {
-  const arm = new THREE.Group();
+/* =========================================================
+   CREATE HUMAN ARM
+========================================================= */
+
+function createHumanArm(options) {
+  const armRoot = new THREE.Group();
+
+  const side = options.side;
+
+
+  /*
+    Shoulder.
+  */
+
+  const shoulder = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.17,
+      18,
+      16
+    ),
+    options.suitMaterial
+  );
+
+  shoulder.scale.set(
+    1,
+    0.9,
+    0.92
+  );
+
+  shoulder.castShadow = true;
+  armRoot.add(shoulder);
+
+
+  /*
+    Lightweight shoulder protection.
+  */
+
+  const shoulderPad = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.19,
+      16,
+      12
+    ),
+    options.darkMaterial
+  );
+
+  shoulderPad.scale.set(
+    1.05,
+    0.55,
+    0.9
+  );
+
+  shoulderPad.position.set(
+    side * 0.025,
+    0.035,
+    0
+  );
+
+  armRoot.add(shoulderPad);
+
+
+  /*
+    Upper arm.
+  */
 
   const upperArm = new THREE.Mesh(
-    new THREE.BoxGeometry(0.22, 0.58, 0.22),
-    armourMaterial
+    new THREE.CylinderGeometry(
+      0.105,
+      0.12,
+      0.54,
+      16
+    ),
+    options.suitMaterial
   );
 
-  upperArm.position.y = -0.28;
+  upperArm.position.y = -0.29;
   upperArm.castShadow = true;
 
-  arm.add(upperArm);
+  armRoot.add(upperArm);
+
+
+  /*
+    Elbow pivot.
+  */
+
+  const forearmPivot = new THREE.Group();
+  forearmPivot.position.y = -0.57;
+
+  armRoot.add(forearmPivot);
+
 
   const elbow = new THREE.Mesh(
-    new THREE.SphereGeometry(0.14, 14, 14),
-    glowMaterial
+    new THREE.SphereGeometry(
+      0.11,
+      16,
+      14
+    ),
+    options.darkMaterial
   );
 
-  elbow.position.y = -0.6;
-  arm.add(elbow);
+  forearmPivot.add(elbow);
 
-  const lowerArm = new THREE.Mesh(
-    new THREE.BoxGeometry(0.2, 0.52, 0.2),
-    darkMaterial
+
+  const forearm = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      0.085,
+      0.105,
+      0.48,
+      16
+    ),
+    options.darkMaterial
   );
 
-  lowerArm.position.y = -0.86;
-  lowerArm.rotation.x = -0.08;
+  forearm.position.y = -0.27;
+  forearm.castShadow = true;
 
-  arm.add(lowerArm);
+  forearmPivot.add(forearm);
 
-  const wristGlow = new THREE.Mesh(
-    new THREE.BoxGeometry(0.22, 0.07, 0.24),
-    glowMaterial
+
+  /*
+    Small energy strip on forearm.
+  */
+
+  const forearmGlow = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.035,
+      0.31,
+      0.025
+    ),
+    options.glowMaterial
   );
 
-  wristGlow.position.y = -1.14;
-  arm.add(wristGlow);
+  forearmGlow.position.set(
+    side * 0.085,
+    -0.26,
+    -0.07
+  );
 
-  return arm;
+  forearmPivot.add(forearmGlow);
+
+
+  /*
+    Visible human hand.
+  */
+
+  const hand = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.1,
+      16,
+      14
+    ),
+    options.skinMaterial
+  );
+
+  hand.scale.set(
+    0.78,
+    1.05,
+    0.72
+  );
+
+  hand.position.y = -0.55;
+  hand.castShadow = true;
+
+  forearmPivot.add(hand);
+
+
+  armRoot.userData.forearmPivot =
+    forearmPivot;
+
+  return armRoot;
 }
 
-/* =====================================================
-   CREATE LEG
-===================================================== */
 
-function createCyberLeg(
-  armourMaterial,
-  darkMaterial,
-  glowMaterial
-) {
-  const leg = new THREE.Group();
+/* =========================================================
+   CREATE HUMAN LEG
+========================================================= */
 
-  const upperLeg = new THREE.Mesh(
-    new THREE.BoxGeometry(0.28, 0.68, 0.3),
-    armourMaterial
+function createHumanLeg(options) {
+  const legRoot = new THREE.Group();
+
+
+  /*
+    Thigh.
+  */
+
+  const thigh = new THREE.Mesh(
+    new THREE.CylinderGeometry(
+      0.145,
+      0.17,
+      0.68,
+      18
+    ),
+    options.suitMaterial
   );
 
-  upperLeg.position.y = -0.34;
-  upperLeg.castShadow = true;
+  thigh.position.y = -0.36;
+  thigh.castShadow = true;
 
-  leg.add(upperLeg);
+  legRoot.add(thigh);
+
+
+  /*
+    Knee and lower-leg pivot.
+  */
+
+  const lowerLegPivot = new THREE.Group();
+
+  lowerLegPivot.position.y = -0.72;
+  legRoot.add(lowerLegPivot);
+
 
   const knee = new THREE.Mesh(
-    new THREE.BoxGeometry(0.32, 0.18, 0.36),
-    glowMaterial
+    new THREE.SphereGeometry(
+      0.145,
+      18,
+      14
+    ),
+    options.darkMaterial
   );
 
-  knee.position.set(0, -0.72, 0.06);
-  leg.add(knee);
+  knee.scale.set(
+    0.92,
+    0.9,
+    0.88
+  );
+
+  lowerLegPivot.add(knee);
+
+
+  /*
+    Small knee protection, not a robotic joint.
+  */
+
+  const kneeGuard = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.13,
+      16,
+      12
+    ),
+    options.darkMaterial
+  );
+
+  kneeGuard.scale.set(
+    0.78,
+    0.58,
+    0.34
+  );
+
+  kneeGuard.position.z = -0.115;
+
+  lowerLegPivot.add(kneeGuard);
+
 
   const lowerLeg = new THREE.Mesh(
-    new THREE.BoxGeometry(0.25, 0.65, 0.27),
-    darkMaterial
+    new THREE.CylinderGeometry(
+      0.105,
+      0.135,
+      0.64,
+      18
+    ),
+    options.darkMaterial
   );
 
-  lowerLeg.position.y = -1.08;
+  lowerLeg.position.y = -0.36;
   lowerLeg.castShadow = true;
 
-  leg.add(lowerLeg);
+  lowerLegPivot.add(lowerLeg);
 
-  const boot = new THREE.Mesh(
-    new THREE.BoxGeometry(0.34, 0.22, 0.54),
-    armourMaterial
+
+  const calfGlow = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.035,
+      0.38,
+      0.028
+    ),
+    options.glowMaterial
   );
 
-  boot.position.set(0, -1.44, 0.1);
-  boot.castShadow = true;
-
-  leg.add(boot);
-
-  const bootGlow = new THREE.Mesh(
-    new THREE.BoxGeometry(0.25, 0.06, 0.48),
-    glowMaterial
+  calfGlow.position.set(
+    options.side * 0.105,
+    -0.35,
+    0.03
   );
 
-  bootGlow.position.set(0, -1.55, 0.12);
-  leg.add(bootGlow);
+  lowerLegPivot.add(calfGlow);
 
-  return leg;
+
+  /*
+    Foot pivot.
+  */
+
+  const footPivot = new THREE.Group();
+
+  footPivot.position.y = -0.69;
+  lowerLegPivot.add(footPivot);
+
+
+  const ankle = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.095,
+      14,
+      12
+    ),
+    options.darkMaterial
+  );
+
+  footPivot.add(ankle);
+
+
+  /*
+    Human-shaped running shoe.
+  */
+
+  const shoe = new THREE.Mesh(
+    new THREE.SphereGeometry(
+      0.18,
+      18,
+      14
+    ),
+    options.shoeMaterial
+  );
+
+  shoe.scale.set(
+    0.82,
+    0.55,
+    1.45
+  );
+
+  shoe.position.set(
+    0,
+    -0.1,
+    -0.13
+  );
+
+  shoe.castShadow = true;
+  footPivot.add(shoe);
+
+
+  const shoeSole = new THREE.Mesh(
+    new THREE.BoxGeometry(
+      0.25,
+      0.055,
+      0.47
+    ),
+    options.glowMaterial
+  );
+
+  shoeSole.position.set(
+    0,
+    -0.19,
+    -0.13
+  );
+
+  footPivot.add(shoeSole);
+
+
+  legRoot.userData.lowerLegPivot =
+    lowerLegPivot;
+
+  legRoot.userData.footPivot =
+    footPivot;
+
+  return legRoot;
 }
 
-/* =====================================================
-   ENERGY TRAIL
-===================================================== */
+
+/* =========================================================
+   PLAYER ENERGY TRAIL
+========================================================= */
 
 function createPlayerEnergyTrail() {
   playerTrailSegments = [];
-  playerTrailGroup = new THREE.Group();
 
-  for (let i = 0; i < 12; i++) {
-    const material = new THREE.MeshBasicMaterial({
-      color: i % 2 === 0 ? 0x00c5dd : 0xe6aa38,
-      transparent: true,
-      opacity: 0.08,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    });
+  playerTrailGroup =
+    new THREE.Group();
 
-    const segment = new THREE.Mesh(
-      new THREE.BoxGeometry(0.08, 0.08, 0.9),
-      material
+
+  for (
+    let segmentIndex = 0;
+    segmentIndex < 12;
+    segmentIndex++
+  ) {
+    const trailMaterial =
+      new THREE.MeshBasicMaterial({
+        color:
+          segmentIndex % 2 === 0
+            ? 0x00d9ef
+            : 0xf2b544,
+
+        transparent: true,
+        opacity: 0.05,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+
+
+    const trailSegment = new THREE.Mesh(
+      new THREE.BoxGeometry(
+        0.055,
+        0.055,
+        0.74
+      ),
+      trailMaterial
     );
 
-    segment.userData.index = i;
 
-    playerTrailSegments.push(segment);
-    playerTrailGroup.add(segment);
+    trailSegment.visible = false;
+
+    trailSegment.userData.index =
+      segmentIndex;
+
+
+    playerTrailSegments.push(
+      trailSegment
+    );
+
+    playerTrailGroup.add(
+      trailSegment
+    );
   }
+
 
   scene.add(playerTrailGroup);
 }
 
+
+/* =========================================================
+   UPDATE PLAYER ENERGY TRAIL
+========================================================= */
+
 function updatePlayerEnergyTrail() {
-  if (!playerTrailGroup || !player) return;
+  if (
+    !playerTrailGroup ||
+    !player
+  ) {
+    return;
+  }
+
 
   if (dashTrailTimer > 0) {
     dashTrailTimer--;
   }
 
+
   const dashStrength =
-    dashTrailTimer > 0 ? 1 : 0;
+    dashTrailTimer > 0
+      ? 1
+      : 0;
 
-  const regularStrength = Math.min(
-    1,
-    Math.max(0, speed - START_SPEED) * 2.2
-  );
 
-  const trailStrength = Math.max(
-    regularStrength * 0.35,
-    dashStrength
-  );
+  const baseSpeed =
+    typeof START_SPEED === "number"
+      ? START_SPEED
+      : 0.15;
 
-  playerTrailSegments.forEach(function (
-    segment,
-    index
-  ) {
-    const row = index % 3;
-    const depthIndex = Math.floor(index / 3);
 
-    const xOffset =
-      row === 0
-        ? -0.32
-        : row === 1
-          ? 0
-          : 0.32;
-
-    const targetX =
-      player.position.x + xOffset;
-
-    segment.position.x +=
-      (targetX - segment.position.x) * 0.22;
-
-    segment.position.y =
-      0.45 + row * 0.48 + player.position.y;
-
-    segment.position.z =
-      0.8 + depthIndex * 0.72;
-
-    segment.scale.z =
-      0.7 + trailStrength * 2.5;
-
-    segment.material.opacity =
-      trailStrength *
+  const regularStrength =
+    Math.min(
+      1,
       Math.max(
-        0.08,
-        0.42 - depthIndex * 0.075
-      );
+        0,
+        speed - baseSpeed
+      ) * 2
+    );
 
-    segment.visible =
-      segment.material.opacity > 0.015;
-  });
+
+  const trailStrength =
+    Math.max(
+      regularStrength * 0.26,
+      dashStrength
+    );
+
+
+  playerTrailSegments.forEach(
+    function (
+      segment,
+      segmentIndex
+    ) {
+      const trailColumn =
+        segmentIndex % 3;
+
+      const depthIndex =
+        Math.floor(
+          segmentIndex / 3
+        );
+
+
+      let xOffset = 0;
+
+      if (trailColumn === 0) {
+        xOffset = -0.26;
+      }
+
+      if (trailColumn === 2) {
+        xOffset = 0.26;
+      }
+
+
+      const targetX =
+        player.position.x +
+        xOffset;
+
+
+      segment.position.x +=
+        (
+          targetX -
+          segment.position.x
+        ) * 0.25;
+
+
+      segment.position.y =
+        player.position.y +
+        0.48 +
+        trailColumn * 0.5;
+
+
+      /*
+        Positive Z places the trail behind the runner.
+      */
+
+      segment.position.z =
+        0.65 +
+        depthIndex * 0.66;
+
+
+      segment.scale.z =
+        0.65 +
+        trailStrength * 2.2;
+
+
+      segment.material.opacity =
+        trailStrength *
+        Math.max(
+          0.045,
+          0.34 -
+          depthIndex * 0.068
+        );
+
+
+      segment.visible =
+        segment.material.opacity >
+        0.012;
+    }
+  );
 }
 
-/* =====================================================
-   MOVEMENT CONTROLS
-===================================================== */
+
+/* =========================================================
+   PLAYER MOVEMENT
+========================================================= */
 
 function moveLeft() {
-  if (!gameRunning || gamePaused) return;
+  if (
+    !gameRunning ||
+    gamePaused
+  ) {
+    return;
+  }
 
   currentLane = Math.max(
     0,
@@ -550,8 +1386,14 @@ function moveLeft() {
   );
 }
 
+
 function moveRight() {
-  if (!gameRunning || gamePaused) return;
+  if (
+    !gameRunning ||
+    gamePaused
+  ) {
+    return;
+  }
 
   currentLane = Math.min(
     2,
@@ -559,39 +1401,65 @@ function moveRight() {
   );
 }
 
-function jump() {
-  if (!gameRunning || gamePaused) return;
 
-  if (!isJumping && !isSliding) {
+function jump() {
+  if (
+    !gameRunning ||
+    gamePaused
+  ) {
+    return;
+  }
+
+
+  if (
+    !isJumping &&
+    !isSliding
+  ) {
     velocityY = 0.78;
     isJumping = true;
 
-    triggerCameraShake(0.04);
+    triggerCameraShake(0.035);
   }
 }
 
+
 function slide() {
-  if (!gameRunning || gamePaused) return;
-  if (isJumping) return;
+  if (
+    !gameRunning ||
+    gamePaused ||
+    isJumping
+  ) {
+    return;
+  }
+
 
   isSliding = true;
   slideTimer = 34;
 
-  triggerCameraShake(0.035);
+  triggerCameraShake(0.028);
 }
 
+
 function dash() {
-  if (!gameRunning || gamePaused) return;
+  if (
+    !gameRunning ||
+    gamePaused
+  ) {
+    return;
+  }
+
 
   speed += 0.18;
   dashTrailTimer = 34;
 
-  triggerCameraShake(0.1);
+  triggerCameraShake(0.09);
+
 
   if (abilityText) {
     abilityText.textContent =
       "Surya Dash Activated";
   }
+
 
   setTimeout(function () {
     if (abilityText) {
@@ -601,108 +1469,243 @@ function dash() {
   }, 900);
 }
 
-/* =====================================================
-   UPDATE PLAYER
-===================================================== */
+
+/* =========================================================
+   UPDATE HUMAN PLAYER
+========================================================= */
 
 function updatePlayer() {
-  if (!player || !player.userData.rig) {
+  if (
+    !player ||
+    !player.userData ||
+    !player.userData.rig
+  ) {
     return;
   }
 
-  const rig = player.userData.rig;
-  const targetX = lanes[currentLane];
+
+  const rig =
+    player.userData.rig;
+
+
+  const targetX =
+    lanes[currentLane];
+
 
   const laneDifference =
-    targetX - player.position.x;
+    targetX -
+    player.position.x;
+
+
+  /*
+    Smooth lane changing.
+  */
 
   player.position.x +=
     laneDifference * 0.18;
 
-  /* Jump physics */
+
+  /* =====================================================
+     JUMP PHYSICS
+  ===================================================== */
 
   if (isJumping) {
     playerY += velocityY;
     velocityY += gravity;
+
 
     if (playerY <= 1) {
       playerY = 1;
       velocityY = 0;
       isJumping = false;
 
-      triggerCameraShake(0.055);
+      triggerCameraShake(0.045);
     }
   }
 
-  player.position.y = playerY - 1;
 
-  /* Slide timer */
+  player.position.y =
+    playerY - 1;
+
+
+  /* =====================================================
+     SLIDE TIMER
+  ===================================================== */
 
   if (isSliding) {
     slideTimer--;
+
 
     if (slideTimer <= 0) {
       isSliding = false;
     }
   }
 
+
+  /* =====================================================
+     RUNNING CYCLE
+  ===================================================== */
+
   playerRunClock +=
-    0.16 + speed * 0.55;
+    0.15 +
+    speed * 0.52;
+
 
   const runWave =
     Math.sin(playerRunClock);
 
+
   const oppositeRunWave =
-    Math.sin(playerRunClock + Math.PI);
+    Math.sin(
+      playerRunClock +
+      Math.PI
+    );
 
-  const runStrength = Math.min(
-    0.82,
-    0.48 + speed * 0.42
-  );
 
-  /* Default running pose */
+  const leftKneeWave =
+    Math.max(
+      0,
+      Math.sin(
+        playerRunClock +
+        Math.PI * 0.2
+      )
+    );
+
+
+  const rightKneeWave =
+    Math.max(
+      0,
+      Math.sin(
+        playerRunClock +
+        Math.PI +
+        Math.PI * 0.2
+      )
+    );
+
+
+  const runStrength =
+    Math.min(
+      0.76,
+      0.46 +
+      speed * 0.34
+    );
+
+
+  /*
+    Human gait:
+    opposite arm and leg move together.
+  */
 
   let leftArmRotation =
-    oppositeRunWave * runStrength;
+    oppositeRunWave *
+    runStrength;
+
 
   let rightArmRotation =
-    runWave * runStrength;
+    runWave *
+    runStrength;
+
 
   let leftLegRotation =
-    runWave * runStrength;
+    runWave *
+    runStrength;
+
 
   let rightLegRotation =
-    oppositeRunWave * runStrength;
+    oppositeRunWave *
+    runStrength;
+
+
+  let leftForearmRotation =
+    -0.48 -
+    Math.max(
+      0,
+      oppositeRunWave
+    ) * 0.42;
+
+
+  let rightForearmRotation =
+    -0.48 -
+    Math.max(
+      0,
+      runWave
+    ) * 0.42;
+
+
+  let leftLowerLegRotation =
+    leftKneeWave * 0.72;
+
+
+  let rightLowerLegRotation =
+    rightKneeWave * 0.72;
+
+
+  let leftFootRotation =
+    -leftKneeWave * 0.24;
+
+
+  let rightFootRotation =
+    -rightKneeWave * 0.24;
+
 
   let bodyTargetY = 0;
-  let bodyTargetRotationX = 0;
+  let bodyTargetRotationX = -0.035;
   let bodyTargetScaleY = 1;
 
-  /* Jump pose */
+
+  /* =====================================================
+     JUMP POSE
+  ===================================================== */
 
   if (isJumping) {
-    leftArmRotation = -0.55;
-    rightArmRotation = -0.55;
+    leftArmRotation = -0.65;
+    rightArmRotation = -0.65;
 
-    leftLegRotation = 0.42;
-    rightLegRotation = -0.28;
+    leftForearmRotation = -0.72;
+    rightForearmRotation = -0.72;
 
-    bodyTargetRotationX = -0.08;
+    leftLegRotation = 0.5;
+    rightLegRotation = -0.18;
+
+    leftLowerLegRotation = 0.72;
+    rightLowerLegRotation = 0.42;
+
+    leftFootRotation = -0.18;
+    rightFootRotation = -0.08;
+
+    bodyTargetRotationX = -0.1;
   }
 
-  /* Slide pose */
+
+  /* =====================================================
+     SLIDE POSE
+  ===================================================== */
 
   if (isSliding) {
-    leftArmRotation = -1.2;
-    rightArmRotation = -1.2;
+    leftArmRotation = -1.05;
+    rightArmRotation = -1.05;
 
-    leftLegRotation = 0.95;
-    rightLegRotation = 0.55;
+    leftForearmRotation = -0.85;
+    rightForearmRotation = -0.85;
 
-    bodyTargetY = -0.48;
-    bodyTargetRotationX = -0.82;
-    bodyTargetScaleY = 0.62;
+    leftLegRotation = 1.02;
+    rightLegRotation = 0.7;
+
+    leftLowerLegRotation = 1.05;
+    rightLowerLegRotation = 0.76;
+
+    leftFootRotation = -0.28;
+    rightFootRotation = -0.18;
+
+    bodyTargetY = -0.43;
+    bodyTargetRotationX = -0.72;
+    bodyTargetScaleY = 0.72;
   }
+
+
+  /* =====================================================
+     APPLY LIMB ANIMATION
+  ===================================================== */
 
   rig.leftArm.rotation.x +=
     (
@@ -710,79 +1713,173 @@ function updatePlayer() {
       rig.leftArm.rotation.x
     ) * 0.3;
 
+
   rig.rightArm.rotation.x +=
     (
       rightArmRotation -
       rig.rightArm.rotation.x
     ) * 0.3;
 
+
+  rig.leftForearm.rotation.x +=
+    (
+      leftForearmRotation -
+      rig.leftForearm.rotation.x
+    ) * 0.34;
+
+
+  rig.rightForearm.rotation.x +=
+    (
+      rightForearmRotation -
+      rig.rightForearm.rotation.x
+    ) * 0.34;
+
+
   rig.leftLeg.rotation.x +=
     (
       leftLegRotation -
       rig.leftLeg.rotation.x
-    ) * 0.3;
+    ) * 0.31;
+
 
   rig.rightLeg.rotation.x +=
     (
       rightLegRotation -
       rig.rightLeg.rotation.x
-    ) * 0.3;
+    ) * 0.31;
 
-  rig.bodyRoot.position.y +=
+
+  rig.leftLowerLeg.rotation.x +=
+    (
+      leftLowerLegRotation -
+      rig.leftLowerLeg.rotation.x
+    ) * 0.34;
+
+
+  rig.rightLowerLeg.rotation.x +=
+    (
+      rightLowerLegRotation -
+      rig.rightLowerLeg.rotation.x
+    ) * 0.34;
+
+
+  rig.leftFoot.rotation.x +=
+    (
+      leftFootRotation -
+      rig.leftFoot.rotation.x
+    ) * 0.34;
+
+
+  rig.rightFoot.rotation.x +=
+    (
+      rightFootRotation -
+      rig.rightFoot.rotation.x
+    ) * 0.34;
+
+
+  /* =====================================================
+     HUMAN BODY MOVEMENT
+  ===================================================== */
+
+  rig.humanBody.position.y +=
     (
       bodyTargetY -
-      rig.bodyRoot.position.y
-    ) * 0.28;
+      rig.humanBody.position.y
+    ) * 0.26;
 
-  rig.bodyRoot.rotation.x +=
+
+  rig.humanBody.rotation.x +=
     (
       bodyTargetRotationX -
-      rig.bodyRoot.rotation.x
-    ) * 0.25;
+      rig.humanBody.rotation.x
+    ) * 0.24;
 
-  rig.bodyRoot.scale.y +=
+
+  rig.humanBody.scale.y +=
     (
       bodyTargetScaleY -
-      rig.bodyRoot.scale.y
-    ) * 0.3;
+      rig.humanBody.scale.y
+    ) * 0.28;
 
-  /* Lean while changing lanes */
 
-  const targetLean = THREE.MathUtils.clamp(
-    -laneDifference * 0.1,
-    -0.22,
-    0.22
-  );
+  /*
+    Natural lean during lane changes.
+  */
 
-  rig.bodyRoot.rotation.z +=
+  const targetLean =
+    THREE.MathUtils.clamp(
+      -laneDifference * 0.085,
+      -0.18,
+      0.18
+    );
+
+
+  rig.humanBody.rotation.z +=
     (
       targetLean -
-      rig.bodyRoot.rotation.z
-    ) * 0.18;
+      rig.humanBody.rotation.z
+    ) * 0.2;
 
-  /* Running body movement */
 
-  if (!isSliding && !isJumping) {
-    rig.bodyRoot.position.y +=
-      Math.abs(runWave) * 0.025;
+  /*
+    Small torso twist while running.
+  */
+
+  if (
+    !isSliding &&
+    !isJumping
+  ) {
+    rig.torso.rotation.y =
+      runWave * 0.035;
+
+
+    rig.chestShape.rotation.y =
+      runWave * 0.028;
+
+
+    rig.hips.rotation.y =
+      -runWave * 0.04;
+
+
+    rig.humanBody.position.y +=
+      Math.abs(runWave) *
+      0.018;
+
 
     rig.headGroup.rotation.z =
-      Math.sin(playerRunClock * 0.5) *
-      0.025;
+      Math.sin(
+        playerRunClock * 0.5
+      ) * 0.018;
+
+
+    rig.headGroup.rotation.y =
+      -rig.humanBody.rotation.z *
+      0.32;
   } else {
-    rig.headGroup.rotation.z *= 0.85;
+    rig.torso.rotation.y *= 0.82;
+    rig.chestShape.rotation.y *= 0.82;
+    rig.hips.rotation.y *= 0.82;
+
+    rig.headGroup.rotation.z *= 0.82;
+    rig.headGroup.rotation.y *= 0.82;
   }
 
-  /* Surya Core pulse */
+
+  /* =====================================================
+     SURYA CORE ANIMATION
+  ===================================================== */
 
   if (suryaCore) {
-    suryaCore.rotation.x += 0.035;
-    suryaCore.rotation.y += 0.065;
+    suryaCore.rotation.x += 0.028;
+    suryaCore.rotation.y += 0.05;
+
 
     const corePulse =
       1 +
-      Math.sin(Date.now() * 0.006) *
-      0.09;
+      Math.sin(
+        Date.now() * 0.006
+      ) * 0.075;
+
 
     suryaCore.scale.set(
       corePulse,
@@ -791,29 +1888,47 @@ function updatePlayer() {
     );
   }
 
+
   if (rig.coreFrame) {
-    rig.coreFrame.rotation.x -= 0.018;
-    rig.coreFrame.rotation.y += 0.028;
+    rig.coreFrame.rotation.x -= 0.014;
+    rig.coreFrame.rotation.y += 0.022;
   }
+
+
+  if (rig.coreRayGroup) {
+    rig.coreRayGroup.rotation.z +=
+      0.012;
+  }
+
 
   if (rig.coreLight) {
     rig.coreLight.intensity =
-      1.9 +
-      Math.sin(Date.now() * 0.006) *
-      0.35;
+      1.05 +
+      Math.sin(
+        Date.now() * 0.006
+      ) * 0.18;
   }
 
-  /* Ground shadow */
+
+  /* =====================================================
+     GROUND SHADOW
+  ===================================================== */
 
   if (rig.shadow) {
     const jumpHeight =
-      Math.max(0, player.position.y);
+      Math.max(
+        0,
+        player.position.y
+      );
+
 
     const shadowScale =
       Math.max(
         0.55,
-        1 - jumpHeight * 0.12
+        1 -
+        jumpHeight * 0.12
       );
+
 
     rig.shadow.scale.set(
       shadowScale,
@@ -821,38 +1936,49 @@ function updatePlayer() {
       shadowScale
     );
 
+
     rig.shadow.material.opacity =
       Math.max(
-        0.12,
-        0.35 - jumpHeight * 0.055
+        0.1,
+        0.32 -
+        jumpHeight * 0.05
       );
 
+
     rig.shadow.position.y =
-      -player.position.y + 0.025;
+      -player.position.y +
+      0.025;
   }
+
 
   updatePlayerEnergyTrail();
 
-  /* Damage blink */
+
+  /* =====================================================
+     DAMAGE BLINK
+  ===================================================== */
 
   if (invincibleTimer > 0) {
     invincibleTimer--;
 
+
     player.visible =
-      Math.floor(invincibleTimer / 6) %
-        2 ===
-      0;
+      Math.floor(
+        invincibleTimer / 6
+      ) % 2 === 0;
   } else {
     player.visible = true;
   }
+
 
   player.userData.previousX =
     player.position.x;
 }
 
-/* =====================================================
+
+/* =========================================================
    PLAYER DAMAGE
-===================================================== */
+========================================================= */
 
 function damagePlayer(amount) {
   if (
@@ -862,6 +1988,11 @@ function damagePlayer(amount) {
     return;
   }
 
+
+  /*
+    Shield absorbs one attack.
+  */
+
   if (shieldActive) {
     shieldActive = false;
 
@@ -869,13 +2000,16 @@ function damagePlayer(amount) {
 
     invincibleTimer = 45;
 
+
     createExplosion(
       player.position.x,
-      player.position.y + 1.2,
+      player.position.y + 1.35,
       player.position.z
     );
 
-    triggerCameraShake(0.18);
+
+    triggerCameraShake(0.16);
+
 
     setMission(
       "Shield absorbed damage",
@@ -885,27 +2019,33 @@ function damagePlayer(amount) {
     return;
   }
 
+
   coreHealth = Math.max(
     0,
     coreHealth - amount
   );
 
+
   invincibleTimer = 75;
 
   updateCoreHealth();
 
+
   createExplosion(
     player.position.x,
-    player.position.y + 1.2,
+    player.position.y + 1.35,
     player.position.z
   );
 
-  triggerCameraShake(0.3);
+
+  triggerCameraShake(0.27);
+
 
   setMission(
     "Surya Core damaged",
     85
   );
+
 
   if (coreHealth <= 0) {
     endGame();
