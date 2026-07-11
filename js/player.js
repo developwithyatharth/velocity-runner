@@ -2001,6 +2001,12 @@ function damagePlayer(amount) {
      playShieldSound();
 
     updateShieldStatus();
+     if (
+  typeof triggerDamageFlash ===
+  "function"
+) {
+  triggerDamageFlash(3);
+}
 
     invincibleTimer = 45;
 
@@ -2025,14 +2031,20 @@ function damagePlayer(amount) {
 
 
   coreHealth = Math.max(
-    0,
-    coreHealth - amount
-  );
+  0,
+  coreHealth - amount
+);
 
+invincibleTimer = 75;
 
-  invincibleTimer = 75;
+updateCoreHealth();
 
-  updateCoreHealth();
+if (
+  typeof triggerDamageFlash ===
+  "function"
+) {
+  triggerDamageFlash(amount);
+}
   playDamageSound();
 
 
