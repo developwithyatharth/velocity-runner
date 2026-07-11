@@ -927,3 +927,185 @@ button:active {
     font-size: 10px;
   }
 }
+/* =========================================
+   SURYA CORE HEALTH BAR
+========================================= */
+
+.core-health-panel {
+  min-width: 210px;
+  padding: 9px 11px;
+
+  border: 1px solid
+    rgba(0, 245, 255, 0.28);
+
+  border-radius: 12px;
+
+  background:
+    rgba(3, 11, 29, 0.82);
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.core-health-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 6px;
+
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.core-health-track {
+  width: 100%;
+  height: 9px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.13);
+
+  box-shadow:
+    inset 0 0 6px
+    rgba(0, 0, 0, 0.55);
+}
+
+.core-health-fill {
+  width: 100%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  transition:
+    width 0.32s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.core-health-fill.health-safe {
+  background:
+    linear-gradient(
+      90deg,
+      #00c96b,
+      #65ffad
+    );
+
+  box-shadow:
+    0 0 12px
+    rgba(48, 255, 122, 0.68);
+}
+
+.core-health-fill.health-warning {
+  background:
+    linear-gradient(
+      90deg,
+      #ff9f1c,
+      #ffd166
+    );
+
+  box-shadow:
+    0 0 12px
+    rgba(255, 209, 102, 0.7);
+}
+
+.core-health-fill.health-danger {
+  background:
+    linear-gradient(
+      90deg,
+      #ff1744,
+      #ff596f
+    );
+
+  box-shadow:
+    0 0 16px
+    rgba(255, 23, 68, 0.8);
+
+  animation:
+    healthDangerPulse 0.7s
+    ease-in-out infinite alternate;
+}
+
+.core-health-panel.core-critical {
+  border-color:
+    rgba(255, 23, 68, 0.72);
+
+  box-shadow:
+    0 0 18px
+    rgba(255, 23, 68, 0.28);
+}
+
+@keyframes healthDangerPulse {
+  from {
+    opacity: 0.68;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+/* =========================================
+   DAMAGE SCREEN FLASH
+========================================= */
+
+.damage-overlay {
+  --damage-opacity: 0.32;
+
+  position: absolute;
+  inset: 0;
+  z-index: 90;
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 32%,
+      rgba(
+        255,
+        0,
+        51,
+        var(--damage-opacity)
+      ) 100%
+    );
+}
+
+.damage-overlay.damage-flash {
+  animation:
+    playerDamageFlash 0.45s ease-out;
+}
+
+@keyframes playerDamageFlash {
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+
+/* =========================================
+   ACTIVE SHIELD TEXT
+========================================= */
+
+#shieldStatus.shield-active {
+  color: #00f5ff;
+
+  text-shadow:
+    0 0 10px
+    rgba(0, 245, 255, 0.8);
+}
