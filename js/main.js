@@ -258,6 +258,12 @@ function resetGameState() {
       "leaderboard-hidden"
     );
   }
+   if (
+  typeof resetBalanceState ===
+  "function"
+) {
+  resetBalanceState();
+}
 
   updateCoreHealth();
   updateShieldStatus();
@@ -1118,6 +1124,18 @@ function updateSpawnTimers() {
   shardTimer--;
   powerUpTimer--;
 
+  if (
+    typeof updateBalanceFrame ===
+    "function"
+  ) {
+    updateBalanceFrame();
+  }
+
+
+  /* =====================================================
+     OBSTACLE SPAWNING
+  ===================================================== */
+
   if (spawnTimer <= 0) {
     if (
       typeof spawnObstacle ===
@@ -1126,25 +1144,21 @@ function updateSpawnTimers() {
       spawnObstacle();
     }
 
-    var obstacleInterval =
-      92 /
-      difficultySettings
-        .obstacleMultiplier;
-
-    obstacleInterval -=
-      Math.min(
-        38,
-        distance / 75
-      );
-
-    spawnTimer =
-      Math.max(
-        30,
-        Math.floor(
-          obstacleInterval
-        )
-      );
+    if (
+      typeof getBalancedObstacleInterval ===
+      "function"
+    ) {
+      spawnTimer =
+        getBalancedObstacleInterval();
+    } else {
+      spawnTimer = 75;
+    }
   }
+
+
+  /* =====================================================
+     SURYA SHARD SPAWNING
+  ===================================================== */
 
   if (shardTimer <= 0) {
     if (
@@ -1154,17 +1168,31 @@ function updateSpawnTimers() {
       spawnShard();
     }
 
-    shardTimer =
-      Math.max(
-        27,
-        48 -
-        Math.floor(
-          distance / 450
-        )
-      );
+    if (
+      typeof getBalancedShardInterval ===
+      "function"
+    ) {
+      shardTimer =
+        getBalancedShardInterval();
+    } else {
+      shardTimer = 42;
+    }
   }
 
-  if (powerUpTimer <= 0) {
+
+  /* =====================================================
+     POWER-UP SPAWNING
+  ===================================================== */
+
+  var forcePowerUp =
+    typeof shouldForcePowerUpSpawn ===
+      "function" &&
+    shouldForcePowerUpSpawn();
+
+  if (
+    powerUpTimer <= 0 ||
+    forcePowerUp
+  ) {
     if (
       typeof spawnPowerUp ===
       "function"
@@ -1172,15 +1200,24 @@ function updateSpawnTimers() {
       spawnPowerUp();
     }
 
-    powerUpTimer =
-      350 +
-      Math.floor(
-        Math.random() * 180
-      );
+    if (
+      typeof registerPowerUpSpawn ===
+      "function"
+    ) {
+      registerPowerUpSpawn();
+    }
+
+    if (
+      typeof getBalancedPowerUpInterval ===
+      "function"
+    ) {
+      powerUpTimer =
+        getBalancedPowerUpInterval();
+    } else {
+      powerUpTimer = 390;
+    }
   }
 }
-
-
 /* =========================================================
    UPDATE GAME
 ========================================================= */
