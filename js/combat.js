@@ -547,7 +547,7 @@ function updateEMPShots() {
         shield sound, explosion and camera shake.
       */
 
-      damagePlayer(20);
+      damagePlayer(10);
 
       continue;
     }
