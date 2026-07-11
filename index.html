@@ -172,63 +172,65 @@
 
 
   <!-- =====================================================
-       GAME SCREEN
-  ====================================================== -->
+     GAME SCREEN
+====================================================== -->
 
-  <section id="gameScreen" class="screen">
+<section id="gameScreen" class="screen">
+
+  <!-- DAMAGE FLASH OVERLAY -->
 
   <div
     id="damageOverlay"
     class="damage-overlay"
   ></div>
-  <section id="gameScreen" class="screen">
 
-    <!-- 3D GAME CANVAS -->
+  <!-- 3D GAME CANVAS -->
 
-    <canvas id="gameCanvas"></canvas>
+  <canvas id="gameCanvas"></canvas>
 
 
-    <!-- TOP-LEFT LEADERBOARD BUTTON -->
+  <!-- TOP-LEFT LEADERBOARD BUTTON -->
+
+  <button
+    type="button"
+    id="showGameLeaderboardBtn"
+    class="game-leaderboard-toggle"
+  >
+    🏆 Top Runs
+  </button>
+
+
+  <!-- IN-GAME LEADERBOARD -->
+
+  <div
+    id="gameLeaderboardCard"
+    class="leaderboard-card in-game-leaderboard leaderboard-hidden"
+  >
 
     <button
       type="button"
-      id="showGameLeaderboardBtn"
-      class="game-leaderboard-toggle"
+      id="closeGameLeaderboardBtn"
+      class="leaderboard-close"
+      aria-label="Close leaderboard"
     >
-      🏆 Top Runs
+      ×
     </button>
 
+    <h3>Top Runs</h3>
 
-    <!-- IN-GAME LEADERBOARD POPUP -->
+    <ol id="gameLeaderboard"></ol>
 
-    <div
-      id="gameLeaderboardCard"
-      class="leaderboard-card in-game-leaderboard leaderboard-hidden"
+    <button
+      type="button"
+      id="clearGameLeaderboardBtn"
+      class="leaderboard-clear"
     >
+      Clear Scores
+    </button>
 
-      <button
-        type="button"
-        id="closeGameLeaderboardBtn"
-        class="leaderboard-close"
-        aria-label="Close leaderboard"
-      >
-        ×
-      </button>
+  </div>
 
-      <h3>Top Runs</h3>
-
-      <ol id="gameLeaderboard"></ol>
-
-      <button
-        type="button"
-        id="clearGameLeaderboardBtn"
-        class="leaderboard-clear"
-      >
-        Clear Scores
-      </button>
-
-    </div>
-
+ 
 
     <!-- GAME HUD -->
 
