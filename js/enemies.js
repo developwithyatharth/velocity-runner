@@ -581,6 +581,12 @@ function endBossEvent() {
     BOSS_DISTANCE_GAP;
 
   shards += 15;
+   if (
+  typeof registerBossDefeat ===
+  "function"
+) {
+  registerBossDefeat();
+}
 
   if (boss) {
     boss.visible = false;
