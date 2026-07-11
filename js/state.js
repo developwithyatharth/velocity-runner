@@ -1,76 +1,197 @@
-/* state.js
-   Global game variables
-*/
+/* =========================================================
+   state.js
+   Velocity Runner: Rise of Bharat
 
-let scene, camera, renderer;
-let player, suryaCore, drone, boss;
+   Global game state
+========================================================= */
 
-let roadGroup;
-let obstacleGroup;
-let shardGroup;
-let cityGroup;
-let rainGroup;
-let bulletGroup;
-let empGroup;
 
-let gameRunning = false;
-let gamePaused = false;
-let gameOver = false;
-let animationId = null;
+/* =========================================================
+   THREE.JS OBJECTS
+========================================================= */
 
-let runnerName = "Aarav Astra";
+var scene = null;
+var camera = null;
+var renderer = null;
 
-let selectedDifficulty = "normal";
-let difficultySettings = {
+var player = null;
+var suryaCore = null;
+var drone = null;
+var boss = null;
+
+
+/* =========================================================
+   THREE.JS GROUPS
+========================================================= */
+
+var roadGroup = null;
+var obstacleGroup = null;
+var shardGroup = null;
+var cityGroup = null;
+var rainGroup = null;
+var bulletGroup = null;
+var empGroup = null;
+
+
+/* =========================================================
+   GAME STATUS
+========================================================= */
+
+var gameRunning = false;
+var gamePaused = false;
+var gameOver = false;
+
+var animationId = null;
+
+
+/* =========================================================
+   PLAYER INFORMATION
+========================================================= */
+
+var runnerName = "Aarav Astra";
+
+var selectedDifficulty = "normal";
+
+var difficultySettings = {
   startSpeed: START_SPEED,
   obstacleMultiplier: 1,
   droneAttackMultiplier: 1,
   bossAttackMultiplier: 1
 };
 
-let currentLane = 1;
 
-let playerY = 1;
-let velocityY = 0;
-let gravity = GRAVITY;
-let isJumping = false;
-let isSliding = false;
-let slideTimer = 0;
+/* =========================================================
+   PLAYER MOVEMENT
+========================================================= */
 
-let speed = START_SPEED;
-let distance = 0;
-let shards = 0;
-let highScore = Number(localStorage.getItem("velocityRunnerHighScore") || 0);
+var currentLane = 1;
 
-let coreHealth = 100;
-let invincibleTimer = 0;
-let shieldActive = false;
+var playerY = 1;
 
-let obstacles = [];
-let shardItems = [];
-let roadTiles = [];
-let buildings = [];
-let rainDrops = [];
-let bullets = [];
-let explosions = [];
-let empShots = [];
-let bossLasers = [];
-let powerUps = [];
+var velocityY = 0;
 
-let spawnTimer = 0;
-let shardTimer = 0;
-let powerUpTimer = 0;
+var gravity = GRAVITY;
 
-let droneAlive = true;
-let droneRespawnTimer = 0;
-let dronesDestroyed = 0;
-let droneShootTimer = 130;
+var isJumping = false;
 
-let bossActive = false;
-let bossHealth = 100;
-let bossMaxHealth = 100;
-let nextBossDistance = BOSS_DISTANCE_GAP;
-let bossAttackTimer = 90;
+var isSliding = false;
 
-let shootCooldown = 0;
-let messageTimer = 0;
+var slideTimer = 0;
+
+
+/* =========================================================
+   SCORE AND GAME PROGRESS
+========================================================= */
+
+var speed = START_SPEED;
+
+var distance = 0;
+
+var shards = 0;
+
+var highScore = Number(
+  localStorage.getItem(
+    "velocityRunnerHighScore"
+  ) || 0
+);
+
+
+/* =========================================================
+   PLAYER HEALTH AND ABILITIES
+========================================================= */
+
+var coreHealth = 100;
+
+var invincibleTimer = 0;
+
+var shieldActive = false;
+
+
+/* =========================================================
+   WORLD OBJECT ARRAYS
+========================================================= */
+
+var obstacles = [];
+
+var shardItems = [];
+
+var roadTiles = [];
+
+var buildings = [];
+
+var rainDrops = [];
+
+var powerUps = [];
+
+
+/* =========================================================
+   COMBAT OBJECT ARRAYS
+========================================================= */
+
+var bullets = [];
+
+var explosions = [];
+
+var empShots = [];
+
+var bossLasers = [];
+
+
+/* =========================================================
+   SPAWN TIMERS
+========================================================= */
+
+var spawnTimer = 0;
+
+var shardTimer = 0;
+
+var powerUpTimer = 0;
+
+
+/* =========================================================
+   DRONE STATE
+========================================================= */
+
+var droneAlive = true;
+
+var droneRespawnTimer = 0;
+
+var dronesDestroyed = 0;
+
+var droneShootTimer = 130;
+
+
+/* =========================================================
+   BOSS STATE
+========================================================= */
+
+var bossActive = false;
+
+var bossHealth = 100;
+
+var bossMaxHealth = 100;
+
+var nextBossDistance =
+  BOSS_DISTANCE_GAP;
+
+var bossAttackTimer = 90;
+
+
+/* =========================================================
+   SHOOTING AND UI STATE
+========================================================= */
+
+var shootCooldown = 0;
+
+var messageTimer = 0;
+
+
+/* Confirm that state.js loaded */
+
+console.log(
+  "Velocity Runner state loaded",
+  {
+    gameRunning: gameRunning,
+    speed: speed
+  }
+);
