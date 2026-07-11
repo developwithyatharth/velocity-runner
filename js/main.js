@@ -335,6 +335,19 @@ function endGame() {
 
   gameOver = true;
   gameRunning = false;
+     if (
+    typeof stopAmbientAudio ===
+    "function"
+  ) {
+    stopAmbientAudio();
+  }
+
+  if (
+    typeof playGameOverSound ===
+    "function"
+  ) {
+    playGameOverSound();
+  }
 
   const finalDistance = Math.floor(distance);
 
@@ -357,8 +370,6 @@ if (finalDifficultyText) {
 if (highScoreText) highScoreText.textContent = highScore;
 
 renderLeaderboards();
-setupLeaderboardControls();
-
 showScreen(gameOverScreen);
 }
 
@@ -492,3 +503,10 @@ if (shootBtn) {
   shootBtn.addEventListener("click", shoot);
 }
 renderLeaderboards();
+
+if (
+  typeof setupLeaderboardControls ===
+  "function"
+) {
+  setupLeaderboardControls();
+}
