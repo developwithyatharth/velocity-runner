@@ -547,7 +547,13 @@ function updateEMPShots() {
         shield sound, explosion and camera shake.
       */
 
-      damagePlayer(10);
+      var droneDamage =
+  typeof getDroneHitDamage ===
+    "function"
+    ? getDroneHitDamage()
+    : 10;
+
+damagePlayer(droneDamage);
 
       continue;
     }
