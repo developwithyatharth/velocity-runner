@@ -198,6 +198,47 @@
   >
     🏆 Top Runs
   </button>
+  <!-- MISSION PANEL BUTTON -->
+
+<button
+  type="button"
+  id="showMissionPanelBtn"
+  class="mission-panel-toggle"
+>
+  ⚡ Missions
+</button>
+
+
+<!-- MISSION PANEL -->
+
+<div
+  id="missionPanel"
+  class="mission-panel mission-hidden"
+>
+  <button
+    type="button"
+    id="closeMissionPanelBtn"
+    class="mission-panel-close"
+    aria-label="Close missions"
+  >
+    ×
+  </button>
+
+  <div class="mission-panel-heading">
+    <span>Run Objectives</span>
+    <small>Complete missions for bonus shards</small>
+  </div>
+
+  <div id="missionList"></div>
+</div>
+
+
+<!-- MISSION COMPLETION NOTIFICATION -->
+
+<div
+  id="missionToast"
+  class="mission-toast"
+></div>
 
 
   <!-- IN-GAME LEADERBOARD -->
