@@ -996,4 +996,4 @@ function hideMissionToast(
 
     toast.textContent = "";
   }
-}
+}   
