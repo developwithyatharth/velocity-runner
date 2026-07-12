@@ -13,12 +13,19 @@
     content="Velocity Runner: Rise of Bharat — a futuristic 3D endless runner set in Neo Aryavarta."
   />
 
-  <title>Velocity Runner: Rise of Bharat</title>
+  <meta
+    name="theme-color"
+    content="#050816"
+  />
+
+  <title>
+    Velocity Runner: Rise of Bharat
+  </title>
 
   <link
-  rel="stylesheet"
-  href="style.css?v=phase2c1"
-/>
+    rel="stylesheet"
+    href="style.css?v=phase2c2"
+  />
 </head>
 
 <body>
@@ -27,13 +34,22 @@
        HOME SCREEN
   ====================================================== -->
 
-  <section id="homeScreen" class="screen active">
-
-    <div class="home-bg-glow"></div>
+  <section
+    id="homeScreen"
+    class="screen active"
+    aria-label="Velocity Runner home screen"
+  >
+    <div
+      class="home-bg-glow"
+      aria-hidden="true"
+    ></div>
 
     <div class="hero-card">
 
-      <div class="logo-orb"></div>
+      <div
+        class="logo-orb"
+        aria-hidden="true"
+      ></div>
 
       <p class="eyebrow">
         Neo Aryavarta 2149
@@ -50,10 +66,15 @@
       </h2>
 
       <p class="story">
-        Play as <b>Aarav Astra</b>, the last runner carrying
-        the glowing <b>Surya Core</b> through an AI-controlled
-        futuristic city ruled by <b>Trinetra</b>.
+        Play as
+        <strong>Aarav Astra</strong>,
+        the last runner carrying the glowing
+        <strong>Surya Core</strong>
+        through an AI-controlled futuristic city
+        ruled by
+        <strong>Trinetra</strong>.
       </p>
+
 
       <!-- PLAYER DETAILS -->
 
@@ -63,11 +84,16 @@
           type="text"
           id="runnerNameInput"
           placeholder="Enter runner name"
+          aria-label="Runner name"
           maxlength="18"
           autocomplete="off"
+          spellcheck="false"
         />
 
-        <select id="difficultySelect">
+        <select
+          id="difficultySelect"
+          aria-label="Select game difficulty"
+        >
           <option value="">
             Select difficulty
           </option>
@@ -92,22 +118,24 @@
         >
           Start Run
         </button>
+
         <button
-  id="tutorialHelpBtn"
-  class="tutorial-help-button"
-  type="button"
->
-  How to Play
-</button>
+          id="tutorialHelpBtn"
+          class="tutorial-help-button"
+          type="button"
+        >
+          How to Play
+        </button>
 
       </div>
+
 
       <!-- CONTROLS -->
 
       <div class="controls-info">
 
         <p>
-          <b>PC:</b>
+          <strong>PC:</strong>
           ← → Move |
           Space Jump |
           ↓ Slide |
@@ -116,13 +144,14 @@
         </p>
 
         <p>
-          <b>Mobile:</b>
+          <strong>Mobile:</strong>
           Swipe left/right/up/down |
           Double tap Dash |
           Shoot button
         </p>
 
       </div>
+
 
       <!-- FEATURES -->
 
@@ -133,6 +162,7 @@
         <span>Boss Events</span>
         <span>Power-Ups</span>
       </div>
+
 
       <!-- HOME LEADERBOARD BUTTON -->
 
@@ -148,27 +178,32 @@
 
       </div>
 
+
       <!-- HOME LEADERBOARD -->
 
       <div
-        class="leaderboard-card leaderboard-hidden"
         id="homeLeaderboardCard"
+        class="leaderboard-card leaderboard-hidden"
       >
 
         <button
           type="button"
+          id="closeHomeLeaderboardBtn"
           class="leaderboard-close"
-          aria-label="Close leaderboard"
+          aria-label="Close home leaderboard"
         >
           ×
         </button>
 
-        <h3>Local Champions</h3>
+        <h3>
+          Local Champions
+        </h3>
 
         <ol id="homeLeaderboard"></ol>
 
         <button
           type="button"
+          id="clearHomeLeaderboardBtn"
           class="leaderboard-clear"
         >
           Clear Scores
@@ -182,106 +217,133 @@
 
 
   <!-- =====================================================
-     GAME SCREEN
-====================================================== -->
+       GAME SCREEN
+  ====================================================== -->
 
-<section id="gameScreen" class="screen">
-
-  <!-- DAMAGE FLASH OVERLAY -->
-
-  <div
-    id="damageOverlay"
-    class="damage-overlay"
-  ></div>
-
-  <!-- 3D GAME CANVAS -->
-
-  <canvas id="gameCanvas"></canvas>
-
-
-  <!-- TOP-LEFT LEADERBOARD BUTTON -->
-
-  <button
-    type="button"
-    id="showGameLeaderboardBtn"
-    class="game-leaderboard-toggle"
+  <section
+    id="gameScreen"
+    class="screen"
+    aria-label="Velocity Runner game screen"
   >
-    🏆 Top Runs
-  </button>
-  <!-- MISSION PANEL BUTTON -->
 
-<button
-  type="button"
-  id="showMissionPanelBtn"
-  class="mission-panel-toggle"
->
-  ⚡ Missions
-</button>
+    <!-- DAMAGE FLASH OVERLAY -->
+
+    <div
+      id="damageOverlay"
+      class="damage-overlay"
+      aria-hidden="true"
+    ></div>
 
 
-<!-- MISSION PANEL -->
+    <!-- 3D GAME CANVAS -->
 
-<div
-  id="missionPanel"
-  class="mission-panel mission-hidden"
->
-  <button
-    type="button"
-    id="closeMissionPanelBtn"
-    class="mission-panel-close"
-    aria-label="Close missions"
-  >
-    ×
-  </button>
-
-  <div class="mission-panel-heading">
-    <span>Run Objectives</span>
-    <small>Complete missions for bonus shards</small>
-  </div>
-
-  <div id="missionList"></div>
-</div>
+    <canvas
+      id="gameCanvas"
+      aria-label="Velocity Runner 3D gameplay area"
+    >
+      Your browser does not support the HTML
+      canvas element.
+    </canvas>
 
 
-<!-- MISSION COMPLETION NOTIFICATION -->
-
-<div
-  id="missionToast"
-  class="mission-toast"
-></div>
-
-
-  <!-- IN-GAME LEADERBOARD -->
-
-  <div
-    id="gameLeaderboardCard"
-    class="leaderboard-card in-game-leaderboard leaderboard-hidden"
-  >
+    <!-- TOP-LEFT LEADERBOARD BUTTON -->
 
     <button
       type="button"
-      id="closeGameLeaderboardBtn"
-      class="leaderboard-close"
-      aria-label="Close leaderboard"
+      id="showGameLeaderboardBtn"
+      class="game-leaderboard-toggle"
     >
-      ×
+      🏆 Top Runs
     </button>
 
-    <h3>Top Runs</h3>
 
-    <ol id="gameLeaderboard"></ol>
+    <!-- MISSION PANEL BUTTON -->
 
     <button
       type="button"
-      id="clearGameLeaderboardBtn"
-      class="leaderboard-clear"
+      id="showMissionPanelBtn"
+      class="mission-panel-toggle"
     >
-      Clear Scores
+      ⚡ Missions
     </button>
 
-  </div>
 
- 
+    <!-- MISSION PANEL -->
+
+    <div
+      id="missionPanel"
+      class="mission-panel mission-hidden"
+    >
+
+      <button
+        type="button"
+        id="closeMissionPanelBtn"
+        class="mission-panel-close"
+        aria-label="Close missions"
+      >
+        ×
+      </button>
+
+      <div class="mission-panel-heading">
+
+        <span>
+          Run Objectives
+        </span>
+
+        <small>
+          Complete missions for bonus shards
+        </small>
+
+      </div>
+
+      <div id="missionList"></div>
+
+    </div>
+
+
+    <!-- MISSION COMPLETION NOTIFICATION -->
+
+    <div
+      id="missionToast"
+      class="mission-toast"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+
+
+    <!-- IN-GAME LEADERBOARD -->
+
+    <div
+      id="gameLeaderboardCard"
+      class="leaderboard-card in-game-leaderboard leaderboard-hidden"
+    >
+
+      <button
+        type="button"
+        id="closeGameLeaderboardBtn"
+        class="leaderboard-close"
+        aria-label="Close in-game leaderboard"
+      >
+        ×
+      </button>
+
+      <h3>
+        Top Runs
+      </h3>
+
+      <ol id="gameLeaderboard"></ol>
+
+      <button
+        type="button"
+        id="clearGameLeaderboardBtn"
+        class="leaderboard-clear"
+      >
+        Clear Scores
+      </button>
+
+    </div>
+
 
     <!-- GAME HUD -->
 
@@ -289,49 +351,80 @@
 
       <div>
         Runner:
-        <b id="runnerName">Aarav Astra</b>
+        <strong id="runnerName">
+          Aarav Astra
+        </strong>
       </div>
 
       <div>
         Distance:
-        <b id="distance">0</b> m
+        <strong id="distance">
+          0
+        </strong>
+        m
       </div>
 
       <div>
         Surya Shards:
-        <b id="shards">0</b>
+        <strong id="shards">
+          0
+        </strong>
       </div>
 
       <div>
         High Score:
-        <b id="highScore">0</b> m
+        <strong id="highScore">
+          0
+        </strong>
+        m
       </div>
 
       <div>
         Difficulty:
-        <b id="difficultyText">Normal Warrior</b>
+        <strong id="difficultyText">
+          Normal Warrior
+        </strong>
       </div>
 
-      <div id="coreHealthPanel" class="core-health-panel">
-  <div class="core-health-heading">
-    <span>Surya Core</span>
 
-    <span>
-      <b id="coreHealth">100</b>%
-    </span>
-  </div>
+      <!-- SURYA CORE HEALTH -->
 
-  <div class="core-health-track">
-    <div
-      id="coreHealthFill"
-      class="core-health-fill"
-    ></div>
-  </div>
-</div>
+      <div
+        id="coreHealthPanel"
+        class="core-health-panel"
+      >
+
+        <div class="core-health-heading">
+
+          <span>
+            Surya Core
+          </span>
+
+          <span>
+            <strong id="coreHealth">
+              100
+            </strong>%
+          </span>
+
+        </div>
+
+        <div class="core-health-track">
+
+          <div
+            id="coreHealthFill"
+            class="core-health-fill"
+          ></div>
+
+        </div>
+
+      </div>
+
 
       <div>
         Shield:
-        <b id="shieldStatus">Empty</b>
+        <strong id="shieldStatus">
+          Empty
+        </strong>
       </div>
 
     </div>
@@ -342,6 +435,8 @@
     <div
       id="abilityText"
       class="ability"
+      role="status"
+      aria-live="polite"
     >
       Surya Dash Ready
     </div>
@@ -352,6 +447,8 @@
     <div
       id="missionText"
       class="mission"
+      role="status"
+      aria-live="polite"
     >
       Protect the Surya Core
     </div>
@@ -369,7 +466,11 @@
       </div>
 
       <div class="boss-bar">
-        <div id="bossHealthFill"></div>
+
+        <div
+          id="bossHealthFill"
+        ></div>
+
       </div>
 
     </div>
@@ -395,14 +496,18 @@
     >
       Pause
     </button>
+
+
+    <!-- SOUND BUTTON -->
+
     <button
-  id="soundBtn"
-  type="button"
-  class="sound-btn"
-  aria-label="Toggle game sound"
->
-  🔊 Sound
-</button>
+      id="soundBtn"
+      type="button"
+      class="sound-btn"
+      aria-label="Toggle game sound"
+    >
+      🔊 Sound
+    </button>
 
   </section>
 
@@ -411,7 +516,11 @@
        GAME OVER SCREEN
   ====================================================== -->
 
-  <section id="gameOverScreen" class="screen">
+  <section
+    id="gameOverScreen"
+    class="screen"
+    aria-label="Velocity Runner game over screen"
+  >
 
     <div class="game-over-card">
 
@@ -425,17 +534,24 @@
 
       <p>
         Distance:
-        <b id="finalDistance">0</b> m
+        <strong id="finalDistance">
+          0
+        </strong>
+        m
       </p>
 
       <p>
         Surya Shards:
-        <b id="finalShards">0</b>
+        <strong id="finalShards">
+          0
+        </strong>
       </p>
 
       <p>
         Difficulty:
-        <b id="finalDifficulty">Normal Warrior</b>
+        <strong id="finalDifficulty">
+          Normal Warrior
+        </strong>
       </p>
 
 
@@ -453,24 +569,28 @@
       <!-- GAME-OVER LEADERBOARD -->
 
       <div
-        class="leaderboard-card gameover-leaderboard leaderboard-hidden"
         id="gameOverLeaderboardCard"
+        class="leaderboard-card gameover-leaderboard leaderboard-hidden"
       >
 
         <button
           type="button"
+          id="closeGameOverLeaderboardBtn"
           class="leaderboard-close"
-          aria-label="Close leaderboard"
+          aria-label="Close game-over leaderboard"
         >
           ×
         </button>
 
-        <h3>Top Runs</h3>
+        <h3>
+          Top Runs
+        </h3>
 
         <ol id="gameOverLeaderboard"></ol>
 
         <button
           type="button"
+          id="clearGameOverLeaderboardBtn"
           class="leaderboard-clear"
         >
           Clear Scores
@@ -503,166 +623,252 @@
 
   </section>
 
-<!-- =================================
-     PHASE 2C: FIRST-RUN TUTORIAL
-================================== -->
 
-<div
-  id="tutorialOverlay"
-  class="tutorial-overlay"
-  aria-hidden="true"
->
-  <section
-    class="tutorial-panel"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="tutorialTitle"
+  <!-- =====================================================
+       PHASE 2C: FIRST-RUN TUTORIAL
+  ====================================================== -->
+
+  <div
+    id="tutorialOverlay"
+    class="tutorial-overlay"
+    aria-hidden="true"
   >
-    <div class="tutorial-panel-glow"></div>
 
-    <div class="tutorial-top-row">
-      <span class="tutorial-system-label">
-        AARAV TRAINING PROTOCOL
-      </span>
+    <section
+      class="tutorial-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tutorialTitle"
+      aria-describedby="tutorialText"
+    >
+
+      <div
+        class="tutorial-panel-glow"
+        aria-hidden="true"
+      ></div>
+
+
+      <!-- TUTORIAL HEADER -->
+
+      <div class="tutorial-top-row">
+
+        <span class="tutorial-system-label">
+          AARAV TRAINING PROTOCOL
+        </span>
+
+        <button
+          id="tutorialCloseBtn"
+          class="tutorial-close-button"
+          type="button"
+          aria-label="Close tutorial"
+        >
+          ×
+        </button>
+
+      </div>
+
+
+      <!-- TUTORIAL ICON -->
+
+      <div
+        id="tutorialIcon"
+        class="tutorial-icon"
+        aria-hidden="true"
+      >
+        ↔
+      </div>
+
+
+      <!-- TUTORIAL CONTENT -->
+
+      <p
+        id="tutorialEyebrow"
+        class="tutorial-eyebrow"
+      >
+        MOVEMENT SYSTEM
+      </p>
+
+      <h2
+        id="tutorialTitle"
+        class="tutorial-title"
+      >
+        Move Through Neo Bharat
+      </h2>
+
+      <p
+        id="tutorialText"
+        class="tutorial-description"
+      >
+        Switch lanes quickly to avoid
+        obstacles and enemy attacks.
+      </p>
+
+      <div
+        id="tutorialControls"
+        class="tutorial-controls"
+      ></div>
+
+
+      <!-- TUTORIAL NAVIGATION -->
+
+      <div class="tutorial-navigation">
+
+        <button
+          id="tutorialPreviousBtn"
+          class="tutorial-nav-button tutorial-secondary-button"
+          type="button"
+        >
+          Previous
+        </button>
+
+        <span
+          id="tutorialProgress"
+          class="tutorial-progress"
+        >
+          1 / 6
+        </span>
+
+        <button
+          id="tutorialNextBtn"
+          class="tutorial-nav-button tutorial-primary-button"
+          type="button"
+        >
+          Next
+        </button>
+
+      </div>
+
+
+      <!-- SKIP TUTORIAL -->
 
       <button
-        id="tutorialCloseBtn"
-        class="tutorial-close-button"
-        type="button"
-        aria-label="Close tutorial"
-      >
-        ×
-      </button>
-    </div>
-
-    <div
-      id="tutorialIcon"
-      class="tutorial-icon"
-      aria-hidden="true"
-    >
-      ↔
-    </div>
-
-    <p
-      id="tutorialEyebrow"
-      class="tutorial-eyebrow"
-    >
-      MOVEMENT SYSTEM
-    </p>
-
-    <h2
-      id="tutorialTitle"
-      class="tutorial-title"
-    >
-      Move Through Neo Bharat
-    </h2>
-
-    <p
-      id="tutorialText"
-      class="tutorial-description"
-    >
-      Switch lanes quickly to avoid
-      obstacles and enemy attacks.
-    </p>
-
-    <div
-      id="tutorialControls"
-      class="tutorial-controls"
-    ></div>
-
-    <div class="tutorial-navigation">
-      <button
-        id="tutorialPreviousBtn"
-        class="tutorial-nav-button tutorial-secondary-button"
+        id="tutorialSkipBtn"
+        class="tutorial-skip-button"
         type="button"
       >
-        Previous
+        Skip Training
       </button>
 
-      <span
-        id="tutorialProgress"
-        class="tutorial-progress"
-      >
-        1 / 6
-      </span>
+    </section>
 
-      <button
-        id="tutorialNextBtn"
-        class="tutorial-nav-button tutorial-primary-button"
-        type="button"
-      >
-        Next
-      </button>
-    </div>
+  </div>
 
-    <button
-      id="tutorialSkipBtn"
-      class="tutorial-skip-button"
-      type="button"
-    >
-      Skip Training
-    </button>
-  </section>
-</div>
+
   <!-- =====================================================
        THREE.JS
   ====================================================== -->
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+  ></script>
 
 
   <!-- =====================================================
        THREE.JS POST-PROCESSING
   ====================================================== -->
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"
+  ></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"
+  ></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"
+  ></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"
+  ></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"
+  ></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"
+  ></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"
+  ></script>
 
 
   <!-- =====================================================
        VELOCITY RUNNER MODULES
   ====================================================== -->
 
-<!-- Velocity Runner module scripts -->
+  <script
+    src="js/config.js?v=phase2c2"
+  ></script>
 
-<!-- =====================================================
-     VELOCITY RUNNER MODULES
-====================================================== -->
+  <script
+    src="js/state.js?v=phase2c2"
+  ></script>
 
-<script src="js/config.js?v=mission1"></script>
-<script src="js/state.js?v=mission1"></script>
-<script src="js/balance.js?v=mission1"></script>
-<script src="js/missions.js?v=mission1"></script>
-<script src="js/ui.js?v=mission1"></script>
-<script src="js/audio.js?v=mission1"></script>
-<script src="js/leaderboard.js?v=mission1"></script>
-<script src="js/world.js?v=mission1"></script>
-<script src="js/player.js?v=mission1"></script>
-<script src="js/enemies.js?v=mission1"></script>
-<script src="js/enemyVisuals.js?v=mission1"></script>
-<script src="js/combat.js?v=mission1"></script>
-<script src="js/powerups.js?v=mission1"></script>
-<script src="js/visuals.js?v=mission1"></script>
-<script src="js/effects.js?v=mission1"></script>
+  <script
+    src="js/balance.js?v=phase2c2"
+  ></script>
 
-<script
-  src="js/tutorial.js?v=phase2c1"
-></script>
+  <script
+    src="js/missions.js?v=phase2c2"
+  ></script>
 
-<script
-  src="js/main.js?v=phase2c1"
-></script>
+  <script
+    src="js/ui.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/audio.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/leaderboard.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/world.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/player.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/enemies.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/enemyVisuals.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/combat.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/powerups.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/visuals.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/effects.js?v=phase2c2"
+  ></script>
+
+  <!-- Tutorial must load before main.js -->
+
+  <script
+    src="js/tutorial.js?v=phase2c2"
+  ></script>
+
+  <script
+    src="js/main.js?v=phase2c2"
+  ></script>
 
 </body>
 </html>
