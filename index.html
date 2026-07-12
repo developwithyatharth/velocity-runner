@@ -91,6 +91,13 @@
         >
           Start Run
         </button>
+        <button
+  id="tutorialHelpBtn"
+  class="tutorial-help-button"
+  type="button"
+>
+  How to Play
+</button>
 
       </div>
 
@@ -495,7 +502,107 @@
 
   </section>
 
+<!-- =================================
+     PHASE 2C: FIRST-RUN TUTORIAL
+================================== -->
 
+<div
+  id="tutorialOverlay"
+  class="tutorial-overlay"
+  aria-hidden="true"
+>
+  <section
+    class="tutorial-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tutorialTitle"
+  >
+    <div class="tutorial-panel-glow"></div>
+
+    <div class="tutorial-top-row">
+      <span class="tutorial-system-label">
+        AARAV TRAINING PROTOCOL
+      </span>
+
+      <button
+        id="tutorialCloseBtn"
+        class="tutorial-close-button"
+        type="button"
+        aria-label="Close tutorial"
+      >
+        ×
+      </button>
+    </div>
+
+    <div
+      id="tutorialIcon"
+      class="tutorial-icon"
+      aria-hidden="true"
+    >
+      ↔
+    </div>
+
+    <p
+      id="tutorialEyebrow"
+      class="tutorial-eyebrow"
+    >
+      MOVEMENT SYSTEM
+    </p>
+
+    <h2
+      id="tutorialTitle"
+      class="tutorial-title"
+    >
+      Move Through Neo Bharat
+    </h2>
+
+    <p
+      id="tutorialText"
+      class="tutorial-description"
+    >
+      Switch lanes quickly to avoid
+      obstacles and enemy attacks.
+    </p>
+
+    <div
+      id="tutorialControls"
+      class="tutorial-controls"
+    ></div>
+
+    <div class="tutorial-navigation">
+      <button
+        id="tutorialPreviousBtn"
+        class="tutorial-nav-button tutorial-secondary-button"
+        type="button"
+      >
+        Previous
+      </button>
+
+      <span
+        id="tutorialProgress"
+        class="tutorial-progress"
+      >
+        1 / 6
+      </span>
+
+      <button
+        id="tutorialNextBtn"
+        class="tutorial-nav-button tutorial-primary-button"
+        type="button"
+      >
+        Next
+      </button>
+    </div>
+
+    <button
+      id="tutorialSkipBtn"
+      class="tutorial-skip-button"
+      type="button"
+    >
+      Skip Training
+    </button>
+  </section>
+</div>
   <!-- =====================================================
        THREE.JS
   ====================================================== -->
