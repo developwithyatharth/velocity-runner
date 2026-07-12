@@ -1070,24 +1070,228 @@ function returnHome() {
   updateStartButtonState();
 }
 
+/* =========================================================
+   GAME-OVER MISSION SUMMARY
+========================================================= */
+
+function renderGameOverMissionSummary() {
+  var summaryCard =
+    document.getElementById(
+      "gameOverMissionSummary"
+    );
+
+  var completedText =
+    document.getElementById(
+      "finalMissionsCompleted"
+    );
+
+  var bonusText =
+    document.getElementById(
+      "finalMissionBonus"
+    );
+
+  var statusText =
+    document.getElementById(
+      "missionSummaryStatus"
+    );
+
+  var summary = {
+    completed: 0,
+    total: 0,
+    bonusShards: 0
+  };
+
+  if (
+    typeof getMissionSummary ===
+    "function"
+  ) {
+    var missionSummary =
+      getMissionSummary();
+
+    if (missionSummary) {
+      summary.completed =
+        Number.isFinite(
+          missionSummary.completed
+        )
+          ? missionSummary.completed
+          : 0;
+
+      summary.total =
+        Number.isFinite(
+          missionSummary.total
+        )
+          ? missionSummary.total
+          : 0;
+
+      summary.bonusShards =
+        Number.isFinite(
+          missionSummary.bonusShards
+        )
+          ? missionSummary.bonusShards
+          : 0;
+    }
+  }
+
+  summary.completed =
+    Math.max(
+      0,
+      Math.floor(
+        summary.completed
+      )
+    );
+
+  summary.total =
+    Math.max(
+      0,
+      Math.floor(
+        summary.total
+      )
+    );
+
+  summary.bonusShards =
+    Math.max(
+      0,
+      Math.floor(
+        summary.bonusShards
+      )
+    );
+
+  if (completedText) {
+    completedText.textContent =
+      summary.completed +
+      " / " +
+      summary.total;
+  }
+
+  if (bonusText) {
+    bonusText.textContent =
+      summary.bonusShards +
+      " ✦";
+  }
+
+  var perfectRun =
+    summary.total > 0 &&
+    summary.completed >=
+      summary.total;
+
+  if (summaryCard) {
+    summaryCard.classList.toggle(
+      "perfect-run",
+      perfectRun
+    );
+  }
+
+  if (statusText) {
+    if (perfectRun) {
+      statusText.textContent =
+        "Perfect mission run";
+    } else if (
+      summary.completed > 0
+    ) {
+      statusText.textContent =
+        summary.completed +
+        " objective" +
+        (
+          summary.completed === 1
+            ? ""
+            : "s"
+        ) +
+        " secured";
+    } else {
+      statusText.textContent =
+        "No objectives completed";
+    }
+  }
+}
 
 /* =========================================================
    END GAME
 ========================================================= */
 
 function endGame() {
-  if (gameOver) {
+  /*
+   * Prevent endGame() from running more
+   * than once for the same run.
+   */
+
+  if (
+    typeof gameOver !== "undefined" &&
+    gameOver
+  ) {
     return;
   }
+
+
+  /* =====================================================
+     FINALIZE MISSIONS
+  ===================================================== */
+
+  var finalMissionSummary = null;
+
+  try {
+    /*
+     * finalizeMissionSystem() should be used
+     * when it exists because it performs one
+     * final mission-progress calculation.
+     */
+
+    if (
+      typeof finalizeMissionSystem ===
+      "function"
+    ) {
+      finalMissionSummary =
+        finalizeMissionSystem();
+    } else if (
+      typeof updateMissionSystem ===
+      "function"
+    ) {
+      /*
+       * Safe fallback when the newer
+       * finalizeMissionSystem() function has
+       * not yet been added to missions.js.
+       */
+
+      updateMissionSystem();
+
+      if (
+        typeof getMissionSummary ===
+        "function"
+      ) {
+        finalMissionSummary =
+          getMissionSummary();
+      }
+    }
+  } catch (missionError) {
+    console.warn(
+      "Final mission processing failed:",
+      missionError
+    );
+  }
+
+
+  /* =====================================================
+     STOP THE ACTIVE RUN
+  ===================================================== */
 
   gameOver = true;
   gameRunning = false;
   gamePaused = false;
 
-  if (animationId) {
-    cancelAnimationFrame(animationId);
+  if (
+    typeof animationId !== "undefined" &&
+    animationId
+  ) {
+    cancelAnimationFrame(
+      animationId
+    );
+
     animationId = null;
   }
+
+
+  /* =====================================================
+     STOP GAME AUDIO
+  ===================================================== */
 
   if (
     typeof stopAmbientAudio ===
@@ -1096,79 +1300,439 @@ function endGame() {
     stopAmbientAudio();
   }
 
+
+  /* =====================================================
+     CLOSE IN-GAME PANELS
+  ===================================================== */
+
+  if (
+    typeof closeMissionPanel ===
+    "function"
+  ) {
+    closeMissionPanel();
+  }
+
+  var inGameLeaderboard =
+    document.getElementById(
+      "gameLeaderboardCard"
+    );
+
+  if (inGameLeaderboard) {
+    inGameLeaderboard.classList.add(
+      "leaderboard-hidden"
+    );
+  }
+
+  /*
+   * Remove any mission toast that could
+   * remain visible over the Game Over screen.
+   */
+
+  if (
+    typeof hideMissionToast ===
+    "function"
+  ) {
+    hideMissionToast(true);
+  }
+
+
+  /* =====================================================
+     PLAY GAME-OVER SOUND
+  ===================================================== */
+
   if (
     typeof playGameOverSound ===
     "function"
   ) {
-    playGameOverSound();
+    try {
+      playGameOverSound();
+    } catch (soundError) {
+      console.warn(
+        "Game-over sound failed:",
+        soundError
+      );
+    }
   }
+
+
+  /* =====================================================
+     CALCULATE FINAL RESULTS
+  ===================================================== */
+
+  var safeDistance =
+    (
+      typeof distance === "number" &&
+      Number.isFinite(distance)
+    )
+      ? distance
+      : 0;
+
+  var safeShards =
+    (
+      typeof shards === "number" &&
+      Number.isFinite(shards)
+    )
+      ? shards
+      : 0;
+
+  /*
+   * Calculate shards only after mission
+   * finalization because the last completed
+   * mission may add a reward.
+   */
 
   var finalDistance =
     Math.max(
       0,
-      Math.floor(distance)
+      Math.floor(
+        safeDistance
+      )
     );
 
   var finalShardCount =
     Math.max(
       0,
-      Math.floor(shards)
+      Math.floor(
+        safeShards
+      )
     );
 
-  if (finalDistance > highScore) {
-    highScore = finalDistance;
+  var finalRunnerName =
+    (
+      typeof runnerName ===
+        "string" &&
+      runnerName.trim()
+    )
+      ? runnerName.trim()
+      : "Aarav Astra";
 
-    localStorage.setItem(
-      "velocityRunnerHighScore",
-      String(highScore)
-    );
+  var finalDifficulty =
+    (
+      typeof selectedDifficulty ===
+        "string" &&
+      selectedDifficulty
+    )
+      ? selectedDifficulty
+      : "normal";
+
+
+  /* =====================================================
+     UPDATE HIGH SCORE
+  ===================================================== */
+
+  if (
+    typeof highScore !== "number" ||
+    !Number.isFinite(highScore)
+  ) {
+    highScore = 0;
   }
+
+  if (
+    finalDistance > highScore
+  ) {
+    highScore =
+      finalDistance;
+
+    try {
+      localStorage.setItem(
+        "velocityRunnerHighScore",
+        String(highScore)
+      );
+    } catch (storageError) {
+      console.warn(
+        "High score could not be saved:",
+        storageError
+      );
+    }
+  }
+
+
+  /* =====================================================
+     SAVE LEADERBOARD SCORE
+  ===================================================== */
 
   if (
     typeof saveScoreToLeaderboard ===
     "function"
   ) {
-    saveScoreToLeaderboard(
-      finalDistance,
-      finalShardCount,
-      runnerName,
-      selectedDifficulty
+    try {
+      saveScoreToLeaderboard(
+        finalDistance,
+        finalShardCount,
+        finalRunnerName,
+        finalDifficulty
+      );
+    } catch (leaderboardError) {
+      console.warn(
+        "Leaderboard score could not be saved:",
+        leaderboardError
+      );
+    }
+  }
+
+
+  /* =====================================================
+     UPDATE GAME-OVER VALUES
+  ===================================================== */
+
+  var finalDistanceElement =
+    document.getElementById(
+      "finalDistance"
     );
+
+  var finalShardsElement =
+    document.getElementById(
+      "finalShards"
+    );
+
+  var finalDifficultyElement =
+    document.getElementById(
+      "finalDifficulty"
+    );
+
+  var highScoreElement =
+    document.getElementById(
+      "highScore"
+    );
+
+  if (finalDistanceElement) {
+    finalDistanceElement.textContent =
+      String(finalDistance);
   }
 
-  if (finalDistanceText) {
-    finalDistanceText.textContent =
-      finalDistance;
+  if (finalShardsElement) {
+    finalShardsElement.textContent =
+      String(finalShardCount);
   }
 
-  if (finalShardsText) {
-    finalShardsText.textContent =
-      finalShardCount;
-  }
-
-  if (finalDifficultyText) {
-    finalDifficultyText.textContent =
+  if (finalDifficultyElement) {
+    finalDifficultyElement.textContent =
       getMainDifficultyLabel(
-        selectedDifficulty
+        finalDifficulty
       );
   }
 
-  if (highScoreText) {
-    highScoreText.textContent =
-      highScore;
+  if (highScoreElement) {
+    highScoreElement.textContent =
+      String(highScore);
   }
+
+
+  /* =====================================================
+     UPDATE MISSION SUMMARY
+  ===================================================== */
+
+  if (
+    typeof renderGameOverMissionSummary ===
+    "function"
+  ) {
+    try {
+      renderGameOverMissionSummary();
+    } catch (summaryError) {
+      console.warn(
+        "Mission summary could not be rendered:",
+        summaryError
+      );
+    }
+  } else {
+    /*
+     * Built-in fallback in case the separate
+     * renderGameOverMissionSummary() function
+     * has not yet been added to main.js.
+     */
+
+    if (
+      !finalMissionSummary &&
+      typeof getMissionSummary ===
+        "function"
+    ) {
+      try {
+        finalMissionSummary =
+          getMissionSummary();
+      } catch (summaryReadError) {
+        console.warn(
+          "Mission summary could not be read:",
+          summaryReadError
+        );
+      }
+    }
+
+    if (!finalMissionSummary) {
+      finalMissionSummary = {
+        completed: 0,
+        total: 0,
+        bonusShards: 0
+      };
+    }
+
+    var completedMissions =
+      Number.isFinite(
+        finalMissionSummary.completed
+      )
+        ? Math.max(
+            0,
+            Math.floor(
+              finalMissionSummary.completed
+            )
+          )
+        : 0;
+
+    var totalMissions =
+      Number.isFinite(
+        finalMissionSummary.total
+      )
+        ? Math.max(
+            0,
+            Math.floor(
+              finalMissionSummary.total
+            )
+          )
+        : 0;
+
+    var missionBonus =
+      Number.isFinite(
+        finalMissionSummary.bonusShards
+      )
+        ? Math.max(
+            0,
+            Math.floor(
+              finalMissionSummary.bonusShards
+            )
+          )
+        : 0;
+
+    var completedElement =
+      document.getElementById(
+        "finalMissionsCompleted"
+      );
+
+    var bonusElement =
+      document.getElementById(
+        "finalMissionBonus"
+      );
+
+    var statusElement =
+      document.getElementById(
+        "missionSummaryStatus"
+      );
+
+    var summaryCard =
+      document.getElementById(
+        "gameOverMissionSummary"
+      );
+
+    if (completedElement) {
+      completedElement.textContent =
+        completedMissions +
+        " / " +
+        totalMissions;
+    }
+
+    if (bonusElement) {
+      bonusElement.textContent =
+        missionBonus + " ✦";
+    }
+
+    var perfectRun =
+      totalMissions > 0 &&
+      completedMissions >=
+        totalMissions;
+
+    if (summaryCard) {
+      summaryCard.classList.toggle(
+        "perfect-run",
+        perfectRun
+      );
+    }
+
+    if (statusElement) {
+      if (perfectRun) {
+        statusElement.textContent =
+          "Perfect mission run";
+      } else if (
+        completedMissions > 0
+      ) {
+        statusElement.textContent =
+          completedMissions +
+          " objective" +
+          (
+            completedMissions === 1
+              ? ""
+              : "s"
+          ) +
+          " secured";
+      } else {
+        statusElement.textContent =
+          "No objectives completed";
+      }
+    }
+  }
+
+
+  /* =====================================================
+     REFRESH LEADERBOARDS
+  ===================================================== */
 
   if (
     typeof renderLeaderboards ===
     "function"
   ) {
-    renderLeaderboards();
+    try {
+      renderLeaderboards();
+    } catch (renderError) {
+      console.warn(
+        "Leaderboards could not be rendered:",
+        renderError
+      );
+    }
   }
 
-  showScreen(gameOverScreen);
+
+  /* =====================================================
+     OPEN GAME-OVER SCREEN
+  ===================================================== */
+
+  var gameOverTarget =
+    document.getElementById(
+      "gameOverScreen"
+    );
+
+  if (
+    typeof showScreen ===
+      "function" &&
+    gameOverTarget
+  ) {
+    showScreen(
+      gameOverTarget
+    );
+  } else if (gameOverTarget) {
+    /*
+     * Emergency fallback when showScreen()
+     * is unavailable.
+     */
+
+    var allScreens =
+      document.querySelectorAll(
+        ".screen"
+      );
+
+    allScreens.forEach(
+      function (screen) {
+        screen.classList.remove(
+          "active"
+        );
+      }
+    );
+
+    gameOverTarget.classList.add(
+      "active"
+    );
+  } else {
+    console.error(
+      "gameOverScreen was not found in index.html."
+    );
+  }
 }
-
-
 /* =========================================================
    UPDATE HUD
 ========================================================= */
