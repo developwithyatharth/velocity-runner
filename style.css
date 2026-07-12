@@ -1,11 +1,45 @@
-/* Velocity Runner: Rise of Bharat
-   Improved UI + Shoot Button CSS
-*/
+/* =========================================================
+   Velocity Runner: Rise of Bharat
+   Premium Visual UI Overhaul — Prototype Direction
+
+   Visual language:
+   - Neo Aryavarta / Bharat-futurism
+   - Deep navy, electric cyan, magenta and Surya gold
+   - Layered glass HUD, holographic borders and energy glow
+   - Desktop and mobile responsive
+
+   This file preserves the existing HTML IDs/classes.
+========================================================= */
+
+:root {
+  --vr-night: #030612;
+  --vr-night-2: #071126;
+  --vr-panel: rgba(5, 14, 34, 0.86);
+  --vr-panel-solid: rgba(5, 14, 34, 0.97);
+  --vr-cyan: #55efff;
+  --vr-blue: #16a8ff;
+  --vr-magenta: #d24dff;
+  --vr-violet: #7b61ff;
+  --vr-gold: #ffd45c;
+  --vr-orange: #ff922e;
+  --vr-green: #58f59c;
+  --vr-red: #ff405f;
+  --vr-text: #f5fbff;
+  --vr-muted: rgba(221, 238, 255, 0.68);
+  --vr-line: rgba(85, 239, 255, 0.3);
+  --vr-line-gold: rgba(255, 212, 92, 0.42);
+  --vr-shadow: 0 22px 60px rgba(0, 0, 0, 0.45);
+  --vr-cyan-glow: 0 0 26px rgba(85, 239, 255, 0.24);
+  --vr-gold-glow: 0 0 26px rgba(255, 212, 92, 0.24);
+  --vr-radius-lg: 24px;
+  --vr-radius-md: 16px;
+  --vr-radius-sm: 11px;
+}
 
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html,
@@ -13,16 +47,63 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: #02030a;
-  color: #ffffff;
+  color: var(--vr-text);
+  background: var(--vr-night);
+  font-family: "Segoe UI", "Arial Narrow", Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   position: relative;
 }
 
-/* Screen System */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  font-weight: 850;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    opacity 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--vr-gold);
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+  filter: grayscale(0.25);
+}
+
+/* =========================================================
+   SCREEN SYSTEM
+========================================================= */
 
 .screen {
   position: fixed;
@@ -36,743 +117,317 @@ body {
   display: flex;
 }
 
-/* Home Screen */
+/* =========================================================
+   HOME SCREEN
+========================================================= */
 
 #homeScreen {
+  isolation: isolate;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  overflow-y: auto;
+  padding: 28px;
   background:
-    radial-gradient(circle at 15% 20%, rgba(0, 245, 255, 0.28), transparent 32%),
-    radial-gradient(circle at 85% 15%, rgba(255, 209, 102, 0.22), transparent 28%),
-    radial-gradient(circle at 50% 95%, rgba(143, 44, 255, 0.24), transparent 38%),
-    linear-gradient(135deg, #02030a 0%, #061427 45%, #090817 100%);
+    radial-gradient(circle at 18% 20%, rgba(31, 192, 255, 0.28), transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(210, 77, 255, 0.2), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(255, 146, 46, 0.2), transparent 38%),
+    linear-gradient(145deg, #02040e 0%, #071326 50%, #10071e 100%);
 }
 
 #homeScreen::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(120deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(60deg, rgba(0, 245, 255, 0.05) 1px, transparent 1px);
-  background-size: 42px 42px;
-  opacity: 0.35;
+  z-index: -2;
   pointer-events: none;
-  animation: cityGridMove 12s linear infinite;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(85, 239, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(85, 239, 255, 0.05) 1px, transparent 1px);
+  background-size: 46px 46px;
+  transform: perspective(500px) rotateX(58deg) scale(1.5) translateY(14%);
+  transform-origin: bottom;
+  animation: vrGridTravel 14s linear infinite;
 }
 
 #homeScreen::after {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
-    linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.65) 100%),
+    linear-gradient(to bottom, rgba(2, 4, 14, 0.05), rgba(2, 4, 14, 0.72)),
     repeating-linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.035) 0px,
-      rgba(255, 255, 255, 0.035) 1px,
+      rgba(255, 255, 255, 0.028) 0,
+      rgba(255, 255, 255, 0.028) 1px,
       transparent 1px,
       transparent 5px
     );
-  pointer-events: none;
-  opacity: 0.45;
 }
 
 .home-bg-glow {
   position: absolute;
-  width: 520px;
-  height: 520px;
+  top: 50%;
+  left: 50%;
+  width: min(760px, 74vw);
+  aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 245, 255, 0.16), transparent 62%);
-  filter: blur(8px);
-  animation: pulseGlow 4s ease-in-out infinite;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, rgba(255, 185, 56, 0.13) 0 12%, transparent 28%),
+    radial-gradient(circle, rgba(85, 239, 255, 0.18), transparent 66%);
+  filter: blur(16px);
+  transform: translate(-50%, -50%);
+  animation: vrCorePulse 4.8s ease-in-out infinite;
 }
-
-/* Hero Card */
 
 .hero-card {
   position: relative;
   z-index: 2;
-  width: min(780px, 94vw);
-  padding: 46px 38px;
+  width: min(860px, 96vw);
+  overflow: hidden;
+  padding: 42px 42px 36px;
+  border: 1px solid rgba(85, 239, 255, 0.34);
   border-radius: 30px;
   text-align: center;
   background:
-    linear-gradient(135deg, rgba(2, 8, 28, 0.92), rgba(7, 25, 55, 0.84)),
-    radial-gradient(circle at 30% 20%, rgba(0, 245, 255, 0.18), transparent 34%),
-    radial-gradient(circle at 80% 80%, rgba(255, 209, 102, 0.14), transparent 32%);
-  border: 1px solid rgba(255, 209, 102, 0.25);
+    linear-gradient(145deg, rgba(4, 13, 34, 0.94), rgba(14, 8, 35, 0.9)),
+    radial-gradient(circle at 22% 12%, rgba(85, 239, 255, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 90%, rgba(255, 212, 92, 0.13), transparent 32%);
   box-shadow:
-    0 0 42px rgba(0, 245, 255, 0.18),
-    0 0 80px rgba(0, 0, 0, 0.45),
-    inset 0 0 40px rgba(0, 245, 255, 0.05);
-  backdrop-filter: blur(18px);
-  overflow: hidden;
+    var(--vr-shadow),
+    0 0 0 1px rgba(210, 77, 255, 0.13),
+    0 0 46px rgba(85, 239, 255, 0.15),
+    inset 0 0 42px rgba(85, 239, 255, 0.04);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
 }
 
 .hero-card::before {
   content: "";
   position: absolute;
-  inset: -2px;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(0, 245, 255, 0.18),
-    transparent,
-    rgba(255, 209, 102, 0.18),
-    transparent
-  );
-  opacity: 0.35;
+  inset: 0;
   pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, transparent 0 8%, rgba(85, 239, 255, 0.42) 8% 18%, transparent 18% 82%, rgba(255, 212, 92, 0.38) 82% 92%, transparent 92%) top / 100% 2px no-repeat,
+    linear-gradient(135deg, transparent 25%, rgba(255, 255, 255, 0.08) 50%, transparent 75%);
+  opacity: 0.8;
+}
+
+.hero-card::after {
+  content: "NEO BHARAT RUNNER PROTOCOL";
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  color: rgba(85, 239, 255, 0.42);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
 }
 
 .logo-orb {
-  width: 58px;
-  height: 58px;
+  position: relative;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 16px;
+  border: 1px solid rgba(255, 212, 92, 0.68);
   border-radius: 50%;
-  margin: 0 auto 12px;
   background:
-    radial-gradient(circle at 35% 30%, #ffffff, #ffd166 20%, #00f5ff 52%, #061427 80%);
+    radial-gradient(circle at 42% 38%, #ffffff 0 5%, #ffd45c 9% 20%, #ff922e 31%, #16a8ff 54%, #061126 76%);
   box-shadow:
-    0 0 20px rgba(255, 209, 102, 0.5),
-    0 0 35px rgba(0, 245, 255, 0.3);
-  animation: orbFloat 3.2s ease-in-out infinite;
+    0 0 18px rgba(255, 212, 92, 0.72),
+    0 0 42px rgba(255, 146, 46, 0.42),
+    0 0 70px rgba(85, 239, 255, 0.22);
+  animation: vrOrbFloat 3.2s ease-in-out infinite;
+}
+
+.logo-orb::before,
+.logo-orb::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border: 1px solid rgba(85, 239, 255, 0.36);
+  border-radius: 50%;
+  animation: vrRingSpin 8s linear infinite;
+}
+
+.logo-orb::after {
+  inset: -18px;
+  border-color: rgba(210, 77, 255, 0.24);
+  animation-direction: reverse;
+  animation-duration: 11s;
 }
 
 .eyebrow {
-  font-size: 15px;
-  font-weight: 800;
-  color: #bdefff;
-  letter-spacing: 0.7px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  color: var(--vr-cyan);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 
 .hero-card h1 {
-  font-size: clamp(42px, 7vw, 78px);
-  line-height: 0.92;
+  margin-bottom: 18px;
+  color: #f8fdff;
+  font-size: clamp(40px, 7vw, 76px);
   font-weight: 950;
-  letter-spacing: -2px;
-  color: #f5fbff;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
   text-shadow:
-    0 0 18px rgba(0, 245, 255, 0.35),
-    0 0 40px rgba(0, 245, 255, 0.2);
-  margin-bottom: 22px;
+    0 0 18px rgba(85, 239, 255, 0.36),
+    0 0 46px rgba(22, 168, 255, 0.2);
 }
 
 .hero-card h1 span {
-  background: linear-gradient(90deg, #bdfbff, #00f5ff, #ffd166);
-  -webkit-background-clip: text;
-  background-clip: text;
   color: transparent;
+  background: linear-gradient(95deg, #e9feff 0%, var(--vr-cyan) 36%, var(--vr-gold) 72%, #fff0c3 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 .hero-card h2 {
-  font-size: clamp(20px, 3vw, 28px);
+  margin-bottom: 16px;
   color: #ffffff;
-  margin-bottom: 20px;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+  font-size: clamp(18px, 2.6vw, 27px);
+  font-weight: 750;
+  text-shadow: 0 0 18px rgba(255, 212, 92, 0.2);
 }
 
 .story {
-  max-width: 640px;
+  max-width: 670px;
   margin: 0 auto 18px;
-  font-size: 16px;
-  line-height: 1.7;
-  color: #cfd9e8;
+  color: var(--vr-muted);
+  font-size: 15px;
+  line-height: 1.72;
 }
 
-.story b {
+.story b,
+.story strong {
   color: #ffffff;
 }
 
-/* Start Box */
-
 .start-box {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(180px, 1.2fr) minmax(170px, 1fr) auto auto;
   align-items: center;
-  gap: 14px;
-  margin-top: 20px;
-  flex-wrap: wrap;
+  gap: 12px;
+  width: min(760px, 100%);
+  margin: 22px auto 0;
+  padding: 14px;
+  border: 1px solid rgba(85, 239, 255, 0.16);
+  border-radius: 18px;
+  background: rgba(1, 8, 24, 0.48);
+  box-shadow: inset 0 0 26px rgba(85, 239, 255, 0.035);
+}
+
+#runnerNameInput,
+.start-box select {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  border: 1px solid rgba(85, 239, 255, 0.36);
+  border-radius: 13px;
+  outline: 0;
+  color: #ffffff;
+  background: rgba(3, 12, 31, 0.88);
+  box-shadow: inset 0 0 16px rgba(85, 239, 255, 0.055);
 }
 
 #runnerNameInput {
-  width: min(270px, 90%);
-  height: 46px;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 245, 255, 0.48);
-  outline: none;
-  padding: 0 18px;
-  background: rgba(2, 8, 28, 0.82);
-  color: #ffffff;
-  font-size: 15px;
-  box-shadow:
-    inset 0 0 16px rgba(0, 245, 255, 0.08),
-    0 0 18px rgba(0, 245, 255, 0.1);
+  padding: 0 16px;
 }
 
 #runnerNameInput::placeholder {
-  color: rgba(220, 240, 255, 0.62);
+  color: rgba(221, 238, 255, 0.48);
 }
 
-button {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  font-family: inherit;
-  font-weight: 850;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    filter 0.2s ease,
-    opacity 0.2s ease;
+.start-box select {
+  max-width: none;
+  padding: 0 14px;
 }
 
-button:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.1);
+.start-box select option {
+  color: #ffffff;
+  background: #071126;
 }
 
-button:active {
-  transform: translateY(0px) scale(0.97);
+#runnerNameInput:focus,
+.start-box select:focus {
+  border-color: var(--vr-gold);
+  box-shadow:
+    0 0 0 3px rgba(255, 212, 92, 0.08),
+    0 0 22px rgba(255, 212, 92, 0.16);
 }
 
 #startBtn,
 #restartBtn,
 #homeBtn {
-  min-height: 46px;
-  padding: 0 24px;
-  border-radius: 999px;
-  color: #02101a;
-  background: linear-gradient(90deg, #00f5ff, #ffd166);
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 13px;
+  color: #03101b;
+  background: linear-gradient(105deg, var(--vr-gold), #fff1a8 42%, var(--vr-cyan));
   box-shadow:
-    0 0 18px rgba(0, 245, 255, 0.35),
-    0 0 24px rgba(255, 209, 102, 0.22);
+    var(--vr-gold-glow),
+    0 8px 24px rgba(0, 0, 0, 0.24);
+}
+
+.tutorial-help-button {
+  min-height: 48px;
+  margin: 0;
+  padding: 0 18px;
+  border: 1px solid rgba(85, 239, 255, 0.34);
+  border-radius: 13px;
+  color: #dffcff;
+  background: rgba(16, 94, 126, 0.16);
+  box-shadow: inset 0 0 18px rgba(85, 239, 255, 0.05);
 }
 
 .controls-info {
-  margin-top: 20px;
-  color: #d6e6ff;
-  font-size: 15px;
-  line-height: 1.6;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+  color: rgba(221, 238, 255, 0.66);
+  font-size: 12px;
+  line-height: 1.55;
 }
 
-.controls-info b {
-  color: #ffffff;
+.controls-info p {
+  padding: 10px 12px;
+  border: 1px solid rgba(85, 239, 255, 0.1);
+  border-radius: 11px;
+  background: rgba(85, 239, 255, 0.035);
+}
+
+.controls-info b,
+.controls-info strong {
+  color: var(--vr-cyan);
 }
 
 .feature-row {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 22px;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
 }
 
 .feature-row span {
-  padding: 8px 12px;
+  padding: 7px 11px;
+  border: 1px solid rgba(210, 77, 255, 0.22);
   border-radius: 999px;
-  font-size: 13px;
-  color: #eafbff;
-  background: rgba(0, 245, 255, 0.1);
-  border: 1px solid rgba(0, 245, 255, 0.22);
-  box-shadow: inset 0 0 16px rgba(0, 245, 255, 0.06);
+  color: #ecf9ff;
+  background: linear-gradient(90deg, rgba(85, 239, 255, 0.07), rgba(210, 77, 255, 0.07));
+  font-size: 11px;
+  font-weight: 750;
 }
 
-/* Game Screen */
-
-#gameScreen {
-  background: #02030a;
-  display: none;
-}
-
-#gameScreen.active {
-  display: block;
-}
-
-#gameCanvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  background: #02030a;
-}
-
-/* HUD */
-
-.hud {
-  position: fixed;
-  top: 18px;
-  left: 18px;
-  z-index: 5;
-  display: grid;
-  gap: 8px;
-  min-width: 220px;
-  padding: 16px 18px;
-  border-radius: 18px;
-  background: rgba(2, 8, 28, 0.76);
-  border: 1px solid rgba(0, 245, 255, 0.24);
-  box-shadow:
-    0 0 24px rgba(0, 245, 255, 0.16),
-    inset 0 0 20px rgba(0, 245, 255, 0.05);
-  backdrop-filter: blur(14px);
-  color: #dcefff;
-  font-size: 14px;
-}
-
-.hud b {
-  color: #ffffff;
-}
-
-/* Ability Text */
-
-.ability {
-  position: fixed;
-  top: 18px;
-  right: 18px;
-  z-index: 5;
-  padding: 13px 18px;
-  border-radius: 999px;
-  background: rgba(255, 209, 102, 0.16);
-  border: 1px solid rgba(255, 209, 102, 0.4);
-  color: #fff3c7;
-  font-size: 14px;
-  font-weight: 850;
-  box-shadow:
-    0 0 22px rgba(255, 209, 102, 0.2),
-    inset 0 0 16px rgba(255, 209, 102, 0.08);
-  backdrop-filter: blur(12px);
-}
-
-/* Mission Text */
-
-.mission {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%);
-  z-index: 5;
-  padding: 15px 24px;
-  border-radius: 999px;
-  background: rgba(2, 8, 28, 0.76);
-  border: 1px solid rgba(0, 245, 255, 0.28);
-  color: #e9fbff;
-  font-size: 15px;
-  font-weight: 850;
-  text-align: center;
-  box-shadow:
-    0 0 24px rgba(0, 245, 255, 0.18),
-    inset 0 0 18px rgba(0, 245, 255, 0.05);
-  backdrop-filter: blur(14px);
-  white-space: nowrap;
-}
-
-/* Shoot Button */
-
-.shoot-btn {
-  position: fixed;
-  right: 18px;
-  bottom: 82px;
-  z-index: 6;
-  height: 48px;
-  min-width: 96px;
-  padding: 0 22px;
-  border-radius: 999px;
-  color: #06101a;
-  background: linear-gradient(90deg, #ffd166, #00f5ff);
-  border: 1px solid rgba(255, 209, 102, 0.55);
-  box-shadow:
-    0 0 22px rgba(255, 209, 102, 0.3),
-    0 0 28px rgba(0, 245, 255, 0.2);
-  backdrop-filter: blur(12px);
-}
-
-.shoot-btn.cooling {
-  opacity: 0.55;
-  cursor: not-allowed;
-  filter: grayscale(0.25);
-}
-
-/* Pause Button */
-
-.pause-btn {
-  position: fixed;
-  right: 18px;
-  bottom: 24px;
-  z-index: 6;
-  height: 44px;
-  min-width: 92px;
-  padding: 0 18px;
-  border-radius: 999px;
-  color: #ffffff;
-  background: rgba(0, 245, 255, 0.18);
-  border: 1px solid rgba(0, 245, 255, 0.36);
-  box-shadow: 0 0 20px rgba(0, 245, 255, 0.2);
-  backdrop-filter: blur(12px);
-}
-
-/* Game Over Screen */
-
-#gameOverScreen {
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(255, 0, 51, 0.24), transparent 30%),
-    radial-gradient(circle at 20% 80%, rgba(0, 245, 255, 0.18), transparent 35%),
-    linear-gradient(135deg, #02030a, #10040b 60%, #02030a);
-}
-
-.game-over-card {
-  position: relative;
-  z-index: 2;
-  width: min(540px, 92vw);
-  padding: 38px 30px;
-  border-radius: 28px;
-  text-align: center;
-  background: rgba(2, 8, 28, 0.86);
-  border: 1px solid rgba(255, 0, 51, 0.36);
-  box-shadow:
-    0 0 36px rgba(255, 0, 51, 0.24),
-    0 0 70px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(18px);
-}
-
-.game-over-card h1 {
-  font-size: clamp(38px, 7vw, 62px);
-  color: #ffffff;
-  margin: 10px 0 22px;
-  text-shadow: 0 0 20px rgba(255, 0, 51, 0.4);
-}
-
-.game-over-card p {
-  margin: 10px 0;
-  color: #dcefff;
-  font-size: 17px;
-}
-
-.game-over-card b {
-  color: #ffd166;
-}
-
-.game-over-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 26px;
-}
-
-/* Animations */
-
-@keyframes cityGridMove {
-  from {
-    background-position: 0 0, 0 0;
-  }
-
-  to {
-    background-position: 84px 84px, -84px 84px;
-  }
-}
-
-@keyframes pulseGlow {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-
-  50% {
-    transform: scale(1.12);
-    opacity: 1;
-  }
-}
-
-@keyframes orbFloat {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-/* Mobile Responsive */
-
-@media (max-width: 700px) {
-  .hero-card {
-    padding: 32px 20px;
-    border-radius: 24px;
-  }
-
-  .logo-orb {
-    width: 48px;
-    height: 48px;
-  }
-
-  .story {
-    font-size: 14px;
-  }
-
-  .controls-info {
-    font-size: 13px;
-  }
-
-  .start-box {
-    flex-direction: column;
-  }
-
-  #runnerNameInput,
-  #startBtn {
-    width: 100%;
-    max-width: 310px;
-  }
-
-  .feature-row span {
-    font-size: 12px;
-    padding: 7px 10px;
-  }
-
-  .hud {
-    top: 10px;
-    left: 10px;
-    min-width: 172px;
-    font-size: 12px;
-    padding: 11px 12px;
-    border-radius: 15px;
-  }
-
-  .ability {
-    top: 10px;
-    right: 10px;
-    font-size: 12px;
-    padding: 10px 12px;
-    max-width: 154px;
-    text-align: center;
-  }
-
-  .mission {
-    width: calc(100% - 24px);
-    bottom: 18px;
-    white-space: normal;
-    font-size: 13px;
-    padding: 12px 14px;
-  }
-
-  .shoot-btn {
-    right: 10px;
-    bottom: 124px;
-    height: 44px;
-    min-width: 86px;
-    padding: 0 16px;
-    font-size: 13px;
-  }
-
-  .pause-btn {
-    right: 10px;
-    bottom: 74px;
-    height: 40px;
-    min-width: 82px;
-    padding: 0 14px;
-    font-size: 13px;
-  }
-}
-
-@media (max-width: 420px) {
-  .hero-card h1 {
-    letter-spacing: -1px;
-  }
-
-  .hero-card h2 {
-    font-size: 18px;
-  }
-
-  .eyebrow {
-    font-size: 13px;
-  }
-
-  .hero-card {
-    padding: 28px 16px;
-  }
-}
-.core-stat b {
-  color: #ffd166;
-}
-
-.core-stat.core-danger b {
-  color: #ff3355;
-  text-shadow: 0 0 12px rgba(255, 0, 51, 0.75);
-}
-.boss-ui {
-  position: fixed;
-  top: 86px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 6;
-  width: min(420px, calc(100% - 32px));
-  padding: 12px 14px;
-  border-radius: 18px;
-  background: rgba(18, 3, 18, 0.78);
-  border: 1px solid rgba(255, 42, 255, 0.45);
-  box-shadow:
-    0 0 24px rgba(255, 42, 255, 0.22),
-    inset 0 0 18px rgba(255, 42, 255, 0.08);
-  backdrop-filter: blur(14px);
-  display: none;
-}
-
-.boss-ui.active {
-  display: block;
-}
-
-.boss-title {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 900;
-  color: #ffe8ff;
-  margin-bottom: 8px;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-}
-
-.boss-bar {
-  width: 100%;
-  height: 12px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-}
-
-#bossHealthFill {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #ff0033, #ff2aff, #ffd166);
-  box-shadow: 0 0 16px rgba(255, 42, 255, 0.45);
-  transition: width 0.2s ease;
-}
-
-@media (max-width: 700px) {
-  .boss-ui {
-    top: 92px;
-    width: calc(100% - 24px);
-    padding: 10px 12px;
-  }
-
-  .boss-title {
-    font-size: 12px;
-  }
-
-  .boss-bar {
-    height: 10px;
-  }
-}
-#shieldStatus {
-  color: #00f5ff;
-  text-shadow: 0 0 10px rgba(0, 245, 255, 0.7);
-}
-.start-box select {
-  width: 100%;
-  max-width: 320px;
-  padding: 14px 16px;
-  border: 1px solid rgba(0, 245, 255, 0.45);
-  border-radius: 14px;
-  background: rgba(3, 8, 24, 0.82);
-  color: #ffffff;
-  outline: none;
-  font-size: 15px;
-  box-shadow: 0 0 18px rgba(0, 245, 255, 0.16);
-}
-
-.start-box select:focus {
-  border-color: #ffd166;
-  box-shadow: 0 0 22px rgba(255, 209, 102, 0.28);
-}
-
-.start-box select option {
-  background: #060b1e;
-  color: #ffffff;
-}
-.leaderboard-card {
-  width: min(520px, 95%);
-  margin: 24px auto 0;
-  padding: 18px 18px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 209, 102, 0.28);
-  background: rgba(255, 255, 255, 0.055);
-  box-shadow: 0 0 22px rgba(255, 209, 102, 0.12);
-}
-
-.leaderboard-card h3 {
-  color: #ffd166;
-  margin-bottom: 12px;
-  font-size: 18px;
-  letter-spacing: 0.5px;
-}
-
-.leaderboard-card ol {
-  list-style-position: inside;
-  display: grid;
-  gap: 8px;
-}
-
-.leaderboard-card li {
-  padding: 9px 10px;
-  border-radius: 12px;
-  background: rgba(0, 245, 255, 0.075);
-  color: #eaf9ff;
-  font-size: 13px;
-  line-height: 1.5;
-  text-align: left;
-}
-
-.leaderboard-card li b {
-  color: #ffd166;
-}
-
-.leaderboard-card .empty-score {
-  color: rgba(255, 255, 255, 0.65);
-  list-style: none;
-  text-align: center;
-}
-
-.gameover-leaderboard {
-  margin-top: 20px;
-  margin-bottom: 6px;
-}
-.leaderboard-card {
-  position: relative;
-}
-
-.leaderboard-close {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  font-size: 20px;
-  line-height: 28px;
-  padding: 0;
-  color: #ffffff;
-  background: rgba(255, 51, 85, 0.18);
-  border: 1px solid rgba(255, 51, 85, 0.55);
-  box-shadow: 0 0 14px rgba(255, 51, 85, 0.35);
-  cursor: pointer;
-}
-
-.leaderboard-close:hover {
-  transform: scale(1.08);
-  background: rgba(255, 51, 85, 0.35);
-}
-
-.leaderboard-hidden {
-  display: none;
-}
 .leaderboard-actions {
   margin-top: 18px;
   text-align: center;
@@ -780,520 +435,661 @@ button:active {
 
 .leaderboard-show-btn {
   padding: 11px 16px;
-  font-size: 13px;
+  border: 1px solid rgba(255, 212, 92, 0.34);
   border-radius: 999px;
-}
-
-.leaderboard-clear {
-  margin-top: 14px;
-  padding: 9px 13px;
+  color: #fff3c4;
+  background: rgba(255, 212, 92, 0.1);
   font-size: 12px;
-  border-radius: 999px;
-  color: #ffffff;
-  background: rgba(255, 51, 85, 0.18);
-  border: 1px solid rgba(255, 51, 85, 0.55);
-  box-shadow: 0 0 14px rgba(255, 51, 85, 0.25);
+  box-shadow: inset 0 0 18px rgba(255, 212, 92, 0.04);
 }
 
-.leaderboard-clear:hover {
-  background: rgba(255, 51, 85, 0.35);
-}
-/* =========================================
-   IN-GAME LEADERBOARD
-========================================= */
+/* =========================================================
+   GAME CANVAS AND SCREEN
+========================================================= */
 
-.game-leaderboard-toggle {
+#gameScreen {
+  position: relative;
+  display: none;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255, 146, 46, 0.08), transparent 30%),
+    var(--vr-night);
+}
+
+#gameScreen.active {
+  display: block;
+}
+
+#gameCanvas {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 30;
-
-  padding: 11px 17px;
-  border-radius: 999px;
-
-  color: #071022;
-  font-size: 13px;
-  font-weight: 800;
-
-  background: linear-gradient(
-    135deg,
-    #ffd166,
-    #00f5ff
-  );
-
-  box-shadow:
-    0 0 16px rgba(0, 245, 255, 0.35),
-    0 0 18px rgba(255, 209, 102, 0.25);
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--vr-night);
 }
 
-/* Move HUD downward so it does not cover the button */
-
-#gameScreen .hud {
-  top: 72px;
-}
-
-/* Leaderboard popup panel */
-
-.in-game-leaderboard {
+/* Subtle cinematic vignette and scanlines above the canvas. */
+#gameScreen::before {
+  content: "";
   position: absolute;
-  top: 72px;
-  left: 16px;
-  z-index: 40;
-
-  width: min(420px, calc(100vw - 32px));
-  max-height: 72vh;
-
-  margin: 0;
-  overflow-y: auto;
-
-  background: rgba(3, 8, 25, 0.96);
-  backdrop-filter: blur(18px);
-
-  border: 1px solid rgba(255, 209, 102, 0.38);
-
-  box-shadow:
-    0 0 30px rgba(0, 245, 255, 0.16),
-    0 0 22px rgba(255, 209, 102, 0.12);
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at center, transparent 46%, rgba(1, 3, 12, 0.42) 100%),
+    linear-gradient(to bottom, rgba(85, 239, 255, 0.018) 50%, rgba(0, 0, 0, 0.035) 50%);
+  background-size: auto, 100% 4px;
 }
 
-/* Leaderboard closed by default */
-
-.leaderboard-hidden {
-  display: none !important;
+#gameScreen .hud,
+#gameScreen .ability,
+#gameScreen .mission,
+#gameScreen .boss-ui,
+#gameScreen .mission-panel,
+#gameScreen .mission-toast,
+#gameScreen button,
+#gameScreen .leaderboard-card {
+  z-index: 20;
 }
 
-@media (max-width: 720px) {
-  .game-leaderboard-toggle {
-    top: 10px;
-    left: 10px;
-    padding: 9px 13px;
-    font-size: 11px;
-  }
+/* =========================================================
+   TOP NAVIGATION BUTTONS
+========================================================= */
 
-  #gameScreen .hud {
-    top: 60px;
-  }
-
-  .in-game-leaderboard {
-    top: 60px;
-    left: 10px;
-    width: calc(100vw - 20px);
-    max-height: 68vh;
-  }
-}
-/* =========================================
-   SOUND CONTROL
-========================================= */
-
+.game-leaderboard-toggle,
+.mission-panel-toggle,
 .sound-btn {
   position: absolute;
   top: 16px;
-  right: 96px;
-  z-index: 35;
+  min-height: 42px;
+  border-radius: 13px;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
 
-  min-width: 92px;
-  padding: 10px 14px;
+.game-leaderboard-toggle {
+  left: 16px;
+  padding: 0 17px;
+  color: #061018;
+  background: linear-gradient(105deg, var(--vr-gold), #fff1a8 45%, var(--vr-cyan));
+  box-shadow:
+    0 0 20px rgba(255, 212, 92, 0.25),
+    0 0 22px rgba(85, 239, 255, 0.2);
+}
 
-  border: 1px solid rgba(0, 245, 255, 0.45);
-  border-radius: 999px;
+.mission-panel-toggle {
+  left: 150px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 212, 92, 0.38);
+  color: #fff2bd;
+  background: rgba(6, 15, 36, 0.82);
+  box-shadow: inset 0 0 18px rgba(255, 212, 92, 0.05);
+}
 
+.sound-btn {
+  right: 16px;
+  min-width: 96px;
+  padding: 0 14px;
+  border: 1px solid rgba(85, 239, 255, 0.34);
   color: #ffffff;
-  background: rgba(3, 10, 28, 0.82);
-
+  background: rgba(4, 14, 34, 0.86);
+  box-shadow: var(--vr-cyan-glow);
   font-size: 12px;
-  font-weight: 800;
+}
 
-  backdrop-filter: blur(12px);
+/* =========================================================
+   HUD — PROTOTYPE-STYLE LEFT TELEMETRY PANEL
+========================================================= */
 
+.hud {
+  position: absolute;
+  top: 72px;
+  left: 16px;
+  display: grid;
+  gap: 0;
+  width: 250px;
+  min-width: 0;
+  overflow: hidden;
+  padding: 14px 14px 12px;
+  border: 1px solid rgba(85, 239, 255, 0.38);
+  border-radius: 18px;
+  color: var(--vr-muted);
+  background:
+    linear-gradient(155deg, rgba(4, 15, 39, 0.94), rgba(9, 20, 45, 0.86)),
+    radial-gradient(circle at top left, rgba(85, 239, 255, 0.09), transparent 42%);
   box-shadow:
-    0 0 14px rgba(0, 245, 255, 0.18);
+    0 18px 48px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(85, 239, 255, 0.14),
+    inset 0 0 28px rgba(85, 239, 255, 0.035);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  font-size: 12px;
 }
 
-.sound-btn:hover {
-  transform: translateY(-1px);
-
-  box-shadow:
-    0 0 20px rgba(0, 245, 255, 0.32);
+.hud::before {
+  content: "AARAV ASTRA // RUN TELEMETRY";
+  display: block;
+  margin: -14px -14px 8px;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(85, 239, 255, 0.16);
+  color: var(--vr-cyan);
+  background: linear-gradient(90deg, rgba(85, 239, 255, 0.08), transparent);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
 }
 
-@media (max-width: 720px) {
-  .sound-btn {
-    top: 10px;
-    right: 82px;
-
-    min-width: 76px;
-    padding: 8px 10px;
-
-    font-size: 10px;
-  }
+.hud > div:not(.core-health-panel) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 31px;
+  padding: 6px 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.065);
 }
-/* =========================================
-   SURYA CORE HEALTH BAR
-========================================= */
+
+.hud > div:nth-last-child(1) {
+  border-bottom: 0;
+}
+
+.hud b,
+.hud strong {
+  color: #ffffff;
+  font-weight: 900;
+}
+
+#distance,
+#shards,
+#highScore {
+  color: var(--vr-gold);
+  text-shadow: 0 0 11px rgba(255, 212, 92, 0.25);
+}
+
+#shieldStatus {
+  color: var(--vr-cyan);
+  text-shadow: 0 0 10px rgba(85, 239, 255, 0.6);
+}
+
+#shieldStatus.shield-active {
+  color: #6dfff7;
+  text-shadow: 0 0 14px rgba(85, 239, 255, 0.82);
+}
 
 .core-health-panel {
-  min-width: 210px;
-  padding: 9px 11px;
-
-  border: 1px solid
-    rgba(0, 245, 255, 0.28);
-
-  border-radius: 12px;
-
-  background:
-    rgba(3, 11, 29, 0.82);
-
-  transition:
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
+  min-width: 0;
+  margin: 8px 0 5px;
+  padding: 9px 10px 10px;
+  border: 1px solid rgba(85, 239, 255, 0.2);
+  border-radius: 11px;
+  background: rgba(1, 8, 24, 0.48);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
 }
 
 .core-health-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  margin-bottom: 6px;
-
-  font-size: 12px;
-  font-weight: 800;
+  margin-bottom: 7px;
+  color: #e9faff;
+  font-size: 11px;
+  font-weight: 900;
 }
 
 .core-health-track {
   width: 100%;
   height: 9px;
-
   overflow: hidden;
-
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-
-  background:
-    rgba(255, 255, 255, 0.13);
-
-  box-shadow:
-    inset 0 0 6px
-    rgba(0, 0, 0, 0.55);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.62);
 }
 
 .core-health-fill {
   width: 100%;
   height: 100%;
-
   border-radius: inherit;
-
-  transition:
-    width 0.32s ease,
-    background 0.25s ease,
-    box-shadow 0.25s ease;
+  background: linear-gradient(90deg, #39dc86, #72ffb2);
+  box-shadow: 0 0 13px rgba(88, 245, 156, 0.62);
+  transition: width 0.28s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .core-health-fill.health-safe {
-  background:
-    linear-gradient(
-      90deg,
-      #00c96b,
-      #65ffad
-    );
-
-  box-shadow:
-    0 0 12px
-    rgba(48, 255, 122, 0.68);
+  background: linear-gradient(90deg, #22c875, #72ffb2);
+  box-shadow: 0 0 14px rgba(88, 245, 156, 0.68);
 }
 
 .core-health-fill.health-warning {
-  background:
-    linear-gradient(
-      90deg,
-      #ff9f1c,
-      #ffd166
-    );
-
-  box-shadow:
-    0 0 12px
-    rgba(255, 209, 102, 0.7);
+  background: linear-gradient(90deg, var(--vr-orange), var(--vr-gold));
+  box-shadow: 0 0 15px rgba(255, 212, 92, 0.7);
 }
 
 .core-health-fill.health-danger {
-  background:
-    linear-gradient(
-      90deg,
-      #ff1744,
-      #ff596f
-    );
-
-  box-shadow:
-    0 0 16px
-    rgba(255, 23, 68, 0.8);
-
-  animation:
-    healthDangerPulse 0.7s
-    ease-in-out infinite alternate;
+  background: linear-gradient(90deg, #ff1744, #ff6f81);
+  box-shadow: 0 0 17px rgba(255, 64, 95, 0.82);
+  animation: vrHealthPulse 0.7s ease-in-out infinite alternate;
 }
 
 .core-health-panel.core-critical {
-  border-color:
-    rgba(255, 23, 68, 0.72);
+  border-color: rgba(255, 64, 95, 0.72);
+  box-shadow: 0 0 20px rgba(255, 64, 95, 0.25);
+}
 
+/* =========================================================
+   MISSION BANNER, ABILITY AND BOSS HUD
+========================================================= */
+
+.mission {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  max-width: min(520px, 42vw);
+  min-height: 42px;
+  padding: 11px 34px;
+  border: 1px solid rgba(255, 212, 92, 0.42);
+  border-radius: 10px;
+  color: #fff2bd;
+  background:
+    linear-gradient(90deg, rgba(4, 12, 30, 0.9), rgba(34, 19, 45, 0.9), rgba(4, 12, 30, 0.9));
   box-shadow:
-    0 0 18px
-    rgba(255, 23, 68, 0.28);
+    0 0 24px rgba(255, 212, 92, 0.15),
+    inset 0 0 18px rgba(255, 212, 92, 0.035);
+  transform: translateX(-50%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-@keyframes healthDangerPulse {
-  from {
-    opacity: 0.68;
-  }
-
-  to {
-    opacity: 1;
-  }
+.mission::before,
+.mission::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255, 212, 92, 0.45);
+  background: rgba(255, 212, 92, 0.09);
+  transform: translateY(-50%) rotate(45deg);
 }
 
+.mission::before {
+  left: -9px;
+}
 
-/* =========================================
-   DAMAGE SCREEN FLASH
-========================================= */
+.mission::after {
+  right: -9px;
+}
+
+.ability {
+  position: absolute;
+  top: 72px;
+  right: 16px;
+  min-width: 180px;
+  padding: 13px 17px 13px 46px;
+  border: 1px solid rgba(255, 212, 92, 0.44);
+  border-radius: 14px;
+  color: #fff1b5;
+  background: linear-gradient(110deg, rgba(6, 14, 34, 0.88), rgba(54, 37, 28, 0.82));
+  box-shadow: var(--vr-gold-glow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.ability::before {
+  content: "✦";
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid rgba(255, 212, 92, 0.42);
+  border-radius: 50%;
+  color: var(--vr-gold);
+  background: rgba(255, 212, 92, 0.1);
+  box-shadow: 0 0 14px rgba(255, 212, 92, 0.28);
+  transform: translateY(-50%);
+}
+
+.boss-ui {
+  position: absolute;
+  top: 126px;
+  right: 16px;
+  display: none;
+  width: min(360px, calc(100vw - 32px));
+  padding: 11px 13px;
+  border: 1px solid rgba(255, 64, 95, 0.58);
+  border-radius: 13px;
+  color: #ffffff;
+  background: linear-gradient(110deg, rgba(34, 4, 15, 0.92), rgba(18, 4, 29, 0.9));
+  box-shadow:
+    0 0 26px rgba(255, 64, 95, 0.2),
+    inset 0 0 20px rgba(255, 64, 95, 0.035);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+.boss-ui.active {
+  display: block;
+  animation: vrBossPanelIn 0.28s ease both;
+}
+
+.boss-title {
+  margin-bottom: 8px;
+  color: #ff9caf;
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.15em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.boss-bar {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+#bossHealthFill {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff1d48, #ff405f 54%, #ff9a4f);
+  box-shadow: 0 0 16px rgba(255, 64, 95, 0.68);
+  transition: width 0.2s ease;
+}
+
+/* =========================================================
+   SHOOT, PAUSE AND ACTION BUTTONS
+========================================================= */
+
+.shoot-btn {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  display: grid;
+  place-items: end center;
+  width: 112px;
+  height: 112px;
+  padding: 0 0 15px;
+  border: 2px solid rgba(85, 239, 255, 0.72);
+  border-radius: 50%;
+  color: var(--vr-cyan);
+  background:
+    radial-gradient(circle, rgba(85, 239, 255, 0.16) 0 25%, rgba(2, 12, 30, 0.94) 28% 100%);
+  box-shadow:
+    0 0 0 6px rgba(85, 239, 255, 0.06),
+    0 0 32px rgba(85, 239, 255, 0.3),
+    inset 0 0 24px rgba(85, 239, 255, 0.08);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shoot-btn::before {
+  content: "";
+  position: absolute;
+  top: 23px;
+  left: 50%;
+  width: 38px;
+  height: 38px;
+  border: 3px solid var(--vr-cyan);
+  border-radius: 50%;
+  box-shadow:
+    0 -15px 0 -13px var(--vr-cyan),
+    0 15px 0 -13px var(--vr-cyan),
+    15px 0 0 -13px var(--vr-cyan),
+    -15px 0 0 -13px var(--vr-cyan),
+    0 0 15px rgba(85, 239, 255, 0.45);
+  transform: translateX(-50%);
+}
+
+.shoot-btn::after {
+  content: "";
+  position: absolute;
+  top: 39px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--vr-cyan);
+  box-shadow: 0 0 12px rgba(85, 239, 255, 0.8);
+  transform: translateX(-50%);
+}
+
+.shoot-btn:hover:not(:disabled) {
+  box-shadow:
+    0 0 0 8px rgba(85, 239, 255, 0.08),
+    0 0 44px rgba(85, 239, 255, 0.42),
+    inset 0 0 30px rgba(85, 239, 255, 0.11);
+}
+
+.shoot-btn.cooling {
+  cursor: not-allowed;
+  opacity: 0.48;
+  filter: grayscale(0.35);
+}
+
+.pause-btn {
+  position: absolute;
+  right: 144px;
+  bottom: 34px;
+  min-width: 92px;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(85, 239, 255, 0.34);
+  border-radius: 12px;
+  color: #e9fbff;
+  background: rgba(4, 14, 34, 0.82);
+  box-shadow: var(--vr-cyan-glow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 11px;
+}
+
+/* =========================================================
+   DAMAGE OVERLAY
+========================================================= */
 
 .damage-overlay {
-  --damage-opacity: 0.32;
-
+  --damage-opacity: 0.38;
   position: absolute;
   inset: 0;
-  z-index: 90;
-
+  z-index: 30;
   pointer-events: none;
-
   opacity: 0;
-
   background:
-    radial-gradient(
-      circle at center,
-      transparent 32%,
-      rgba(
-        255,
-        0,
-        51,
-        var(--damage-opacity)
-      ) 100%
-    );
+    radial-gradient(circle at center, transparent 28%, rgba(255, 0, 51, var(--damage-opacity)) 100%),
+    repeating-linear-gradient(90deg, transparent 0 18px, rgba(255, 64, 95, 0.05) 18px 20px);
 }
 
 .damage-overlay.damage-flash {
-  animation:
-    playerDamageFlash 0.45s ease-out;
+  animation: vrDamageFlash 0.46s ease-out;
 }
 
-@keyframes playerDamageFlash {
-  0% {
-    opacity: 0;
-  }
+/* =========================================================
+   LEADERBOARDS
+========================================================= */
 
-  20% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
-
-
-/* =========================================
-   ACTIVE SHIELD TEXT
-========================================= */
-
-#shieldStatus.shield-active {
-  color: #00f5ff;
-
-  text-shadow:
-    0 0 10px
-    rgba(0, 245, 255, 0.8);
-}
-/* Keep the 3D canvas behind all game controls */
-
-#gameScreen {
+.leaderboard-card {
   position: relative;
-  overflow: hidden;
-}
-
-#gameCanvas {
-  position: absolute;
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  display: block;
-
-  z-index: 0;
-}
-
-/* Keep interface elements above the canvas */
-
-#gameScreen .hud,
-#gameScreen .ability,
-#gameScreen .mission,
-#gameScreen .boss-ui,
-#gameScreen button,
-#gameScreen .leaderboard-card {
-  position: absolute;
-  z-index: 20;
-}
-
-.damage-overlay {
-  z-index: 30;
-  pointer-events: none;
-}
-/* =========================================
-   MISSION BUTTON
-========================================= */
-
-.mission-panel-toggle {
-  position: absolute;
-  top: 64px;
-  left: 16px;
-  z-index: 25;
-
-  padding: 10px 16px;
-
-  border: 1px solid
-    rgba(255, 209, 102, 0.52);
-
-  border-radius: 999px;
-
+  width: min(520px, 95%);
+  margin: 20px auto 0;
+  padding: 18px;
+  border: 1px solid rgba(255, 212, 92, 0.3);
+  border-radius: 17px;
   color: #ffffff;
+  background: linear-gradient(145deg, rgba(5, 15, 38, 0.96), rgba(22, 10, 39, 0.95));
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(255, 212, 92, 0.12);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
 
-  background:
-    rgba(3, 10, 28, 0.88);
+.leaderboard-card h3 {
+  margin-bottom: 12px;
+  color: var(--vr-gold);
+  font-size: 17px;
+  letter-spacing: 0.05em;
+}
 
+.leaderboard-card ol {
+  display: grid;
+  gap: 7px;
+  list-style-position: inside;
+}
+
+.leaderboard-card li {
+  padding: 9px 10px;
+  border: 1px solid rgba(85, 239, 255, 0.1);
+  border-radius: 10px;
+  color: #eaf9ff;
+  background: rgba(85, 239, 255, 0.05);
   font-size: 12px;
-  font-weight: 800;
-
-  backdrop-filter: blur(12px);
-
-  box-shadow:
-    0 0 16px
-    rgba(255, 209, 102, 0.18);
+  line-height: 1.45;
+  text-align: left;
 }
 
-
-/* =========================================
-   MISSION PANEL
-========================================= */
-
-.mission-panel {
-  position: absolute;
-  top: 112px;
-  left: 16px;
-  z-index: 45;
-
-  width:
-    min(
-      410px,
-      calc(100vw - 32px)
-    );
-
-  max-height: 72vh;
-  overflow-y: auto;
-
-  padding: 20px;
-
-  border: 1px solid
-    rgba(255, 209, 102, 0.38);
-
-  border-radius: 20px;
-
-  color: #ffffff;
-
-  background:
-    linear-gradient(
-      150deg,
-      rgba(4, 12, 33, 0.97),
-      rgba(16, 9, 39, 0.96)
-    );
-
-  backdrop-filter: blur(20px);
-
-  box-shadow:
-    0 0 32px
-      rgba(0, 245, 255, 0.14),
-    0 0 25px
-      rgba(255, 209, 102, 0.12);
+.leaderboard-card li b,
+.leaderboard-card li strong {
+  color: var(--vr-gold);
 }
 
+.leaderboard-card .empty-score {
+  color: rgba(255, 255, 255, 0.58);
+  list-style: none;
+  text-align: center;
+}
+
+.leaderboard-hidden,
 .mission-hidden {
   display: none !important;
 }
 
+.leaderboard-close,
 .mission-panel-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
-
-  width: 32px;
-  height: 32px;
-
+  top: 11px;
+  right: 11px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(255, 64, 95, 0.48);
   border-radius: 50%;
-
   color: #ffffff;
-  background:
-    rgba(255, 23, 68, 0.18);
+  background: rgba(255, 64, 95, 0.12);
+  box-shadow: 0 0 14px rgba(255, 64, 95, 0.18);
+  font-size: 18px;
+  line-height: 1;
+}
 
-  border: 1px solid
-    rgba(255, 23, 68, 0.55);
+.leaderboard-clear {
+  margin-top: 13px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 64, 95, 0.42);
+  border-radius: 999px;
+  color: #ffdfe5;
+  background: rgba(255, 64, 95, 0.1);
+  font-size: 11px;
+}
+
+.in-game-leaderboard {
+  position: absolute;
+  top: 70px;
+  left: 16px;
+  width: min(410px, calc(100vw - 32px));
+  max-height: 72vh;
+  margin: 0;
+  overflow-y: auto;
+}
+
+.gameover-leaderboard {
+  margin-top: 18px;
+  margin-bottom: 4px;
+}
+
+/* =========================================================
+   MISSION PANEL AND TOAST
+========================================================= */
+
+.mission-panel {
+  position: absolute;
+  top: 70px;
+  left: 150px;
+  width: min(410px, calc(100vw - 32px));
+  max-height: 72vh;
+  overflow-y: auto;
+  padding: 19px;
+  border: 1px solid rgba(255, 212, 92, 0.34);
+  border-radius: 18px;
+  color: #ffffff;
+  background: linear-gradient(150deg, rgba(4, 14, 36, 0.98), rgba(19, 9, 38, 0.97));
+  box-shadow:
+    0 22px 52px rgba(0, 0, 0, 0.4),
+    0 0 28px rgba(85, 239, 255, 0.1),
+    0 0 24px rgba(255, 212, 92, 0.09);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .mission-panel-heading {
   display: flex;
   flex-direction: column;
   gap: 3px;
-
-  margin-bottom: 16px;
+  margin-bottom: 15px;
   padding-right: 38px;
 }
 
 .mission-panel-heading span {
-  color: #ffd166;
-
-  font-size: 19px;
-  font-weight: 900;
+  color: var(--vr-gold);
+  font-size: 17px;
+  font-weight: 950;
+  letter-spacing: 0.03em;
 }
 
 .mission-panel-heading small {
-  color:
-    rgba(255, 255, 255, 0.65);
-
-  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 10px;
 }
 
-
-/* =========================================
-   INDIVIDUAL MISSION
-========================================= */
-
 .mission-item {
-  margin-bottom: 11px;
-  padding: 13px;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid rgba(85, 239, 255, 0.14);
+  border-radius: 12px;
+  background: linear-gradient(100deg, rgba(15, 50, 76, 0.55), rgba(25, 16, 52, 0.48));
+  transition: transform 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
+}
 
-  border: 1px solid
-    rgba(0, 245, 255, 0.18);
-
-  border-radius: 14px;
-
-  background:
-    rgba(10, 33, 52, 0.72);
-
-  transition:
-    border-color 0.25s ease,
-    opacity 0.25s ease,
-    transform 0.25s ease;
+.mission-item:hover {
+  transform: translateX(2px);
+  border-color: rgba(85, 239, 255, 0.32);
 }
 
 .mission-item-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .mission-item-heading > div:first-child {
@@ -1304,145 +1100,81 @@ button:active {
 
 .mission-item-heading strong {
   color: #ffffff;
-
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .mission-item-heading span {
-  color:
-    rgba(255, 255, 255, 0.64);
-
-  font-size: 10px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 9px;
 }
 
 .mission-reward {
   flex-shrink: 0;
-
-  color: #ffd166;
-
-  font-size: 11px;
-  font-weight: 900;
+  color: var(--vr-gold);
+  font-size: 10px;
+  font-weight: 950;
 }
 
 .mission-progress-row {
   display: flex;
   align-items: center;
-  gap: 9px;
-
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 9px;
 }
 
 .mission-progress-track {
   flex: 1;
-  height: 7px;
-
+  height: 6px;
   overflow: hidden;
-
   border-radius: 999px;
-
-  background:
-    rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .mission-progress-fill {
   width: 0;
   height: 100%;
-
   border-radius: inherit;
-
-  background:
-    linear-gradient(
-      90deg,
-      #00eaff,
-      #ffd166
-    );
-
-  box-shadow:
-    0 0 10px
-      rgba(0, 234, 255, 0.52);
-
-  transition:
-    width 0.35s ease;
+  background: linear-gradient(90deg, var(--vr-cyan), var(--vr-gold));
+  box-shadow: 0 0 10px rgba(85, 239, 255, 0.5);
+  transition: width 0.3s ease;
 }
 
 .mission-progress-text {
-  min-width: 50px;
-
-  color:
-    rgba(255, 255, 255, 0.76);
-
-  font-size: 10px;
+  min-width: 48px;
+  color: rgba(255, 255, 255, 0.67);
+  font-size: 9px;
   text-align: right;
 }
 
 .mission-item.mission-completed {
-  opacity: 0.74;
-
-  border-color:
-    rgba(48, 255, 122, 0.55);
-
-  background:
-    rgba(14, 59, 45, 0.58);
+  opacity: 0.76;
+  border-color: rgba(88, 245, 156, 0.45);
+  background: rgba(13, 62, 45, 0.48);
 }
 
-.mission-item.mission-completed
-.mission-progress-fill {
-  background:
-    linear-gradient(
-      90deg,
-      #18c96e,
-      #65ffad
-    );
-
-  box-shadow:
-    0 0 10px
-      rgba(48, 255, 122, 0.58);
+.mission-item.mission-completed .mission-progress-fill {
+  background: linear-gradient(90deg, #22c875, #72ffb2);
+  box-shadow: 0 0 10px rgba(88, 245, 156, 0.55);
 }
-
-
-/* =========================================
-   MISSION TOAST
-========================================= */
 
 .mission-toast {
   position: absolute;
-  top: 92px;
+  top: 76px;
   left: 50%;
-  z-index: 60;
-
   min-width: 280px;
-  max-width:
-    calc(100vw - 30px);
-
-  padding: 13px 20px;
-
-  border: 1px solid
-    rgba(255, 209, 102, 0.56);
-
-  border-radius: 16px;
-
+  max-width: calc(100vw - 30px);
+  padding: 12px 19px;
+  border: 1px solid rgba(255, 212, 92, 0.52);
+  border-radius: 13px;
   color: #ffffff;
-
-  background:
-    rgba(6, 16, 40, 0.94);
-
+  background: rgba(5, 15, 38, 0.96);
   box-shadow:
-    0 0 28px
-      rgba(255, 209, 102, 0.25),
-    0 0 20px
-      rgba(0, 245, 255, 0.18);
-
+    0 0 28px rgba(255, 212, 92, 0.2),
+    0 0 20px rgba(85, 239, 255, 0.13);
   opacity: 0;
-
   pointer-events: none;
-
-  transform:
-    translate(-50%, -30px)
-    scale(0.94);
-
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+  transform: translate(-50%, -24px) scale(0.96);
+  transition: opacity 0.26s ease, transform 0.26s ease;
 }
 
 .mission-toast strong,
@@ -1452,65 +1184,197 @@ button:active {
 }
 
 .mission-toast strong {
-  color: #ffd166;
-
-  font-size: 13px;
+  color: var(--vr-gold);
+  font-size: 12px;
 }
 
 .mission-toast span {
   margin-top: 3px;
-
-  color:
-    rgba(255, 255, 255, 0.78);
-
-  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
 }
 
 .mission-toast-visible {
   opacity: 1;
-
-  transform:
-    translate(-50%, 0)
-    scale(1);
+  transform: translate(-50%, 0) scale(1);
 }
 
+/* =========================================================
+   GAME OVER SCREEN
+========================================================= */
 
-/* =========================================
-   MISSION MOBILE LAYOUT
-========================================= */
-
-@media (max-width: 720px) {
-  .mission-panel-toggle {
-    top: 52px;
-    left: 10px;
-
-    padding: 8px 12px;
-
-    font-size: 10px;
-  }
-
-  .mission-panel {
-    top: 94px;
-    left: 10px;
-
-    width:
-      calc(100vw - 20px);
-
-    max-height: 70vh;
-
-    padding: 16px;
-  }
-
-  .mission-toast {
-    top: 78px;
-
-    min-width:
-      calc(100vw - 40px);
-  }
+#gameOverScreen {
+  isolation: isolate;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 26px;
+  background:
+    radial-gradient(circle at 50% 14%, rgba(255, 64, 95, 0.22), transparent 30%),
+    radial-gradient(circle at 20% 82%, rgba(85, 239, 255, 0.14), transparent 34%),
+    linear-gradient(145deg, #02040e, #130713 58%, #02040e);
 }
-/* =================================
-   PHASE 2C: TUTORIAL OVERLAY
-================================= */
+
+#gameOverScreen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.35;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 44px, rgba(255, 64, 95, 0.055) 44px 45px),
+    repeating-linear-gradient(0deg, transparent 0 44px, rgba(85, 239, 255, 0.035) 44px 45px);
+}
+
+.game-over-card {
+  position: relative;
+  z-index: 2;
+  width: min(590px, 94vw);
+  padding: 34px 30px 30px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 64, 95, 0.38);
+  border-radius: 25px;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(5, 14, 34, 0.96), rgba(31, 8, 29, 0.92));
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, 0.48),
+    0 0 38px rgba(255, 64, 95, 0.18),
+    inset 0 0 36px rgba(255, 64, 95, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.game-over-card::before {
+  content: "RUN TERMINATED // TELEMETRY SAVED";
+  position: absolute;
+  top: 13px;
+  left: 18px;
+  color: rgba(255, 64, 95, 0.45);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.game-over-card h1 {
+  margin: 10px 0 20px;
+  color: #ffffff;
+  font-size: clamp(36px, 7vw, 58px);
+  text-shadow:
+    0 0 20px rgba(255, 64, 95, 0.42),
+    0 0 38px rgba(210, 77, 255, 0.15);
+}
+
+.game-over-card p {
+  margin: 8px 0;
+  color: rgba(226, 241, 255, 0.76);
+  font-size: 15px;
+}
+
+.game-over-card b,
+.game-over-card strong {
+  color: var(--vr-gold);
+}
+
+.game-over-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+/* =========================================================
+   GAME-OVER MISSION SUMMARY
+========================================================= */
+
+.gameover-mission-summary {
+  width: min(100%, 520px);
+  margin: 19px auto;
+  padding: 16px;
+  border: 1px solid rgba(85, 239, 255, 0.28);
+  border-radius: 15px;
+  background: linear-gradient(145deg, rgba(9, 32, 58, 0.62), rgba(29, 12, 53, 0.62));
+  box-shadow:
+    inset 0 0 26px rgba(85, 239, 255, 0.035),
+    0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.mission-summary-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 13px;
+}
+
+.mission-summary-heading span {
+  color: var(--vr-cyan);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mission-summary-heading small {
+  color: rgba(226, 239, 255, 0.5);
+  font-size: 9px;
+  text-align: right;
+}
+
+.mission-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mission-summary-stat {
+  min-width: 0;
+  padding: 13px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.035);
+  text-align: center;
+}
+
+.mission-summary-label {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(229, 241, 255, 0.6);
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.mission-summary-value {
+  display: block;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.mission-summary-note {
+  margin: 11px 0 0;
+  color: rgba(219, 234, 255, 0.45);
+  font-size: 9px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.gameover-mission-summary.perfect-run {
+  border-color: rgba(255, 212, 92, 0.65);
+  box-shadow:
+    inset 0 0 30px rgba(255, 212, 92, 0.06),
+    0 0 24px rgba(255, 212, 92, 0.1);
+}
+
+.gameover-mission-summary.perfect-run .mission-summary-heading span,
+.gameover-mission-summary.perfect-run .mission-summary-value {
+  color: var(--vr-gold);
+}
+
+/* =========================================================
+   TUTORIAL OVERLAY
+========================================================= */
 
 body.tutorial-open {
   overflow: hidden;
@@ -1520,700 +1384,481 @@ body.tutorial-open {
   position: fixed;
   inset: 0;
   z-index: 10000;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 24px;
-
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(0, 229, 255, 0.16),
-      transparent 42%
-    ),
-    rgba(1, 5, 18, 0.94);
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  opacity: 0;
   visibility: hidden;
+  opacity: 0;
   pointer-events: none;
-
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
+  background:
+    radial-gradient(circle at center, rgba(85, 239, 255, 0.16), transparent 42%),
+    rgba(1, 5, 18, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: opacity 0.28s ease, visibility 0.28s ease;
 }
 
 .tutorial-overlay.is-visible {
-  opacity: 1;
   visibility: visible;
+  opacity: 1;
   pointer-events: auto;
 }
 
 .tutorial-panel {
   position: relative;
   isolation: isolate;
-
-  width: min(100%, 620px);
-  min-height: 510px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  padding: 28px;
-
+  width: min(100%, 620px);
+  min-height: 500px;
   overflow: hidden;
-
-  border:
-    1px solid rgba(
-      50,
-      225,
-      255,
-      0.58
-    );
-
-  border-radius: 24px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(8, 18, 45, 0.97),
-      rgba(13, 8, 35, 0.97)
-    );
-
+  padding: 27px;
+  border: 1px solid rgba(85, 239, 255, 0.52);
+  border-radius: 22px;
+  background: linear-gradient(145deg, rgba(7, 18, 45, 0.98), rgba(18, 8, 37, 0.97));
   box-shadow:
-    0 0 0 1px
-      rgba(138, 92, 255, 0.2),
-    0 28px 80px
-      rgba(0, 0, 0, 0.66),
-    0 0 42px
-      rgba(0, 216, 255, 0.16);
-
-  transform:
-    translateY(22px)
-    scale(0.96);
-
-  transition:
-    transform 0.35s ease;
+    0 28px 80px rgba(0, 0, 0, 0.62),
+    0 0 42px rgba(85, 239, 255, 0.14),
+    inset 0 0 34px rgba(85, 239, 255, 0.035);
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.32s ease;
 }
 
-.tutorial-overlay.is-visible
-  .tutorial-panel {
-  transform:
-    translateY(0)
-    scale(1);
+.tutorial-overlay.is-visible .tutorial-panel {
+  transform: translateY(0) scale(1);
 }
 
 .tutorial-panel-glow {
   position: absolute;
-  z-index: -1;
-
-  top: -160px;
+  top: -170px;
   left: 50%;
-
-  width: 360px;
-  height: 360px;
-
+  z-index: -1;
+  width: 380px;
+  height: 380px;
   border-radius: 50%;
-
-  background:
-    rgba(0, 218, 255, 0.18);
-
-  filter: blur(80px);
-
+  background: rgba(85, 239, 255, 0.16);
+  filter: blur(86px);
   transform: translateX(-50%);
 }
 
 .tutorial-top-row {
-  width: 100%;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  margin-bottom: 20px;
+  width: 100%;
+  margin-bottom: 18px;
 }
 
 .tutorial-system-label {
-  color: #5eeaff;
-
-  font-size: 0.74rem;
-  font-weight: 800;
+  color: var(--vr-cyan);
+  font-size: 10px;
+  font-weight: 900;
   letter-spacing: 0.18em;
 }
 
 .tutorial-close-button {
-  width: 38px;
-  height: 38px;
-
   display: grid;
   place-items: center;
-
+  width: 36px;
+  height: 36px;
   padding: 0;
-
-  border:
-    1px solid rgba(
-      255,
-      255,
-      255,
-      0.19
-    );
-
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 50%;
-
   color: #ffffff;
-  background:
-    rgba(255, 255, 255, 0.07);
-
-  font-size: 1.5rem;
-  line-height: 1;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.tutorial-close-button:hover {
-  transform: rotate(8deg);
-
-  border-color:
-    rgba(255, 86, 156, 0.65);
-
-  background:
-    rgba(255, 86, 156, 0.16);
+  background: rgba(255, 255, 255, 0.055);
+  font-size: 20px;
 }
 
 .tutorial-icon {
-  width: 104px;
-  height: 104px;
-
   display: grid;
   place-items: center;
-
-  margin: 6px 0 20px;
-
-  border:
-    1px solid rgba(
-      79,
-      231,
-      255,
-      0.65
-    );
-
-  border-radius: 30px;
-
+  width: 96px;
+  height: 96px;
+  margin: 4px 0 18px;
+  border: 1px solid rgba(85, 239, 255, 0.56);
+  border-radius: 27px;
   color: #ffffff;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(0, 217, 255, 0.2),
-      rgba(126, 75, 255, 0.22)
-    );
-
+  background: linear-gradient(145deg, rgba(85, 239, 255, 0.16), rgba(123, 97, 255, 0.2));
   box-shadow:
-    inset 0 0 28px
-      rgba(0, 225, 255, 0.12),
-    0 0 30px
-      rgba(0, 217, 255, 0.2);
-
-  font-size: 3.2rem;
-  font-weight: 800;
+    0 0 28px rgba(85, 239, 255, 0.17),
+    inset 0 0 24px rgba(85, 239, 255, 0.07);
+  font-size: 44px;
+  font-weight: 900;
 }
 
 .tutorial-eyebrow {
-  margin: 0 0 8px;
-
-  color: #ffcc4d;
-
-  font-size: 0.76rem;
-  font-weight: 800;
+  margin: 0 0 7px;
+  color: var(--vr-gold);
+  font-size: 10px;
+  font-weight: 900;
   letter-spacing: 0.18em;
-
   text-align: center;
 }
 
 .tutorial-title {
   margin: 0;
-
   color: #ffffff;
-
-  font-size:
-    clamp(1.65rem, 5vw, 2.35rem);
-
+  font-size: clamp(25px, 5vw, 36px);
   line-height: 1.12;
   text-align: center;
 }
 
 .tutorial-description {
   max-width: 500px;
-
-  margin: 16px auto 20px;
-
-  color: rgba(
-    236,
-    246,
-    255,
-    0.82
-  );
-
-  font-size: 1rem;
-  line-height: 1.7;
+  margin: 14px auto 18px;
+  color: rgba(236, 246, 255, 0.76);
+  font-size: 14px;
+  line-height: 1.65;
   text-align: center;
 }
 
 .tutorial-controls {
-  width: 100%;
-
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
-
-  min-height: 72px;
-
-  margin-bottom: 26px;
+  gap: 8px;
+  width: 100%;
+  min-height: 66px;
+  margin-bottom: 22px;
 }
 
 .tutorial-control-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  min-height: 40px;
-
-  padding: 9px 14px;
-
-  border:
-    1px solid rgba(
-      119,
-      185,
-      255,
-      0.3
-    );
-
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid rgba(85, 239, 255, 0.22);
   border-radius: 999px;
-
   color: #dff9ff;
-
-  background:
-    rgba(46, 79, 135, 0.2);
-
-  font-size: 0.82rem;
-  font-weight: 700;
+  background: rgba(46, 79, 135, 0.14);
+  font-size: 11px;
+  font-weight: 750;
   text-align: center;
 }
 
 .tutorial-navigation {
-  width: 100%;
-
   display: grid;
-  grid-template-columns:
-    minmax(100px, 1fr)
-    auto
-    minmax(100px, 1fr);
-
+  grid-template-columns: minmax(100px, 1fr) auto minmax(100px, 1fr);
   align-items: center;
-  gap: 14px;
-
+  gap: 12px;
+  width: 100%;
   margin-top: auto;
 }
 
 .tutorial-nav-button {
-  min-height: 48px;
-
-  padding: 11px 18px;
-
-  border-radius: 14px;
-
-  font: inherit;
-  font-weight: 800;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    opacity 0.2s ease;
-}
-
-.tutorial-nav-button:hover:not(
-  :disabled
-) {
-  transform: translateY(-2px);
-}
-
-.tutorial-nav-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.35;
+  min-height: 45px;
+  padding: 10px 16px;
+  border-radius: 12px;
 }
 
 .tutorial-primary-button {
-  border:
-    1px solid rgba(
-      90,
-      238,
-      255,
-      0.75
-    );
-
-  color: #021018;
-
-  background:
-    linear-gradient(
-      135deg,
-      #51efff,
-      #72ffca
-    );
-
-  box-shadow:
-    0 10px 28px
-      rgba(54, 229, 255, 0.18);
+  border: 1px solid rgba(85, 239, 255, 0.64);
+  color: #031018;
+  background: linear-gradient(105deg, var(--vr-gold), var(--vr-cyan));
+  box-shadow: 0 10px 26px rgba(85, 239, 255, 0.14);
 }
 
 .tutorial-secondary-button {
-  border:
-    1px solid rgba(
-      255,
-      255,
-      255,
-      0.22
-    );
-
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #ffffff;
-
-  background:
-    rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.055);
 }
 
 .tutorial-progress {
-  min-width: 60px;
-
-  color: #aeefff;
-
-  font-size: 0.88rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-
+  min-width: 56px;
+  color: var(--vr-cyan);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
   text-align: center;
 }
 
 .tutorial-skip-button {
-  margin-top: 18px;
-
+  margin-top: 15px;
   border: 0;
-
-  color: rgba(
-    226,
-    238,
-    255,
-    0.58
-  );
-
+  color: rgba(226, 238, 255, 0.5);
   background: transparent;
-
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
-
-  cursor: pointer;
+  font-size: 10px;
 }
 
-.tutorial-skip-button:hover {
-  color: #ffffff;
-  text-decoration: underline;
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes vrGridTravel {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 92px 92px, 92px 92px; }
 }
 
-.tutorial-help-button {
-  min-height: 44px;
-
-  margin-top: 12px;
-  padding: 10px 20px;
-
-  border:
-    1px solid rgba(
-      86,
-      232,
-      255,
-      0.45
-    );
-
-  border-radius: 12px;
-
-  color: #bdf7ff;
-
-  background:
-    rgba(0, 205, 255, 0.08);
-
-  font: inherit;
-  font-weight: 800;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease;
+@keyframes vrCorePulse {
+  0%, 100% { opacity: 0.78; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
 }
 
-.tutorial-help-button:hover {
-  transform: translateY(-2px);
-
-  background:
-    rgba(0, 205, 255, 0.16);
+@keyframes vrOrbFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
-@media (max-width: 600px) {
-  .tutorial-overlay {
-    padding: 12px;
+@keyframes vrRingSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes vrHealthPulse {
+  from { opacity: 0.68; }
+  to { opacity: 1; }
+}
+
+@keyframes vrDamageFlash {
+  0% { opacity: 0; }
+  18% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes vrBossPanelIn {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* =========================================================
+   TABLET AND SMALL DESKTOP
+========================================================= */
+
+@media (max-width: 980px) {
+  .start-box {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .tutorial-panel {
-    min-height: min(
-      580px,
-      calc(100vh - 24px)
-    );
+  #startBtn,
+  .tutorial-help-button {
+    width: 100%;
+  }
 
-    padding: 20px 16px;
+  .mission {
+    max-width: 42vw;
+    padding-inline: 24px;
+    font-size: 10px;
+  }
 
+  .hud {
+    width: 220px;
+  }
+
+  .ability {
+    min-width: 160px;
+  }
+}
+
+/* =========================================================
+   MOBILE LAYOUT
+========================================================= */
+
+@media (max-width: 720px) {
+  #homeScreen,
+  #gameOverScreen {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .hero-card {
+    width: 100%;
+    margin: auto 0;
+    padding: 30px 18px 24px;
+    border-radius: 22px;
+  }
+
+  .hero-card::after {
+    display: none;
+  }
+
+  .logo-orb {
+    width: 58px;
+    height: 58px;
+  }
+
+  .story {
+    font-size: 13px;
+    line-height: 1.58;
+  }
+
+  .start-box {
+    grid-template-columns: 1fr;
+    padding: 11px;
+  }
+
+  #runnerNameInput,
+  .start-box select,
+  #startBtn,
+  .tutorial-help-button {
+    width: 100%;
+  }
+
+  .controls-info {
+    grid-template-columns: 1fr;
+    font-size: 11px;
+  }
+
+  .feature-row span {
+    padding: 6px 9px;
+    font-size: 10px;
+  }
+
+  .game-leaderboard-toggle,
+  .mission-panel-toggle,
+  .sound-btn {
+    top: 9px;
+    min-height: 36px;
+    border-radius: 10px;
+    font-size: 9px;
+  }
+
+  .game-leaderboard-toggle {
+    left: 9px;
+    padding-inline: 11px;
+  }
+
+  .mission-panel-toggle {
+    top: 49px;
+    left: 9px;
+    padding-inline: 11px;
+  }
+
+  .sound-btn {
+    right: 9px;
+    min-width: 72px;
+    padding-inline: 9px;
+  }
+
+  .hud {
+    top: 92px;
+    left: 9px;
+    width: 190px;
+    padding: 11px 11px 9px;
+    border-radius: 14px;
+    font-size: 10px;
+  }
+
+  .hud::before {
+    margin: -11px -11px 6px;
+    padding: 7px 9px;
+    font-size: 7px;
+  }
+
+  .hud > div:not(.core-health-panel) {
+    min-height: 25px;
+    padding: 4px 2px;
+  }
+
+  .core-health-panel {
+    margin-top: 5px;
+    padding: 7px 8px 8px;
+  }
+
+  .ability {
+    top: 49px;
+    right: 9px;
+    min-width: 132px;
+    padding: 10px 10px 10px 36px;
+    border-radius: 11px;
+    font-size: 9px;
+  }
+
+  .ability::before {
+    left: 9px;
+    width: 21px;
+    height: 21px;
+    font-size: 10px;
+  }
+
+  .mission {
+    top: auto;
+    bottom: 14px;
+    max-width: calc(100vw - 220px);
+    min-height: 38px;
+    padding: 9px 13px;
+    border-radius: 10px;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    white-space: normal;
+  }
+
+  .mission::before,
+  .mission::after {
+    display: none;
+  }
+
+  .boss-ui {
+    top: 94px;
+    right: 9px;
+    width: min(230px, calc(100vw - 218px));
+    min-width: 150px;
+    padding: 9px 10px;
+  }
+
+  .boss-title {
+    font-size: 8px;
+  }
+
+  .shoot-btn {
+    right: 13px;
+    bottom: 13px;
+    width: 88px;
+    height: 88px;
+    padding-bottom: 10px;
+    font-size: 9px;
+  }
+
+  .shoot-btn::before {
+    top: 17px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .shoot-btn::after {
+    top: 30px;
+  }
+
+  .pause-btn {
+    right: 108px;
+    bottom: 18px;
+    min-width: 74px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 9px;
+  }
+
+  .in-game-leaderboard {
+    top: 89px;
+    left: 9px;
+    width: calc(100vw - 18px);
+    max-height: 68vh;
+  }
+
+  .mission-panel {
+    top: 89px;
+    left: 9px;
+    width: calc(100vw - 18px);
+    max-height: 68vh;
+    padding: 15px;
+  }
+
+  .mission-toast {
+    top: 91px;
+    min-width: calc(100vw - 34px);
+  }
+
+  .game-over-card {
+    width: 100%;
+    margin: auto 0;
+    padding: 30px 17px 22px;
     border-radius: 20px;
   }
 
-  .tutorial-system-label {
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-  }
-
-  .tutorial-icon {
-    width: 86px;
-    height: 86px;
-
-    margin-bottom: 16px;
-
-    border-radius: 24px;
-
-    font-size: 2.65rem;
-  }
-
-  .tutorial-description {
-    margin-top: 12px;
-
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-
-  .tutorial-controls {
-    min-height: 94px;
-    gap: 7px;
-
-    margin-bottom: 18px;
-  }
-
-  .tutorial-control-chip {
-    min-height: 36px;
-
-    padding: 8px 11px;
-
-    font-size: 0.74rem;
-  }
-
-  .tutorial-navigation {
-    grid-template-columns:
-      1fr
-      auto
-      1fr;
-
-    gap: 8px;
-  }
-
-  .tutorial-nav-button {
-    min-height: 44px;
-
-    padding: 9px 10px;
-
-    font-size: 0.78rem;
-  }
-
-  .tutorial-progress {
-    min-width: 46px;
-
-    font-size: 0.76rem;
-  }
-}
-/* =================================
-   PHASE 2D: GAME-OVER MISSION REPORT
-================================= */
-
-.gameover-mission-summary {
-  width: min(100%, 520px);
-
-  margin: 22px auto;
-
-  padding: 18px;
-
-  border:
-    1px solid rgba(
-      70,
-      226,
-      255,
-      0.35
-    );
-
-  border-radius: 18px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(8, 30, 53, 0.76),
-      rgba(29, 12, 53, 0.76)
-    );
-
-  box-shadow:
-    inset 0 0 30px
-      rgba(0, 220, 255, 0.06),
-    0 14px 36px
-      rgba(0, 0, 0, 0.24);
-}
-
-.mission-summary-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-
-  margin-bottom: 16px;
-}
-
-.mission-summary-heading span {
-  color: #67ecff;
-
-  font-size: 0.82rem;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.mission-summary-heading small {
-  color:
-    rgba(
-      226,
-      239,
-      255,
-      0.58
-    );
-
-  font-size: 0.72rem;
-  text-align: right;
-}
-
-.mission-summary-grid {
-  display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 12px;
-}
-
-.mission-summary-stat {
-  min-width: 0;
-
-  padding: 15px 12px;
-
-  border:
-    1px solid rgba(
-      255,
-      255,
-      255,
-      0.1
-    );
-
-  border-radius: 14px;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.045
-    );
-
-  text-align: center;
-}
-
-.mission-summary-label {
-  display: block;
-
-  margin-bottom: 8px;
-
-  color:
-    rgba(
-      229,
-      241,
-      255,
-      0.67
-    );
-
-  font-size: 0.72rem;
-  font-weight: 700;
-}
-
-.mission-summary-value {
-  display: block;
-
-  color: #ffffff;
-
-  font-size: 1.3rem;
-  font-weight: 900;
-}
-
-.mission-summary-note {
-  margin: 14px 0 0;
-
-  color:
-    rgba(
-      219,
-      234,
-      255,
-      0.52
-    );
-
-  font-size: 0.7rem;
-  line-height: 1.45;
-  text-align: center;
-}
-
-.gameover-mission-summary.perfect-run {
-  border-color:
-    rgba(
-      255,
-      203,
-      69,
-      0.72
-    );
-
-  box-shadow:
-    inset 0 0 34px
-      rgba(255, 195, 54, 0.09),
-    0 0 28px
-      rgba(255, 195, 54, 0.11);
-}
-
-.gameover-mission-summary.perfect-run
-  .mission-summary-heading span,
-.gameover-mission-summary.perfect-run
-  .mission-summary-value {
-  color: #ffd65d;
-}
-
-@media (max-width: 520px) {
-  .gameover-mission-summary {
-    padding: 15px;
+  .mission-summary-grid {
+    grid-template-columns: 1fr;
   }
 
   .mission-summary-heading {
@@ -2222,13 +1867,133 @@ body.tutorial-open {
 
   .mission-summary-heading small {
     display: block;
-
-    margin-top: 5px;
-
+    margin-top: 4px;
     text-align: left;
   }
 
-  .mission-summary-grid {
-    grid-template-columns: 1fr;
+  .tutorial-overlay {
+    padding: 11px;
+  }
+
+  .tutorial-panel {
+    min-height: min(570px, calc(100vh - 22px));
+    padding: 19px 15px;
+    border-radius: 18px;
+  }
+
+  .tutorial-system-label {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+
+  .tutorial-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 14px;
+    border-radius: 22px;
+    font-size: 36px;
+  }
+
+  .tutorial-description {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .tutorial-controls {
+    min-height: 84px;
+  }
+
+  .tutorial-control-chip {
+    min-height: 33px;
+    padding: 7px 10px;
+    font-size: 9px;
+  }
+
+  .tutorial-navigation {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 7px;
+  }
+
+  .tutorial-nav-button {
+    min-height: 41px;
+    padding: 8px 9px;
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media (max-width: 430px) {
+  .hero-card h1 {
+    font-size: 39px;
+    letter-spacing: -0.035em;
+  }
+
+  .hero-card h2 {
+    font-size: 17px;
+  }
+
+  .eyebrow {
+    font-size: 10px;
+  }
+
+  .hud {
+    width: 172px;
+  }
+
+  .mission {
+    left: 9px;
+    width: calc(100vw - 118px);
+    max-width: none;
+    transform: none;
+    text-align: left;
+  }
+
+  .boss-ui {
+    top: 90px;
+    right: 8px;
+    width: calc(100vw - 198px);
+  }
+}
+
+/* =========================================================
+   SHORT VIEWPORTS
+========================================================= */
+
+@media (max-height: 690px) and (min-width: 721px) {
+  .hud {
+    top: 64px;
+    transform: scale(0.9);
+    transform-origin: top left;
+  }
+
+  .ability {
+    top: 64px;
+  }
+
+  .boss-ui {
+    top: 116px;
+  }
+
+  .shoot-btn {
+    width: 96px;
+    height: 96px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
