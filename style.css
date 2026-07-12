@@ -2046,3 +2046,189 @@ body.tutorial-open {
     font-size: 0.76rem;
   }
 }
+/* =================================
+   PHASE 2D: GAME-OVER MISSION REPORT
+================================= */
+
+.gameover-mission-summary {
+  width: min(100%, 520px);
+
+  margin: 22px auto;
+
+  padding: 18px;
+
+  border:
+    1px solid rgba(
+      70,
+      226,
+      255,
+      0.35
+    );
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(8, 30, 53, 0.76),
+      rgba(29, 12, 53, 0.76)
+    );
+
+  box-shadow:
+    inset 0 0 30px
+      rgba(0, 220, 255, 0.06),
+    0 14px 36px
+      rgba(0, 0, 0, 0.24);
+}
+
+.mission-summary-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+.mission-summary-heading span {
+  color: #67ecff;
+
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mission-summary-heading small {
+  color:
+    rgba(
+      226,
+      239,
+      255,
+      0.58
+    );
+
+  font-size: 0.72rem;
+  text-align: right;
+}
+
+.mission-summary-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+.mission-summary-stat {
+  min-width: 0;
+
+  padding: 15px 12px;
+
+  border:
+    1px solid rgba(
+      255,
+      255,
+      255,
+      0.1
+    );
+
+  border-radius: 14px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.045
+    );
+
+  text-align: center;
+}
+
+.mission-summary-label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color:
+    rgba(
+      229,
+      241,
+      255,
+      0.67
+    );
+
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.mission-summary-value {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.mission-summary-note {
+  margin: 14px 0 0;
+
+  color:
+    rgba(
+      219,
+      234,
+      255,
+      0.52
+    );
+
+  font-size: 0.7rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.gameover-mission-summary.perfect-run {
+  border-color:
+    rgba(
+      255,
+      203,
+      69,
+      0.72
+    );
+
+  box-shadow:
+    inset 0 0 34px
+      rgba(255, 195, 54, 0.09),
+    0 0 28px
+      rgba(255, 195, 54, 0.11);
+}
+
+.gameover-mission-summary.perfect-run
+  .mission-summary-heading span,
+.gameover-mission-summary.perfect-run
+  .mission-summary-value {
+  color: #ffd65d;
+}
+
+@media (max-width: 520px) {
+  .gameover-mission-summary {
+    padding: 15px;
+  }
+
+  .mission-summary-heading {
+    display: block;
+  }
+
+  .mission-summary-heading small {
+    display: block;
+
+    margin-top: 5px;
+
+    text-align: left;
+  }
+
+  .mission-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
