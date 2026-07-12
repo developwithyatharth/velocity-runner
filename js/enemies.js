@@ -1325,7 +1325,10 @@ function spawnObstacle() {
 ========================================================= */
 
 function updateObstacles() {
-  if (!player) {
+  if (
+    !player ||
+    !Array.isArray(obstacles)
+  ) {
     return;
   }
 
@@ -1340,9 +1343,23 @@ function updateObstacles() {
     const obstacle =
       obstacles[obstacleIndex];
 
+    if (!obstacle) {
+      obstacles.splice(
+        obstacleIndex,
+        1
+      );
+
+      continue;
+    }
+
     obstacle.position.z += speed;
 
     obstacle.rotation.y += 0.012;
+
+    /*
+     * Remove obstacles after they pass
+     * behind the player.
+     */
 
     if (
       obstacle.position.z > 8
@@ -1367,47 +1384,69 @@ function updateObstacles() {
         player.position.x
       );
 
+    /*
+     * No collision with this obstacle.
+     */
+
     if (
-      differenceZ < 0.9 &&
-      differenceX < 0.9
+      differenceZ >= 0.9 ||
+      differenceX >= 0.9
     ) {
-      if (
-        obstacle.userData.type ===
-        "slide"
-      ) {
-        if (!isSliding) {
-          endGame();
-        }
-      } } else if (
-  obstacle.userData.type ===
-  "low"
-) {
-  var currentPlayerY =
-    (
-      typeof playerY === "number" &&
-      Number.isFinite(playerY)
-    )
-      ? playerY
-      : player.position.y;
+      continue;
+    }
 
-  /*
-   * A tiny jump should not allow the
-   * player to pass through the obstacle.
-   */
+    /*
+     * HIGH BARRIER:
+     * player must slide.
+     */
 
-  if (currentPlayerY < 1.45) {
-    endGame();
-    return;
-  }
-}else {
+    if (
+      obstacle.userData.type ===
+      "slide"
+    ) {
+      if (!isSliding) {
         endGame();
         return;
       }
+
+      continue;
     }
+
+    /*
+     * LOW BARRIER:
+     * player must jump high enough.
+     */
+
+    if (
+      obstacle.userData.type ===
+      "low"
+    ) {
+      var currentPlayerY =
+        (
+          typeof playerY ===
+            "number" &&
+          Number.isFinite(playerY)
+        )
+          ? playerY
+          : player.position.y;
+
+      if (currentPlayerY < 1.45) {
+        endGame();
+        return;
+      }
+
+      continue;
+    }
+
+    /*
+     * SOLID BLOCK:
+     * collision always ends the run.
+     */
+
+    endGame();
+    return;
   }
 }
-
-
 /* =========================================================
    REMOVE OBSTACLE
 ========================================================= */
@@ -1452,7 +1491,19 @@ function removeObstacle(
 ========================================================= */
 
 function clearEnemyObjects() {
-  clearBossLasers();
+  if (
+    typeof clearBossLasers ===
+    "function"
+  ) {
+    clearBossLasers();
+  }
+
+  if (
+    !Array.isArray(obstacles)
+  ) {
+    obstacles = [];
+    return;
+  }
 
   for (
     let obstacleIndex =
@@ -1468,3 +1519,4 @@ function clearEnemyObjects() {
     );
   }
 }
+
