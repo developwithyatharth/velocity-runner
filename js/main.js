@@ -836,31 +836,40 @@ function beginRun() {
    START GAME BUTTON
 ========================================================= */
 
-function startGameWithTutorial(
-  function () {
-    startGame();
-  }
-); {
-  if (
-    typeof THREE === "undefined"
-  ) {
+function startGame() {
+  /*
+   * Confirm that Three.js loaded correctly
+   * before trying to start the game.
+   */
+
+  if (typeof THREE === "undefined") {
     alert(
-      "Three.js is not loading.\nCheck the Three.js CDN in index.html."
+      "Three.js is not loading.\n" +
+      "Check the Three.js CDN links in index.html."
     );
 
     return;
   }
+
+  /*
+   * Confirm that the required form elements
+   * exist in index.html.
+   */
 
   if (
     !runnerNameInput ||
     !difficultySelect
   ) {
     console.error(
-      "Runner name or difficulty input was not found."
+      "Runner name input or difficulty selector was not found."
     );
 
     return;
   }
+
+  /*
+   * Read and validate the player's details.
+   */
 
   var enteredName =
     runnerNameInput.value.trim();
@@ -886,15 +895,47 @@ function startGameWithTutorial(
     return;
   }
 
+  /*
+   * Save the selected player details
+   * before opening the tutorial.
+   */
+
   runnerName = enteredName;
 
   selectedDifficulty =
     enteredDifficulty;
 
-  beginRun();
+  /*
+   * Phase 2C tutorial integration:
+   *
+   * First-time player:
+   * tutorial opens, then beginRun() executes.
+   *
+   * Returning player:
+   * beginRun() executes immediately.
+   *
+   * Fallback:
+   * if tutorial.js failed to load,
+   * the game still starts normally.
+   */
+
+  if (
+    typeof startGameWithTutorial ===
+    "function"
+  ) {
+    startGameWithTutorial(
+      function () {
+        beginRun();
+      }
+    );
+  } else {
+    console.warn(
+      "Tutorial system is unavailable. Starting the game directly."
+    );
+
+    beginRun();
+  }
 }
-
-
 /* =========================================================
    RESTART GAME
 ========================================================= */
