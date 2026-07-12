@@ -1,19 +1,4 @@
 /* =========================================================
-   enemies.js
-   Velocity Runner: Rise of Bharat
-
-   Features:
-   - Trinetra Drone
-   - EMP attacks
-   - Drone destruction and respawn
-   - AI Guardian boss
-   - Boss laser attacks
-   - Obstacles
-   - Audio and camera feedback
-   - Safe object cleanup
-========================================================= */
-
-/* =========================================================
    ENEMY RUNTIME STATE
 ========================================================= */
 
