@@ -402,16 +402,47 @@ function ensureGameScreenLayering() {
     canvas.style.height = "100%";
 
     canvas.style.display = "block";
+
     canvas.style.zIndex = "0";
+
+    canvas.style.pointerEvents =
+      "auto";
   }
 
   var interfaceElements =
     gameScreen.querySelectorAll(
-      ".hud, .ability, .mission, .boss-ui, button, .leaderboard-card"
+      [
+        ".hud",
+        ".ability",
+        ".mission",
+        ".boss-ui",
+        ".mission-panel",
+        ".mission-toast",
+        ".leaderboard-card",
+        "button"
+      ].join(", ")
     );
 
   interfaceElements.forEach(
     function (element) {
+      var computedPosition =
+        window
+          .getComputedStyle(element)
+          .position;
+
+      /*
+       * z-index does not reliably work on
+       * position: static elements.
+       */
+
+      if (
+        computedPosition ===
+        "static"
+      ) {
+        element.style.position =
+          "relative";
+      }
+
       element.style.zIndex = "20";
     }
   );
@@ -422,7 +453,13 @@ function ensureGameScreenLayering() {
     );
 
   if (overlay) {
+    overlay.style.position =
+      "absolute";
+
+    overlay.style.inset = "0";
+
     overlay.style.zIndex = "30";
+
     overlay.style.pointerEvents =
       "none";
   }
@@ -1542,14 +1579,103 @@ function onResize() {
   }
 }
 
-
 /* =========================================================
    KEYBOARD CONTROLS
 ========================================================= */
 
+function isTextInputActive(target) {
+  if (!target) {
+    return false;
+  }
+
+  var tagName =
+    target.tagName
+      ? target.tagName.toLowerCase()
+      : "";
+
+  return (
+    tagName === "input" ||
+    tagName === "textarea" ||
+    tagName === "select" ||
+    target.isContentEditable
+  );
+}
+
+
+function isTutorialCurrentlyOpen() {
+  var tutorialOverlay =
+    document.getElementById(
+      "tutorialOverlay"
+    );
+
+  return Boolean(
+    tutorialOverlay &&
+    tutorialOverlay.classList.contains(
+      "is-visible"
+    )
+  );
+}
+
+
 function handleKeyDown(event) {
+  /*
+   * Do not activate game controls while the
+   * player is typing their name or selecting
+   * the difficulty.
+   */
+
+  if (
+    isTextInputActive(event.target)
+  ) {
+    return;
+  }
+
+  /*
+   * tutorial.js controls the keyboard while
+   * the tutorial overlay is visible.
+   */
+
+  if (
+    isTutorialCurrentlyOpen()
+  ) {
+    return;
+  }
+
   var key =
     event.key.toLowerCase();
+
+  /*
+   * Pause controls only work during an
+   * active game.
+   */
+
+  if (
+    key === "p" ||
+    key === "escape"
+  ) {
+    if (
+      gameRunning &&
+      !gameOver
+    ) {
+      event.preventDefault();
+      togglePauseGame();
+    }
+
+    return;
+  }
+
+  /*
+   * Ignore movement controls unless a run
+   * is currently active.
+   */
+
+  if (
+    !gameRunning ||
+    gamePaused ||
+    gameOver
+  ) {
+    return;
+  }
 
   var controlledKeys = [
     "arrowleft",
@@ -1562,9 +1688,7 @@ function handleKeyDown(event) {
     "d",
     "w",
     "s",
-    "f",
-    "p",
-    "escape"
+    "f"
   ];
 
   if (
@@ -1573,21 +1697,13 @@ function handleKeyDown(event) {
     event.preventDefault();
   }
 
-  if (
-    key === "p" ||
-    key === "escape"
-  ) {
-    togglePauseGame();
-    return;
-  }
-
-  if (
-    !gameRunning ||
-    gamePaused ||
-    gameOver
-  ) {
-    return;
-  }
+  /*
+   * Prevent repeated movement, jump, slide,
+   * and dash commands while a key is held.
+   *
+   * Shooting may repeat because its cooldown
+   * is handled by the combat system.
+   */
 
   if (
     event.repeat &&
@@ -1600,38 +1716,87 @@ function handleKeyDown(event) {
     key === "arrowleft" ||
     key === "a"
   ) {
-    moveLeft();
+    if (
+      typeof moveLeft === "function"
+    ) {
+      moveLeft();
+    }
   } else if (
     key === "arrowright" ||
     key === "d"
   ) {
-    moveRight();
+    if (
+      typeof moveRight === "function"
+    ) {
+      moveRight();
+    }
   } else if (
     key === "arrowup" ||
     key === "w" ||
     key === " "
   ) {
-    jump();
+    if (
+      typeof jump === "function"
+    ) {
+      jump();
+    }
   } else if (
     key === "arrowdown" ||
     key === "s"
   ) {
-    slide();
+    if (
+      typeof slide === "function"
+    ) {
+      slide();
+    }
   } else if (
     key === "shift"
   ) {
-    dash();
+    if (
+      typeof dash === "function"
+    ) {
+      dash();
+    }
   } else if (
     key === "f"
   ) {
-    shoot();
+    if (
+      typeof shoot === "function"
+    ) {
+      shoot();
+    }
   }
 }
-
 
 /* =========================================================
    MOBILE TOUCH CONTROLS
 ========================================================= */
+
+function isInteractiveTouchTarget(target) {
+  if (
+    !target ||
+    typeof target.closest !==
+      "function"
+  ) {
+    return false;
+  }
+
+  return Boolean(
+    target.closest(
+      [
+        "button",
+        "input",
+        "select",
+        "textarea",
+        "a",
+        "[role='button']",
+        ".leaderboard-card",
+        ".mission-panel"
+      ].join(", ")
+    )
+  );
+}
+
 
 function handleTouchStart(event) {
   if (
@@ -1639,10 +1804,29 @@ function handleTouchStart(event) {
     gamePaused ||
     gameOver
   ) {
+    touchStartTime = 0;
     return;
   }
 
-  if (!event.touches.length) {
+  /*
+   * Do not interpret button presses as
+   * swipe or double-tap gestures.
+   */
+
+  if (
+    isInteractiveTouchTarget(
+      event.target
+    )
+  ) {
+    touchStartTime = 0;
+    return;
+  }
+
+  if (
+    !event.touches ||
+    !event.touches.length
+  ) {
+    touchStartTime = 0;
     return;
   }
 
@@ -1663,10 +1847,33 @@ function handleTouchEnd(event) {
     gamePaused ||
     gameOver
   ) {
+    touchStartTime = 0;
     return;
   }
 
-  if (!event.changedTouches.length) {
+  if (
+    isInteractiveTouchTarget(
+      event.target
+    )
+  ) {
+    touchStartTime = 0;
+    return;
+  }
+
+  /*
+   * Ignore touchend when no valid gameplay
+   * touchstart was registered.
+   */
+
+  if (!touchStartTime) {
+    return;
+  }
+
+  if (
+    !event.changedTouches ||
+    !event.changedTouches.length
+  ) {
+    touchStartTime = 0;
     return;
   }
 
@@ -1677,12 +1884,10 @@ function handleTouchEnd(event) {
     event.changedTouches[0].clientY;
 
   var differenceX =
-    touchEndX -
-    touchStartX;
+    touchEndX - touchStartX;
 
   var differenceY =
-    touchEndY -
-    touchStartY;
+    touchEndY - touchStartY;
 
   var absoluteX =
     Math.abs(differenceX);
@@ -1696,43 +1901,82 @@ function handleTouchEnd(event) {
       absoluteY
     );
 
-  if (gestureDistance > 38) {
+  var gestureDuration =
+    Date.now() - touchStartTime;
+
+  touchStartTime = 0;
+
+  /*
+   * A swipe must cover at least 38 pixels
+   * and finish within 800 milliseconds.
+   */
+
+  if (
+    gestureDistance > 38 &&
+    gestureDuration < 800
+  ) {
     event.preventDefault();
 
     if (absoluteX > absoluteY) {
       if (differenceX > 0) {
-        moveRight();
-      } else {
+        if (
+          typeof moveRight ===
+          "function"
+        ) {
+          moveRight();
+        }
+      } else if (
+        typeof moveLeft ===
+        "function"
+      ) {
         moveLeft();
       }
     } else if (
       differenceY < 0
     ) {
-      jump();
-    } else {
+      if (
+        typeof jump === "function"
+      ) {
+        jump();
+      }
+    } else if (
+      typeof slide === "function"
+    ) {
       slide();
     }
 
     return;
   }
 
-  var currentTapTime =
-    Date.now();
+  /*
+   * Two short taps activate Surya Dash.
+   */
 
   if (
-    currentTapTime -
-      lastTapTime <
-    320
+    gestureDistance <= 20 &&
+    gestureDuration < 350
   ) {
-    dash();
-    lastTapTime = 0;
-  } else {
-    lastTapTime =
-      currentTapTime;
+    var currentTapTime =
+      Date.now();
+
+    if (
+      currentTapTime -
+        lastTapTime <
+      320
+    ) {
+      if (
+        typeof dash === "function"
+      ) {
+        dash();
+      }
+
+      lastTapTime = 0;
+    } else {
+      lastTapTime =
+        currentTapTime;
+    }
   }
 }
-
-
 /* =========================================================
    SETUP MAIN CONTROLS
 ========================================================= */
