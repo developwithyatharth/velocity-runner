@@ -1229,9 +1229,17 @@ function createSandbagBarricadeObstacle() {
     0.68;
 
   obstacle.userData.minimumJumpHeight =
-    0.48;
+  0.48;
 
-  return obstacle;
+/*
+ * Sandbags are lightweight enough to be shattered
+ * by an active Surya Dash.
+ */
+
+obstacle.userData.breakableByDash =
+  true;
+
+return obstacle;
 }
 
 
@@ -1755,6 +1763,15 @@ function spawnObstacle() {
     -105
   );
 
+   if (
+  typeof attachObstaclePresentation ===
+  "function"
+) {
+  attachObstaclePresentation(
+    obstacle
+  );
+}
+
   /*
    * Tiny realistic placement variation.
    * Slide obstacles stay perfectly aligned for fairness.
@@ -1956,6 +1973,15 @@ function updateObstacles() {
       obstacle,
       currentTime
     );
+     if (
+  typeof updateObstaclePresentation ===
+  "function"
+) {
+  updateObstaclePresentation(
+    obstacle,
+    currentTime
+  );
+}
 
     if (
       obstacle.position.z > 9
@@ -1995,9 +2021,65 @@ function updateObstacles() {
       differenceZ < hitHalfZ;
 
     if (
-      intersectsLane &&
-      intersectsDepth
+  intersectsLane &&
+  intersectsDepth
+) {
+  /*
+   * An active Surya Dash can destroy only objects
+   * explicitly marked as lightweight.
+   */
+
+  if (
+    obstacle.userData
+      .breakableByDash &&
+    typeof destroyObstacleWithDash ===
+      "function"
+  ) {
+    var destroyedByDash =
+      destroyObstacleWithDash(
+        obstacle,
+        obstacleIndex
+      );
+
+    if (destroyedByDash) {
+      continue;
+    }
+  }
+
+  var cleared =
+    hasPlayerClearedObstacle(
+      obstacle
+    );
+
+  if (!cleared) {
+    if (
+      typeof triggerFatalObstacleImpact ===
+      "function"
     ) {
+      var impactStarted =
+        triggerFatalObstacleImpact(
+          obstacle
+        );
+
+      if (impactStarted) {
+        removeObstacle(
+          obstacle,
+          obstacleIndex
+        );
+
+        return;
+      }
+    }
+
+    /*
+     * Safe fallback if obstacleEffects.js failed
+     * to load for any reason.
+     */
+
+    endGame();
+    return;
+  }
+}
       var cleared =
         hasPlayerClearedObstacle(
           obstacle
