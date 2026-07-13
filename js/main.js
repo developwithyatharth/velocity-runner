@@ -2167,6 +2167,12 @@ function updateGame() {
   ) {
     updateObstacles();
   }
+   if (
+  typeof updateObstacleEffects ===
+  "function"
+) {
+  updateObstacleEffects();
+}
 
   if (
     typeof updateShards ===
