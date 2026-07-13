@@ -1,281 +1,247 @@
 /* =========================================================
-   world.js
-   Velocity Runner: Rise of Bharat
-   Premium animated 3D Neo Aryavarta world
-
-   Public functions preserved:
-   - createRoad()
-   - createCity()
-   - createRain()
-   - createSkySymbols()
-   - updateMovingWorld()
+   world.js — Stylized-realistic 3D Neo Bharat environment
+   Replace the complete old world.js with this file.
 ========================================================= */
 
-
-/* =========================================================
-   WORLD VISUAL STATE
-========================================================= */
-
-var worldVisualState = {
-  quality: null,
-  roadScanners: [],
-  roadMandalaParts: [],
-  roadArchLights: [],
-  skySymbols: [],
-  horizonSurya: null,
-  horizonCore: null,
-  horizonRings: [],
-  horizonGlow: null,
-  starField: null,
+var realisticWorld = {
+  materials: null,
+  signs: [],
+  plants: [],
+  traffic: [],
+  distantBuildings: [],
   rainMesh: null,
-  rainPositionAttribute: null,
-  rainMaterial: null
+  rainData: [],
+  landmark: null
 };
 
-
-/* =========================================================
-   SAFE WORLD HELPERS
-========================================================= */
-
-function getWorldSafeNumber(
-  value,
-  fallback
-) {
-  if (
+function worldNumber(value, fallback) {
+  return (
     typeof value === "number" &&
     Number.isFinite(value)
-  ) {
-    return value;
-  }
-
-  return typeof fallback === "number"
-    ? fallback
-    : 0;
+  )
+    ? value
+    : fallback;
 }
 
-
-function getWorldSpeed() {
-  if (
-    typeof speed === "undefined"
-  ) {
-    return 0.34;
-  }
-
+function worldSpeed() {
   return Math.max(
     0,
-    getWorldSafeNumber(
-      speed,
+    worldNumber(
+      typeof speed !== "undefined"
+        ? speed
+        : 0.34,
       0.34
     )
   );
 }
 
-
-function getWorldRoadTileCount() {
-  if (
-    typeof ROAD_TILE_COUNT === "number" &&
-    Number.isFinite(
-      ROAD_TILE_COUNT
-    ) &&
-    ROAD_TILE_COUNT > 0
-  ) {
-    return Math.floor(
-      ROAD_TILE_COUNT
-    );
-  }
-
-  return 34;
-}
-
-
-function getWorldTileDepth() {
-  if (
-    typeof TILE_DEPTH === "number" &&
-    Number.isFinite(
-      TILE_DEPTH
-    ) &&
-    TILE_DEPTH > 0
-  ) {
-    return TILE_DEPTH;
-  }
-
-  return 8;
-}
-
-
-function getWorldRoadLoopDistance() {
-  if (
-    typeof ROAD_LOOP_DISTANCE ===
-      "number" &&
-    Number.isFinite(
-      ROAD_LOOP_DISTANCE
-    ) &&
-    ROAD_LOOP_DISTANCE > 0
-  ) {
-    return ROAD_LOOP_DISTANCE;
-  }
-
-  return (
-    getWorldRoadTileCount() *
-    getWorldTileDepth()
+function worldTileDepth() {
+  return Math.max(
+    1,
+    worldNumber(
+      typeof TILE_DEPTH !== "undefined"
+        ? TILE_DEPTH
+        : 8,
+      8
+    )
   );
 }
 
-
-function getWorldQualityProfile() {
-  var width =
-    typeof window !== "undefined"
-      ? window.innerWidth
-      : 1280;
-
-  var mobile =
-    width <= 720;
-
-  var medium =
-    width > 720 &&
-    width <= 1180;
-
-  return {
-    mobile: mobile,
-
-    buildingCount:
-      mobile
-        ? 44
-        : medium
-          ? 60
-          : 78,
-
-    rainDropCount:
-      mobile
-        ? 90
-        : medium
-          ? 140
-          : 190,
-
-    skySymbolCount:
-      mobile
-        ? 8
-        : 14,
-
-    starCount:
-      mobile
-        ? 260
-        : 520,
-
-    windowRows:
-      mobile
-        ? 5
-        : 8
-  };
-}
-
-
-function resetWorldVisualState() {
-  worldVisualState.quality =
-    getWorldQualityProfile();
-
-  worldVisualState.roadScanners = [];
-  worldVisualState.roadMandalaParts = [];
-  worldVisualState.roadArchLights = [];
-  worldVisualState.skySymbols = [];
-
-  worldVisualState.horizonSurya =
-    null;
-
-  worldVisualState.horizonCore =
-    null;
-
-  worldVisualState.horizonRings = [];
-
-  worldVisualState.horizonGlow =
-    null;
-
-  worldVisualState.starField =
-    null;
-
-  worldVisualState.rainMesh =
-    null;
-
-  worldVisualState.rainPositionAttribute =
-    null;
-
-  worldVisualState.rainMaterial =
-    null;
-}
-
-
-function createWorldGlowMaterial(
-  color,
-  opacity
-) {
-  return new THREE.MeshBasicMaterial({
-    color: color,
-
-    transparent: true,
-
-    opacity:
-      typeof opacity === "number"
-        ? opacity
-        : 1,
-
-    blending:
-      THREE.AdditiveBlending,
-
-    depthWrite: false,
-
-    toneMapped: false
-  });
-}
-
-
-function createWorldStandardMaterial(
-  options
-) {
-  return new THREE.MeshStandardMaterial({
-    color: options.color,
-
-    metalness:
-      getWorldSafeNumber(
-        options.metalness,
-        0.55
-      ),
-
-    roughness:
-      getWorldSafeNumber(
-        options.roughness,
-        0.3
-      ),
-
-    emissive:
-      typeof options.emissive ===
-        "number"
-        ? options.emissive
-        : 0x000000,
-
-    emissiveIntensity:
-      getWorldSafeNumber(
-        options.emissiveIntensity,
-        0
+function worldTileCount() {
+  return Math.max(
+    1,
+    Math.floor(
+      worldNumber(
+        typeof ROAD_TILE_COUNT !== "undefined"
+          ? ROAD_TILE_COUNT
+          : 34,
+        34
       )
-  });
+    )
+  );
 }
 
+function worldLoopDistance() {
+  return Math.max(
+    1,
+    worldNumber(
+      typeof ROAD_LOOP_DISTANCE !== "undefined"
+        ? ROAD_LOOP_DISTANCE
+        : worldTileCount() *
+          worldTileDepth(),
 
-function worldHexColor(color) {
-  return (
-    "#" +
-    Number(color)
-      .toString(16)
-      .padStart(6, "0")
+      worldTileCount() *
+        worldTileDepth()
+    )
   );
+}
+
+function worldMobile() {
+  return window.innerWidth <= 720;
 }
 
 
 /* =========================================================
-   PROCEDURAL TEXTURES
+   TEXTURE HELPERS
 ========================================================= */
 
-function createWorldGlowTexture() {
+function makeCanvasTexture(
+  canvas,
+  repeatX,
+  repeatY
+) {
+  var texture =
+    new THREE.CanvasTexture(
+      canvas
+    );
+
+  texture.wrapS =
+    THREE.RepeatWrapping;
+
+  texture.wrapT =
+    THREE.RepeatWrapping;
+
+  texture.repeat.set(
+    repeatX || 1,
+    repeatY || 1
+  );
+
+  texture.minFilter =
+    THREE.LinearMipmapLinearFilter;
+
+  texture.magFilter =
+    THREE.LinearFilter;
+
+  if (
+    typeof THREE.sRGBEncoding !==
+    "undefined"
+  ) {
+    texture.encoding =
+      THREE.sRGBEncoding;
+  }
+
+  return texture;
+}
+
+
+function makeAsphaltTexture() {
+  var canvas =
+    document.createElement(
+      "canvas"
+    );
+
+  canvas.width = 512;
+  canvas.height = 512;
+
+  var context =
+    canvas.getContext("2d");
+
+  context.fillStyle =
+    "#3c3f42";
+
+  context.fillRect(
+    0,
+    0,
+    512,
+    512
+  );
+
+  for (
+    var index = 0;
+    index < 6000;
+    index++
+  ) {
+    var shade =
+      38 +
+      Math.floor(
+        Math.random() * 45
+      );
+
+    context.fillStyle =
+      "rgba(" +
+      shade +
+      "," +
+      shade +
+      "," +
+      shade +
+      "," +
+      (
+        0.04 +
+        Math.random() *
+        0.09
+      ) +
+      ")";
+
+    var size =
+      0.4 +
+      Math.random() *
+      1.8;
+
+    context.fillRect(
+      Math.random() * 512,
+      Math.random() * 512,
+      size,
+      size
+    );
+  }
+
+  context.strokeStyle =
+    "rgba(15,16,17,0.23)";
+
+  context.lineWidth = 2;
+
+  for (
+    var crack = 0;
+    crack < 8;
+    crack++
+  ) {
+    context.beginPath();
+
+    var x =
+      Math.random() * 512;
+
+    var y =
+      Math.random() * 512;
+
+    context.moveTo(
+      x,
+      y
+    );
+
+    for (
+      var segment = 0;
+      segment < 4;
+      segment++
+    ) {
+      x +=
+        (
+          Math.random() -
+          0.5
+        ) * 36;
+
+      y +=
+        16 +
+        Math.random() *
+        28;
+
+      context.lineTo(
+        x,
+        y
+      );
+    }
+
+    context.stroke();
+  }
+
+  return makeCanvasTexture(
+    canvas,
+    2,
+    4
+  );
+}
+
+
+function makeConcreteTexture() {
   var canvas =
     document.createElement(
       "canvas"
@@ -287,38 +253,8 @@ function createWorldGlowTexture() {
   var context =
     canvas.getContext("2d");
 
-  var gradient =
-    context.createRadialGradient(
-      128,
-      128,
-      0,
-      128,
-      128,
-      128
-    );
-
-  gradient.addColorStop(
-    0,
-    "rgba(255,255,255,1)"
-  );
-
-  gradient.addColorStop(
-    0.16,
-    "rgba(255,215,92,0.95)"
-  );
-
-  gradient.addColorStop(
-    0.45,
-    "rgba(255,125,32,0.42)"
-  );
-
-  gradient.addColorStop(
-    1,
-    "rgba(255,90,0,0)"
-  );
-
   context.fillStyle =
-    gradient;
+    "#aaa094";
 
   context.fillRect(
     0,
@@ -327,29 +263,181 @@ function createWorldGlowTexture() {
     256
   );
 
-  var texture =
-    new THREE.CanvasTexture(
-      canvas
-    );
-
-  texture.minFilter =
-    THREE.LinearFilter;
-
-  if (
-    typeof THREE.sRGBEncoding !==
-      "undefined"
+  for (
+    var index = 0;
+    index < 1600;
+    index++
   ) {
-    texture.encoding =
-      THREE.sRGBEncoding;
+    var shade =
+      120 +
+      Math.floor(
+        Math.random() * 55
+      );
+
+    context.fillStyle =
+      "rgba(" +
+      shade +
+      "," +
+      (
+        shade - 5
+      ) +
+      "," +
+      (
+        shade - 10
+      ) +
+      ",0.08)";
+
+    context.fillRect(
+      Math.random() * 256,
+      Math.random() * 256,
+      1.2,
+      1.2
+    );
   }
 
-  return texture;
+  context.strokeStyle =
+    "rgba(70,65,56,0.18)";
+
+  context.lineWidth = 2;
+
+  for (
+    var line = 0;
+    line <= 256;
+    line += 64
+  ) {
+    context.beginPath();
+
+    context.moveTo(
+      line,
+      0
+    );
+
+    context.lineTo(
+      line,
+      256
+    );
+
+    context.stroke();
+
+    context.beginPath();
+
+    context.moveTo(
+      0,
+      line
+    );
+
+    context.lineTo(
+      256,
+      line
+    );
+
+    context.stroke();
+  }
+
+  return makeCanvasTexture(
+    canvas,
+    2,
+    4
+  );
 }
 
 
-function createWorldHologramTexture(
-  label,
-  color
+function makeFacadeTexture(
+  baseColor,
+  windowColor,
+  trimColor
+) {
+  var canvas =
+    document.createElement(
+      "canvas"
+    );
+
+  canvas.width = 256;
+  canvas.height = 512;
+
+  var context =
+    canvas.getContext("2d");
+
+  context.fillStyle =
+    baseColor;
+
+  context.fillRect(
+    0,
+    0,
+    256,
+    512
+  );
+
+  context.fillStyle =
+    trimColor;
+
+  for (
+    var band = 0;
+    band < 512;
+    band += 96
+  ) {
+    context.fillRect(
+      0,
+      band,
+      256,
+      6
+    );
+  }
+
+  for (
+    var row = 0;
+    row < 9;
+    row++
+  ) {
+    for (
+      var column = 0;
+      column < 4;
+      column++
+    ) {
+      var x =
+        18 +
+        column * 60;
+
+      var y =
+        20 +
+        row * 53;
+
+      context.fillStyle =
+        Math.random() > 0.25
+          ? windowColor
+          : "#2a3034";
+
+      context.fillRect(
+        x,
+        y,
+        38,
+        29
+      );
+
+      context.strokeStyle =
+        "rgba(255,255,255,0.17)";
+
+      context.strokeRect(
+        x,
+        y,
+        38,
+        29
+      );
+    }
+  }
+
+  return makeCanvasTexture(
+    canvas,
+    1,
+    1
+  );
+}
+
+
+function makeSignTexture(
+  text,
+  background,
+  foreground
 ) {
   var canvas =
     document.createElement(
@@ -357,93 +445,35 @@ function createWorldHologramTexture(
     );
 
   canvas.width = 512;
-  canvas.height = 256;
+  canvas.height = 180;
 
   var context =
     canvas.getContext("2d");
 
-  var colorText =
-    worldHexColor(color);
-
-  context.clearRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  var panelGradient =
-    context.createLinearGradient(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
-
-  panelGradient.addColorStop(
-    0,
-    "rgba(2,10,28,0.88)"
-  );
-
-  panelGradient.addColorStop(
-    1,
-    "rgba(18,4,36,0.72)"
-  );
-
   context.fillStyle =
-    panelGradient;
+    background;
 
   context.fillRect(
-    18,
-    18,
-    476,
-    220
+    0,
+    0,
+    512,
+    180
   );
 
   context.strokeStyle =
-    colorText;
+    "rgba(255,255,255,0.45)";
 
-  context.lineWidth = 7;
+  context.lineWidth = 8;
 
   context.strokeRect(
-    22,
-    22,
-    468,
-    212
+    10,
+    10,
+    492,
+    160
   );
 
-  context.globalAlpha =
-    0.28;
-
-  context.lineWidth = 2;
-
-  for (
-    var line = 0;
-    line < 7;
-    line++
-  ) {
-    var y =
-      46 + line * 27;
-
-    context.beginPath();
-
-    context.moveTo(
-      40,
-      y
-    );
-
-    context.lineTo(
-      472,
-      y
-    );
-
-    context.stroke();
-  }
-
-  context.globalAlpha = 1;
-
   context.fillStyle =
-    colorText;
+    foreground;
 
   context.textAlign =
     "center";
@@ -452,229 +482,390 @@ function createWorldHologramTexture(
     "middle";
 
   context.font =
-    "800 66px Segoe UI, Arial, sans-serif";
-
-  context.shadowColor =
-    colorText;
-
-  context.shadowBlur = 22;
+    '800 64px "Noto Sans Devanagari", "Segoe UI", Arial, sans-serif';
 
   context.fillText(
-    label,
+    text,
     256,
-    120
+    82
   );
 
   context.font =
-    "700 22px Segoe UI, Arial, sans-serif";
-
-  context.shadowBlur = 10;
+    '700 20px "Segoe UI", Arial, sans-serif';
 
   context.fillText(
-    "NEO ARYAVARTA // 2149",
+    "NEO BHARAT DISTRICT",
     256,
-    188
+    140
   );
 
-  var texture =
-    new THREE.CanvasTexture(
-      canvas
-    );
-
-  texture.minFilter =
-    THREE.LinearFilter;
-
-  if (
-    typeof THREE.sRGBEncoding !==
-      "undefined"
-  ) {
-    texture.encoding =
-      THREE.sRGBEncoding;
-  }
-
-  return texture;
+  return makeCanvasTexture(
+    canvas,
+    1,
+    1
+  );
 }
 
 
 /* =========================================================
-   ROAD HELPERS
+   MATERIAL HELPERS
 ========================================================= */
 
-function createRoadEnergyArch(
-  tile,
-  tileIndex,
-  cyanMaterial,
-  magentaMaterial,
-  goldMaterial
+function standardMaterial(
+  options
 ) {
-  var arch =
-    new THREE.Group();
+  return new THREE.MeshStandardMaterial({
+    color:
+      options.color ===
+      undefined
+        ? 0xffffff
+        : options.color,
 
-  var archColorMaterial =
-    tileIndex % 2 === 0
-      ? cyanMaterial
-      : magentaMaterial;
+    map:
+      options.map || null,
 
-  var leftPillar =
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        0.12,
-        3.2,
-        0.12
+    roughness:
+      worldNumber(
+        options.roughness,
+        0.75
       ),
-      archColorMaterial
-    );
 
-  leftPillar.position.set(
-    -5.05,
-    1.75,
-    0
-  );
-
-  var rightPillar =
-    leftPillar.clone();
-
-  rightPillar.position.x =
-    5.05;
-
-  var topBeam =
-    new THREE.Mesh(
-      new THREE.BoxGeometry(
-        10.2,
-        0.12,
-        0.12
+    metalness:
+      worldNumber(
+        options.metalness,
+        0.05
       ),
-      archColorMaterial
-    );
 
-  topBeam.position.set(
-    0,
-    3.33,
-    0
-  );
+    emissive:
+      options.emissive ===
+      undefined
+        ? 0x000000
+        : options.emissive,
 
-  var crown =
-    new THREE.Mesh(
-      new THREE.TorusGeometry(
-        0.55,
-        0.045,
-        10,
-        42
+    emissiveIntensity:
+      worldNumber(
+        options.emissiveIntensity,
+        0
       ),
-      goldMaterial
-    );
 
-  crown.position.set(
-    0,
-    3.32,
-    0.08
-  );
+    transparent:
+      Boolean(
+        options.transparent
+      ),
 
-  arch.add(
-    leftPillar,
-    rightPillar,
-    topBeam,
-    crown
-  );
+    opacity:
+      options.opacity ===
+      undefined
+        ? 1
+        : options.opacity,
 
-  arch.position.z =
-    -getWorldTileDepth() *
-    0.28;
-
-  arch.userData.crown =
-    crown;
-
-  arch.userData.phase =
-    tileIndex * 0.63;
-
-  worldVisualState
-    .roadArchLights
-    .push(arch);
-
-  tile.add(arch);
+    side:
+      options.side ||
+      THREE.FrontSide
+  });
 }
 
 
-function createRoadMandala(
+function createWorldMaterials() {
+  var asphaltTexture =
+    makeAsphaltTexture();
+
+  var concreteTexture =
+    makeConcreteTexture();
+
+  var facadeTextures = [
+    makeFacadeTexture(
+      "#92745f",
+      "#edc88c",
+      "#6c5444"
+    ),
+
+    makeFacadeTexture(
+      "#617d8a",
+      "#b9dfed",
+      "#425866"
+    ),
+
+    makeFacadeTexture(
+      "#896b7d",
+      "#edb7cf",
+      "#634d5d"
+    ),
+
+    makeFacadeTexture(
+      "#9a8760",
+      "#f0cf91",
+      "#716547"
+    ),
+
+    makeFacadeTexture(
+      "#60776e",
+      "#bfd9cb",
+      "#44584f"
+    )
+  ];
+
+  realisticWorld.materials = {
+    asphalt:
+      standardMaterial({
+        color: 0x4a4d50,
+        map: asphaltTexture,
+        roughness: 0.95,
+        metalness: 0.01
+      }),
+
+    sidewalk:
+      standardMaterial({
+        color: 0xb1a797,
+        map: concreteTexture,
+        roughness: 0.91
+      }),
+
+    curbLight:
+      standardMaterial({
+        color: 0xe7d8bc,
+        roughness: 0.88
+      }),
+
+    curbDark:
+      standardMaterial({
+        color: 0x704c39,
+        roughness: 0.9
+      }),
+
+    lane:
+      standardMaterial({
+        color: 0xf3efe4,
+        roughness: 0.62
+      }),
+
+    center:
+      standardMaterial({
+        color: 0xe5b34d,
+        roughness: 0.62
+      }),
+
+    metal:
+      standardMaterial({
+        color: 0x555e65,
+        roughness: 0.47,
+        metalness: 0.58
+      }),
+
+    darkMetal:
+      standardMaterial({
+        color: 0x34393d,
+        roughness: 0.45,
+        metalness: 0.62
+      }),
+
+    lamp:
+      standardMaterial({
+        color: 0xffe0a0,
+        roughness: 0.3,
+        emissive: 0xffb45b,
+        emissiveIntensity: 0.45
+      }),
+
+    glass:
+      standardMaterial({
+        color: 0x718f9f,
+        roughness: 0.18,
+        metalness: 0.12,
+        transparent: true,
+        opacity: 0.7
+      }),
+
+    roof:
+      standardMaterial({
+        color: 0x595655,
+        roughness: 0.8,
+        metalness: 0.08
+      }),
+
+    terracotta:
+      standardMaterial({
+        color: 0xa55d3d,
+        roughness: 0.83
+      }),
+
+    plant:
+      standardMaterial({
+        color: 0x496c46,
+        roughness: 0.92
+      }),
+
+    tire:
+      standardMaterial({
+        color: 0x191a1b,
+        roughness: 0.94
+      }),
+
+    facades:
+      facadeTextures.map(
+        function (texture) {
+          return standardMaterial({
+            color: 0xffffff,
+            map: texture,
+            roughness: 0.79,
+            metalness: 0.03
+          });
+        }
+      )
+  };
+}
+
+
+/* =========================================================
+   ROAD PROPS
+========================================================= */
+
+function addStreetLamp(
   tile,
-  tileIndex,
-  goldMaterial,
-  cyanMaterial
+  side,
+  zPosition
 ) {
-  var mandala =
+  var materials =
+    realisticWorld.materials;
+
+  var group =
     new THREE.Group();
 
-  var outerRing =
+  var pole =
     new THREE.Mesh(
-      new THREE.TorusGeometry(
-        0.64,
-        0.035,
-        10,
-        48
+      new THREE.CylinderGeometry(
+        0.055,
+        0.075,
+        3.4,
+        10
       ),
-      goldMaterial
+      materials.darkMetal
     );
 
-  var innerRing =
+  pole.position.y =
+    1.7;
+
+  pole.castShadow =
+    true;
+
+  var arm =
     new THREE.Mesh(
-      new THREE.TorusGeometry(
-        0.34,
-        0.025,
-        10,
-        36
+      new THREE.BoxGeometry(
+        0.74,
+        0.07,
+        0.07
       ),
-      cyanMaterial
+      materials.darkMetal
     );
 
-  outerRing.rotation.x =
-    Math.PI / 2;
-
-  innerRing.rotation.x =
-    Math.PI / 2;
-
-  mandala.position.set(
-    0,
-    0.22,
+  arm.position.set(
+    -side * 0.34,
+    3.35,
     0
   );
 
-  mandala.add(
-    outerRing,
-    innerRing
+  var bulb =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        0.24,
+        0.1,
+        0.18
+      ),
+      materials.lamp
+    );
+
+  bulb.position.set(
+    -side * 0.72,
+    3.31,
+    0
   );
 
-  for (
-    var spokeIndex = 0;
-    spokeIndex < 8;
-    spokeIndex++
-  ) {
-    var spoke =
-      new THREE.Mesh(
-        new THREE.BoxGeometry(
-          0.025,
-          0.025,
-          0.42
-        ),
-        goldMaterial
-      );
+  group.add(
+    pole,
+    arm,
+    bulb
+  );
 
-    spoke.rotation.y =
-      (
-        Math.PI * 2 *
-        spokeIndex
-      ) / 8;
+  group.position.set(
+    side * 6.65,
+    0.2,
+    zPosition
+  );
 
-    mandala.add(spoke);
-  }
+  tile.add(group);
+}
 
-  mandala.userData.phase =
-    tileIndex * 0.45;
 
-  worldVisualState
-    .roadMandalaParts
-    .push(mandala);
+function addPlanter(
+  tile,
+  side,
+  zPosition
+) {
+  var materials =
+    realisticWorld.materials;
 
-  tile.add(mandala);
+  var group =
+    new THREE.Group();
+
+  var pot =
+    new THREE.Mesh(
+      new THREE.CylinderGeometry(
+        0.32,
+        0.38,
+        0.42,
+        10
+      ),
+      materials.terracotta
+    );
+
+  pot.position.y =
+    0.26;
+
+  var leaves =
+    new THREE.Mesh(
+      new THREE.DodecahedronGeometry(
+        0.38,
+        0
+      ),
+      materials.plant
+    );
+
+  leaves.position.y =
+    0.73;
+
+  leaves.scale.set(
+    0.9,
+    1.18,
+    0.9
+  );
+
+  leaves.castShadow =
+    true;
+
+  group.add(
+    pot,
+    leaves
+  );
+
+  group.position.set(
+    side * 6.75,
+    0.2,
+    zPosition
+  );
+
+  group.userData.leaves =
+    leaves;
+
+  group.userData.phase =
+    Math.random() *
+    Math.PI *
+    2;
+
+  tile.add(group);
+
+  realisticWorld.plants.push(
+    group
+  );
 }
 
 
@@ -683,87 +874,34 @@ function createRoadMandala(
 ========================================================= */
 
 function createRoad() {
-  resetWorldVisualState();
-
   if (!roadGroup) {
     return;
   }
 
-  var roadTileCount =
-    getWorldRoadTileCount();
+  realisticWorld.signs = [];
+  realisticWorld.plants = [];
+  realisticWorld.traffic = [];
+  realisticWorld.distantBuildings = [];
+  realisticWorld.rainMesh = null;
+  realisticWorld.rainData = [];
+  realisticWorld.landmark = null;
+
+  createWorldMaterials();
+
+  roadTiles.length = 0;
+
+  var materials =
+    realisticWorld.materials;
+
+  var tileCount =
+    worldTileCount();
 
   var tileDepth =
-    getWorldTileDepth();
-
-  var roadBaseMaterial =
-    createWorldStandardMaterial({
-      color: 0x071326,
-      metalness: 0.82,
-      roughness: 0.28,
-      emissive: 0x03172d,
-      emissiveIntensity: 0.42
-    });
-
-  var roadShoulderMaterial =
-    createWorldStandardMaterial({
-      color: 0x102f55,
-      metalness: 0.72,
-      roughness: 0.3,
-      emissive: 0x06223d,
-      emissiveIntensity: 0.38
-    });
-
-  var laneFloorMaterial =
-    createWorldStandardMaterial({
-      color: 0x0b2548,
-      metalness: 0.7,
-      roughness: 0.24,
-      emissive: 0x061c36,
-      emissiveIntensity: 0.52
-    });
-
-  var laneInsetMaterial =
-    createWorldStandardMaterial({
-      color: 0x102d53,
-      metalness: 0.78,
-      roughness: 0.22,
-      emissive: 0x07345a,
-      emissiveIntensity: 0.45
-    });
-
-  var cyanGlowMaterial =
-    createWorldGlowMaterial(
-      0x38ecff,
-      0.95
-    );
-
-  var cyanSoftMaterial =
-    createWorldGlowMaterial(
-      0x00bde8,
-      0.58
-    );
-
-  var magentaGlowMaterial =
-    createWorldGlowMaterial(
-      0xd45cff,
-      0.9
-    );
-
-  var goldGlowMaterial =
-    createWorldGlowMaterial(
-      0xffc44d,
-      0.96
-    );
-
-  var warningMaterial =
-    createWorldGlowMaterial(
-      0xff7a24,
-      0.92
-    );
+    worldTileDepth();
 
   for (
     var tileIndex = 0;
-    tileIndex < roadTileCount;
+    tileIndex < tileCount;
     tileIndex++
   ) {
     var tile =
@@ -773,308 +911,150 @@ function createRoad() {
       -tileIndex *
       tileDepth;
 
-    tile.userData.phase =
-      tileIndex * 0.52;
-
-    var base =
+    var road =
       new THREE.Mesh(
         new THREE.BoxGeometry(
-          11.4,
+          11.5,
           0.28,
           tileDepth
         ),
-        roadBaseMaterial
+        materials.asphalt
       );
 
-    base.position.set(
-      0,
-      -0.13,
-      0
-    );
+    road.position.y =
+      -0.14;
 
-    base.receiveShadow = true;
+    road.receiveShadow =
+      true;
 
-    tile.add(base);
-
-    var leftShoulder =
+    var leftWalk =
       new THREE.Mesh(
         new THREE.BoxGeometry(
-          1.1,
-          0.14,
-          tileDepth - 0.18
+          1.7,
+          0.34,
+          tileDepth
         ),
-        roadShoulderMaterial
+        materials.sidewalk
       );
 
-    leftShoulder.position.set(
-      -5.1,
+    leftWalk.position.set(
+      -6.6,
       0.02,
       0
     );
 
-    var rightShoulder =
-      leftShoulder.clone();
+    leftWalk.receiveShadow =
+      true;
 
-    rightShoulder.position.x =
-      5.1;
+    var rightWalk =
+      leftWalk.clone();
 
-    tile.add(
-      leftShoulder,
-      rightShoulder
-    );
+    rightWalk.position.x =
+      6.6;
 
-    for (
-      var laneIndex = 0;
-      laneIndex < 3;
-      laneIndex++
-    ) {
-      var laneX =
-        -3 + laneIndex * 3;
-
-      var laneFloor =
-        new THREE.Mesh(
-          new THREE.BoxGeometry(
-            2.72,
-            0.07,
-            tileDepth - 0.22
-          ),
-          laneFloorMaterial
-        );
-
-      laneFloor.position.set(
-        laneX,
-        0.04,
-        0
-      );
-
-      laneFloor.receiveShadow =
-        true;
-
-      tile.add(laneFloor);
-
-      var laneInset =
-        new THREE.Mesh(
-          new THREE.BoxGeometry(
-            2.18,
-            0.035,
-            tileDepth - 0.62
-          ),
-          laneInsetMaterial
-        );
-
-      laneInset.position.set(
-        laneX,
-        0.087,
-        0
-      );
-
-      tile.add(laneInset);
-    }
-
-    var leftDivider =
+    var leftCurb =
       new THREE.Mesh(
         new THREE.BoxGeometry(
-          0.075,
-          0.055,
-          tileDepth - 0.45
+          0.3,
+          0.22,
+          tileDepth
         ),
-        cyanGlowMaterial
+
+        tileIndex % 2 === 0
+          ? materials.curbLight
+          : materials.curbDark
       );
 
-    leftDivider.position.set(
-      -1.5,
-      0.145,
+    leftCurb.position.set(
+      -5.73,
+      0.08,
       0
     );
 
-    var rightDivider =
-      leftDivider.clone();
+    var rightCurb =
+      leftCurb.clone();
 
-    rightDivider.position.x =
-      1.5;
+    rightCurb.position.x =
+      5.73;
 
-    tile.add(
-      leftDivider,
-      rightDivider
-    );
-
-    var leftEdgeRail =
+    var dividerLeft =
       new THREE.Mesh(
         new THREE.BoxGeometry(
-          0.12,
-          0.16,
-          tileDepth - 0.18
-        ),
-        magentaGlowMaterial
-      );
-
-    leftEdgeRail.position.set(
-      -5.52,
-      0.19,
-      0
-    );
-
-    var rightEdgeRail =
-      leftEdgeRail.clone();
-
-    rightEdgeRail.position.x =
-      5.52;
-
-    tile.add(
-      leftEdgeRail,
-      rightEdgeRail
-    );
-
-    var leftLowerGlow =
-      new THREE.Mesh(
-        new THREE.BoxGeometry(
-          0.055,
-          0.06,
-          tileDepth - 0.28
-        ),
-        cyanSoftMaterial
-      );
-
-    leftLowerGlow.position.set(
-      -5.3,
-      0.13,
-      0
-    );
-
-    var rightLowerGlow =
-      leftLowerGlow.clone();
-
-    rightLowerGlow.position.x =
-      5.3;
-
-    tile.add(
-      leftLowerGlow,
-      rightLowerGlow
-    );
-
-    var centerDash =
-      new THREE.Mesh(
-        new THREE.BoxGeometry(
-          0.15,
-          0.065,
+          0.09,
+          0.018,
           Math.min(
-            2.5,
-            tileDepth * 0.34
+            3.2,
+            tileDepth * 0.5
           )
         ),
-        goldGlowMaterial
+        materials.lane
       );
 
-    centerDash.position.set(
-      0,
-      0.15,
+    dividerLeft.position.set(
+      -1.5,
+      0.155,
       0
     );
 
-    tile.add(centerDash);
+    var dividerRight =
+      dividerLeft.clone();
 
-    var crossSeam =
+    dividerRight.position.x =
+      1.5;
+
+    var centerMark =
       new THREE.Mesh(
         new THREE.BoxGeometry(
-          10.6,
-          0.022,
-          0.055
+          0.11,
+          0.02,
+          1.8
         ),
-        cyanSoftMaterial
+        materials.center
       );
 
-    crossSeam.position.set(
+    centerMark.position.set(
       0,
-      0.14,
-      -tileDepth * 0.48
+      0.158,
+      tileDepth * 0.23
     );
 
-    tile.add(crossSeam);
+    tile.add(
+      road,
+      leftWalk,
+      rightWalk,
+      leftCurb,
+      rightCurb,
+      dividerLeft,
+      dividerRight,
+      centerMark
+    );
 
-    var scannerMaterial =
-      createWorldGlowMaterial(
+    if (
+      tileIndex % 3 === 0
+    ) {
+      addStreetLamp(
+        tile,
+
         tileIndex % 2 === 0
-          ? 0x39efff
-          : 0xffbf4d,
-        0.34
-      );
+          ? -1
+          : 1,
 
-    var scanner =
-      new THREE.Mesh(
-        new THREE.BoxGeometry(
-          9.6,
-          0.025,
-          0.18
-        ),
-        scannerMaterial
-      );
-
-    scanner.position.set(
-      0,
-      0.17,
-      tileDepth * 0.22
-    );
-
-    scanner.userData.phase =
-      tileIndex * 0.8;
-
-    worldVisualState
-      .roadScanners
-      .push(scanner);
-
-    tile.add(scanner);
-
-    if (
-      tileIndex % 2 === 0
-    ) {
-      var leftMarker =
-        new THREE.Mesh(
-          new THREE.BoxGeometry(
-            0.22,
-            0.32,
-            0.22
-          ),
-          warningMaterial
-        );
-
-      leftMarker.position.set(
-        -5.42,
-        0.34,
-        -tileDepth * 0.22
-      );
-
-      var rightMarker =
-        leftMarker.clone();
-
-      rightMarker.position.x =
-        5.42;
-
-      tile.add(
-        leftMarker,
-        rightMarker
+        -tileDepth * 0.12
       );
     }
 
     if (
-      tileIndex % 4 === 0
+      !worldMobile() &&
+      tileIndex % 4 === 1
     ) {
-      createRoadMandala(
+      addPlanter(
         tile,
-        tileIndex,
-        goldGlowMaterial,
-        cyanGlowMaterial
-      );
-    }
 
-    if (
-      tileIndex % 7 === 0
-    ) {
-      createRoadEnergyArch(
-        tile,
-        tileIndex,
-        cyanGlowMaterial,
-        magentaGlowMaterial,
-        goldGlowMaterial
+        tileIndex % 2 === 0
+          ? -1
+          : 1,
+
+        tileDepth * 0.18
       );
     }
 
@@ -1086,189 +1066,594 @@ function createRoad() {
 
 
 /* =========================================================
-   BUILDING HELPERS
+   BUILDING SIGN
 ========================================================= */
 
-function createBuildingHologram(
+function addBuildingSign(
   building,
   side,
   width,
   height,
-  depth,
-  label,
-  color,
-  phase
+  index
 ) {
+  var labels = [
+    "भारत",
+    "सूर्य मार्ग",
+    "आर्यावर्त",
+    "नव नगर",
+    "वेग केंद्र"
+  ];
+
+  var palettes = [
+    [
+      "#8c3f2d",
+      "#ffe6a4"
+    ],
+
+    [
+      "#274e5c",
+      "#d4f1ef"
+    ],
+
+    [
+      "#5e3d65",
+      "#f3d5ef"
+    ]
+  ];
+
+  var palette =
+    palettes[
+      index %
+      palettes.length
+    ];
+
   var texture =
-    createWorldHologramTexture(
-      label,
-      color
+    makeSignTexture(
+      labels[
+        index %
+        labels.length
+      ],
+      palette[0],
+      palette[1]
     );
 
   var material =
-    new THREE.MeshBasicMaterial({
-      map: texture,
+    standardMaterial({
       color: 0xffffff,
-      transparent: true,
-      opacity: 0.72,
-      side: THREE.DoubleSide,
-      blending:
-        THREE.AdditiveBlending,
-      depthWrite: false,
-      toneMapped: false
+      map: texture,
+      roughness: 0.5,
+      emissive: 0x3a2419,
+      emissiveIntensity: 0.18,
+      side: THREE.DoubleSide
     });
 
-  var panel =
+  var sign =
     new THREE.Mesh(
       new THREE.PlaneGeometry(
         Math.min(
-          3.2,
-          width * 1.5
+          3.6,
+          width * 1.2
         ),
-        1.15
+        1.2
       ),
       material
     );
 
-  panel.position.set(
+  sign.position.set(
     -side *
       (
         width / 2 +
-        0.08
+        0.035
       ),
 
-    Math.min(
-      height - 1,
-      Math.max(
-        2.2,
-        height * 0.56
-      )
+    Math.max(
+      2.2,
+      height * 0.56
     ),
 
     0
   );
 
-  panel.rotation.y =
+  sign.rotation.y =
     side > 0
       ? Math.PI / 2
       : -Math.PI / 2;
 
-  panel.userData.phase =
-    phase;
+  sign.userData.phase =
+    index * 0.73;
 
-  building.userData.hologram =
-    panel;
+  building.add(sign);
 
-  building.add(panel);
+  realisticWorld.signs.push(
+    sign
+  );
 }
 
 
-function createBuildingRoofDetails(
-  building,
-  width,
-  height,
-  goldMaterial,
-  cyanMaterial,
-  magentaMaterial,
-  buildingIndex
+/* =========================================================
+   CREATE BUILDING
+========================================================= */
+
+function createBuilding(
+  index,
+  distant
 ) {
-  var topRing =
-    new THREE.Mesh(
-      new THREE.TorusGeometry(
-        Math.max(
-          0.35,
-          width * 0.34
-        ),
-        0.035,
-        10,
-        34
-      ),
+  var materials =
+    realisticWorld.materials;
 
-      buildingIndex % 2 === 0
-        ? goldMaterial
-        : cyanMaterial
+  var building =
+    new THREE.Group();
+
+  var side =
+    Math.random() > 0.5
+      ? 1
+      : -1;
+
+  var height =
+    distant
+      ? 8 +
+        Math.random() *
+        16
+      : 5 +
+        Math.random() *
+        12;
+
+  var width =
+    distant
+      ? 2 +
+        Math.random() *
+        4
+      : 1.8 +
+        Math.random() *
+        3.2;
+
+  var depth =
+    distant
+      ? 2 +
+        Math.random() *
+        4
+      : 1.8 +
+        Math.random() *
+        3.4;
+
+  var roadDistance =
+    distant
+      ? 18 +
+        Math.random() *
+        18
+      : 8.2 +
+        Math.random() *
+        8.5;
+
+  var facade =
+    materials.facades[
+      index %
+      materials.facades.length
+    ];
+
+  var body =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        width,
+        height,
+        depth
+      ),
+      facade
     );
 
-  topRing.position.set(
-    0,
-    height + 0.28,
-    0
-  );
+  body.position.y =
+    height / 2;
 
-  topRing.rotation.x =
-    Math.PI / 2;
+  body.receiveShadow =
+    true;
 
-  building.userData.topRing =
-    topRing;
-
-  building.add(topRing);
-
-  var beacon =
-    new THREE.Mesh(
-      new THREE.SphereGeometry(
-        0.09,
-        12,
-        12
-      ),
-
-      buildingIndex % 3 === 0
-        ? magentaMaterial
-        : goldMaterial
-    );
-
-  beacon.position.set(
-    0,
-    height + 0.54,
-    0
-  );
-
-  building.userData.beacon =
-    beacon;
-
-  building.add(beacon);
-
-  if (
-    buildingIndex % 5 === 0
-  ) {
-    var spire =
-      new THREE.Mesh(
-        new THREE.ConeGeometry(
-          Math.max(
-            0.22,
-            width * 0.2
-          ),
-
-          Math.min(
-            2.8,
-            height * 0.24
-          ),
-
-          5
-        ),
-
-        createWorldStandardMaterial({
-          color: 0x132746,
-          metalness: 0.75,
-          roughness: 0.24,
-          emissive: 0x6d20a4,
-          emissiveIntensity: 0.52
-        })
+  body.castShadow =
+    !distant &&
+    index <
+      (
+        worldMobile()
+          ? 4
+          : 10
       );
 
-    spire.position.set(
-      0,
+  building.add(body);
 
-      height +
-        Math.min(
-          1.4,
-          height * 0.12
+  if (
+    !distant &&
+    index % 3 === 0
+  ) {
+    var upperHeight =
+      height * 0.32;
+
+    var upper =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          width * 0.66,
+          upperHeight,
+          depth * 0.68
         ),
+        facade
+      );
 
-      0
+    upper.position.y =
+      height +
+      upperHeight / 2;
+
+    building.add(upper);
+
+    height +=
+      upperHeight;
+  }
+
+  if (
+    !distant &&
+    index % 4 === 1
+  ) {
+    var balcony =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          width * 0.82,
+          0.1,
+          depth * 0.32
+        ),
+        materials.roof
+      );
+
+    balcony.position.set(
+      0,
+      height * 0.55,
+      -depth * 0.62
     );
 
-    building.add(spire);
+    building.add(
+      balcony
+    );
   }
+
+  if (!distant) {
+    var tank =
+      new THREE.Mesh(
+        new THREE.CylinderGeometry(
+          0.3,
+          0.34,
+          0.62,
+          12
+        ),
+
+        index % 2 === 0
+          ? materials.roof
+          : materials.terracotta
+      );
+
+    tank.position.set(
+      -width * 0.2,
+      height + 0.34,
+      depth * 0.05
+    );
+
+    var solarPanel =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          width * 0.46,
+          0.06,
+          depth * 0.34
+        ),
+        materials.glass
+      );
+
+    solarPanel.position.set(
+      width * 0.18,
+      height + 0.26,
+      -depth * 0.08
+    );
+
+    solarPanel.rotation.x =
+      -0.2;
+
+    building.add(
+      tank,
+      solarPanel
+    );
+  }
+
+  if (
+    !distant &&
+    index % 6 === 0
+  ) {
+    addBuildingSign(
+      building,
+      side,
+      width,
+      height,
+      index
+    );
+  }
+
+  building.position.set(
+    side * roadDistance,
+
+    0,
+
+    distant
+      ? -55 -
+        Math.random() *
+        245
+      : -14 -
+        Math.random() *
+        250
+  );
+
+  building.userData.baseX =
+    building.position.x;
+
+  building.userData.speedFactor =
+    distant
+      ? 0.28 +
+        Math.random() *
+        0.1
+      : 0.5 +
+        Math.random() *
+        0.2;
+
+  return building;
+}
+
+
+/* =========================================================
+   SERVICE TRAFFIC
+========================================================= */
+
+function createTrafficVehicle(
+  index
+) {
+  var materials =
+    realisticWorld.materials;
+
+  var colors = [
+    0xc65c3e,
+    0x3e7188,
+    0xd0a44b,
+    0x6d7d59,
+    0x8a5a79
+  ];
+
+  var bodyMaterial =
+    standardMaterial({
+      color:
+        colors[
+          index %
+          colors.length
+        ],
+
+      roughness: 0.5,
+      metalness: 0.22
+    });
+
+  var vehicle =
+    new THREE.Group();
+
+  var body =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        1.05,
+        0.42,
+        1.8
+      ),
+      bodyMaterial
+    );
+
+  body.position.y =
+    0.45;
+
+  body.castShadow =
+    true;
+
+  var cabin =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        0.8,
+        0.42,
+        0.82
+      ),
+      materials.glass
+    );
+
+  cabin.position.set(
+    0,
+    0.82,
+    -0.08
+  );
+
+  vehicle.add(
+    body,
+    cabin
+  );
+
+  for (
+    var wheelIndex = 0;
+    wheelIndex < 4;
+    wheelIndex++
+  ) {
+    var wheel =
+      new THREE.Mesh(
+        new THREE.CylinderGeometry(
+          0.17,
+          0.17,
+          0.12,
+          12
+        ),
+        materials.tire
+      );
+
+    wheel.rotation.z =
+      Math.PI / 2;
+
+    wheel.position.set(
+      wheelIndex % 2 === 0
+        ? -0.56
+        : 0.56,
+
+      0.24,
+
+      wheelIndex < 2
+        ? -0.55
+        : 0.55
+    );
+
+    vehicle.add(wheel);
+  }
+
+  var side =
+    index % 2 === 0
+      ? -1
+      : 1;
+
+  vehicle.position.set(
+    side *
+      (
+        8.5 +
+        Math.random() *
+        1.4
+      ),
+
+    0,
+
+    -30 -
+    Math.random() *
+    230
+  );
+
+  vehicle.rotation.y =
+    side < 0
+      ? Math.PI
+      : 0;
+
+  vehicle.userData.speedFactor =
+    0.22 +
+    Math.random() *
+    0.34;
+
+  vehicle.userData.phase =
+    index * 0.8;
+
+  return vehicle;
+}
+
+
+/* =========================================================
+   DISTANT LANDMARK
+========================================================= */
+
+function createLandmark() {
+  var materials =
+    realisticWorld.materials;
+
+  var landmark =
+    new THREE.Group();
+
+  var base =
+    new THREE.Mesh(
+      new THREE.BoxGeometry(
+        18,
+        1.3,
+        8
+      ),
+      materials.terracotta
+    );
+
+  base.position.y =
+    0.65;
+
+  landmark.add(base);
+
+  for (
+    var level = 0;
+    level < 5;
+    level++
+  ) {
+    var block =
+      new THREE.Mesh(
+        new THREE.BoxGeometry(
+          10 -
+          level * 1.35,
+
+          2.3,
+
+          4.5 -
+          level * 0.45
+        ),
+
+        level % 2 === 0
+          ? materials.curbLight
+          : materials.terracotta
+      );
+
+    block.position.y =
+      2 +
+      level * 2;
+
+    landmark.add(
+      block
+    );
+  }
+
+  var crown =
+    new THREE.Mesh(
+      new THREE.ConeGeometry(
+        2.2,
+        4.2,
+        4
+      ),
+      materials.terracotta
+    );
+
+  crown.position.y =
+    13.2;
+
+  crown.rotation.y =
+    Math.PI / 4;
+
+  var flag =
+    new THREE.Mesh(
+      new THREE.PlaneGeometry(
+        1.2,
+        0.55
+      ),
+      materials.terracotta
+    );
+
+  flag.position.set(
+    0.62,
+    17.25,
+    0
+  );
+
+  landmark.add(
+    crown,
+    flag
+  );
+
+  landmark.position.set(
+    0,
+    0,
+    -190
+  );
+
+  landmark.scale.set(
+    1.2,
+    1.2,
+    1.2
+  );
+
+  landmark.userData.flag =
+    flag;
+
+  cityGroup.add(
+    landmark
+  );
+
+  realisticWorld.landmark =
+    landmark;
 }
 
 
@@ -1281,385 +1666,33 @@ function createCity() {
     return;
   }
 
-  var quality =
-    worldVisualState.quality ||
-    getWorldQualityProfile();
+  buildings.length = 0;
 
-  var buildingPalette = [
-    {
-      color: 0x0b1830,
-      emissive: 0x06214a
-    },
+  var foregroundCount =
+    worldMobile()
+      ? 32
+      : 54;
 
-    {
-      color: 0x1b0c35,
-      emissive: 0x4b0d72
-    },
+  var distantCount =
+    worldMobile()
+      ? 16
+      : 28;
 
-    {
-      color: 0x08223a,
-      emissive: 0x074a66
-    },
-
-    {
-      color: 0x28102e,
-      emissive: 0x731448
-    }
-  ];
-
-  var cyanWindowMaterial =
-    createWorldGlowMaterial(
-      0x4aeaff,
-      0.84
-    );
-
-  var goldWindowMaterial =
-    createWorldGlowMaterial(
-      0xffcb52,
-      0.82
-    );
-
-  var magentaWindowMaterial =
-    createWorldGlowMaterial(
-      0xd35cff,
-      0.8
-    );
-
-  var violetWindowMaterial =
-    createWorldGlowMaterial(
-      0x8b5cff,
-      0.76
-    );
-
-  var hologramLabels = [
-    "भारत",
-    "सूर्य",
-    "वेग",
-    "आर्यावर्त",
-    "अस्त्र"
-  ];
+  var trafficCount =
+    worldMobile()
+      ? 4
+      : 8;
 
   for (
-    var buildingIndex = 0;
-    buildingIndex <
-      quality.buildingCount;
-    buildingIndex++
+    var index = 0;
+    index < foregroundCount;
+    index++
   ) {
     var building =
-      new THREE.Group();
-
-    var side =
-      Math.random() > 0.5
-        ? 1
-        : -1;
-
-    var height =
-      4.5 +
-      Math.random() *
-      13.5;
-
-    var width =
-      1.6 +
-      Math.random() *
-      2.8;
-
-    var depth =
-      1.7 +
-      Math.random() *
-      3.4;
-
-    var distanceFromRoad =
-      7.2 +
-      Math.random() *
-      9.5;
-
-    building.position.set(
-      side *
-        distanceFromRoad,
-
-      0,
-
-      -12 -
-        Math.random() *
-        245
-    );
-
-    var palette =
-      buildingPalette[
-        buildingIndex %
-        buildingPalette.length
-      ];
-
-    var towerMaterial =
-      createWorldStandardMaterial({
-        color: palette.color,
-
-        metalness:
-          0.72 +
-          Math.random() *
-          0.16,
-
-        roughness:
-          0.2 +
-          Math.random() *
-          0.14,
-
-        emissive:
-          palette.emissive,
-
-        emissiveIntensity:
-          0.48 +
-          Math.random() *
-          0.32
-      });
-
-    var tower =
-      new THREE.Mesh(
-        new THREE.BoxGeometry(
-          width,
-          height,
-          depth
-        ),
-        towerMaterial
+      createBuilding(
+        index,
+        false
       );
-
-    tower.position.y =
-      height / 2;
-
-    tower.castShadow =
-      buildingIndex % 4 === 0;
-
-    tower.receiveShadow =
-      buildingIndex % 4 === 0;
-
-    building.add(tower);
-
-    if (
-      buildingIndex % 3 === 0
-    ) {
-      var upperHeight =
-        height * 0.34;
-
-      var upperTower =
-        new THREE.Mesh(
-          new THREE.BoxGeometry(
-            width * 0.64,
-            upperHeight,
-            depth * 0.62
-          ),
-
-          createWorldStandardMaterial({
-            color: 0x122844,
-            metalness: 0.78,
-            roughness: 0.2,
-
-            emissive:
-              buildingIndex % 2 === 0
-                ? 0x0c4961
-                : 0x53216f,
-
-            emissiveIntensity:
-              0.62
-          })
-        );
-
-      upperTower.position.set(
-        0,
-        height +
-          upperHeight / 2,
-        0
-      );
-
-      upperTower.castShadow =
-        false;
-
-      building.add(
-        upperTower
-      );
-
-      height +=
-        upperHeight;
-    }
-
-    var windowMaterialChoices = [
-      cyanWindowMaterial,
-      goldWindowMaterial,
-      magentaWindowMaterial,
-      violetWindowMaterial
-    ];
-
-    var rowCount =
-      Math.min(
-        quality.windowRows,
-
-        Math.max(
-          4,
-          Math.floor(
-            height / 1.55
-          )
-        )
-      );
-
-    for (
-      var rowIndex = 0;
-      rowIndex < rowCount;
-      rowIndex++
-    ) {
-      var rowMaterial =
-        windowMaterialChoices[
-          (
-            rowIndex +
-            buildingIndex
-          ) %
-          windowMaterialChoices.length
-        ];
-
-      var frontWindow =
-        new THREE.Mesh(
-          new THREE.BoxGeometry(
-            width * 0.72,
-            0.055,
-            0.035
-          ),
-          rowMaterial
-        );
-
-      frontWindow.position.set(
-        0,
-
-        0.9 +
-          rowIndex *
-          1.35,
-
-        depth / 2 +
-          0.035
-      );
-
-      building.add(
-        frontWindow
-      );
-
-      var roadWindow =
-        new THREE.Mesh(
-          new THREE.BoxGeometry(
-            0.035,
-            0.055,
-            depth * 0.66
-          ),
-          rowMaterial
-        );
-
-      roadWindow.position.set(
-        -side *
-          (
-            width / 2 +
-            0.035
-          ),
-
-        0.9 +
-          rowIndex *
-          1.35,
-
-        0
-      );
-
-      building.add(
-        roadWindow
-      );
-    }
-
-    var neonSpineMaterial =
-      buildingIndex % 2 === 0
-        ? cyanWindowMaterial
-        : magentaWindowMaterial;
-
-    var neonSpine =
-      new THREE.Mesh(
-        new THREE.BoxGeometry(
-          0.055,
-
-          Math.max(
-            2.5,
-            height * 0.72
-          ),
-
-          0.06
-        ),
-
-        neonSpineMaterial
-      );
-
-    neonSpine.position.set(
-      -side *
-        (
-          width / 2 +
-          0.04
-        ),
-
-      Math.max(
-        1.8,
-        height * 0.48
-      ),
-
-      -depth * 0.18
-    );
-
-    building.add(
-      neonSpine
-    );
-
-    createBuildingRoofDetails(
-      building,
-      width,
-      height,
-      goldWindowMaterial,
-      cyanWindowMaterial,
-      magentaWindowMaterial,
-      buildingIndex
-    );
-
-    if (
-      buildingIndex % 6 === 0
-    ) {
-      createBuildingHologram(
-        building,
-        side,
-        width,
-        height,
-        depth,
-
-        hologramLabels[
-          buildingIndex %
-          hologramLabels.length
-        ],
-
-        buildingIndex % 2 === 0
-          ? 0x42eaff
-          : 0xffbf4d,
-
-        buildingIndex * 0.37
-      );
-    }
-
-    building.userData.phase =
-      buildingIndex * 0.41;
-
-    building.userData.side =
-      side;
-
-    building.userData.baseX =
-      building.position.x;
-
-    building.userData.speedFactor =
-      0.54 +
-      Math.random() *
-      0.22;
-
-    building.userData.tower =
-      tower;
-
-    building.userData.baseHeight =
-      height;
 
     buildings.push(
       building
@@ -1669,11 +1702,56 @@ function createCity() {
       building
     );
   }
+
+  for (
+    var distantIndex = 0;
+    distantIndex < distantCount;
+    distantIndex++
+  ) {
+    var distantBuilding =
+      createBuilding(
+        distantIndex + 100,
+        true
+      );
+
+    realisticWorld
+      .distantBuildings
+      .push(
+        distantBuilding
+      );
+
+    cityGroup.add(
+      distantBuilding
+    );
+  }
+
+  for (
+    var trafficIndex = 0;
+    trafficIndex < trafficCount;
+    trafficIndex++
+  ) {
+    var vehicle =
+      createTrafficVehicle(
+        trafficIndex
+      );
+
+    realisticWorld
+      .traffic
+      .push(
+        vehicle
+      );
+
+    cityGroup.add(
+      vehicle
+    );
+  }
+
+  createLandmark();
 }
 
 
 /* =========================================================
-   CREATE RAIN
+   OPTIONAL RAIN
 ========================================================= */
 
 function createRain() {
@@ -1681,62 +1759,62 @@ function createRain() {
     return;
   }
 
-  var quality =
-    worldVisualState.quality ||
-    getWorldQualityProfile();
-
-  var dropCount =
-    quality.rainDropCount;
+  var count =
+    worldMobile()
+      ? 80
+      : 150;
 
   var positions =
     new Float32Array(
-      dropCount * 2 * 3
+      count * 6
     );
 
+  realisticWorld.rainData = [];
   rainDrops.length = 0;
 
   for (
-    var dropIndex = 0;
-    dropIndex < dropCount;
-    dropIndex++
+    var index = 0;
+    index < count;
+    index++
   ) {
-    rainDrops.push({
+    var drop = {
       x:
         (
           Math.random() -
           0.5
-        ) * 32,
+        ) * 30,
 
       y:
-        1 +
+        2 +
         Math.random() *
-        15,
+        14,
 
       z:
         -Math.random() *
         150,
 
       length:
-        0.55 +
+        0.35 +
         Math.random() *
-        0.75,
+        0.55,
 
-      fallSpeed:
-        0.26 +
+      fall:
+        0.2 +
         Math.random() *
-        0.22,
+        0.22
+    };
 
-      drift:
-        -0.015 -
-        Math.random() *
-        0.02
-    });
+    realisticWorld
+      .rainData
+      .push(drop);
+
+    rainDrops.push(drop);
   }
 
   var geometry =
     new THREE.BufferGeometry();
 
-  var positionAttribute =
+  var attribute =
     new THREE.BufferAttribute(
       positions,
       3
@@ -1744,501 +1822,119 @@ function createRain() {
 
   geometry.setAttribute(
     "position",
-    positionAttribute
+    attribute
   );
 
   var material =
     new THREE.LineBasicMaterial({
-      color: 0x8feaff,
+      color: 0xc7d5dc,
       transparent: true,
-      opacity: 0.42,
-
-      blending:
-        THREE.AdditiveBlending,
-
-      depthWrite: false,
-
-      toneMapped: false
+      opacity: 0.24,
+      depthWrite: false
     });
 
-  var rainMesh =
+  realisticWorld.rainMesh =
     new THREE.LineSegments(
       geometry,
       material
     );
 
-  rainMesh.frustumCulled =
+  realisticWorld
+    .rainMesh
+    .userData
+    .positionAttribute =
+    attribute;
+
+  realisticWorld
+    .rainMesh
+    .frustumCulled =
     false;
-
-  worldVisualState.rainMesh =
-    rainMesh;
-
-  worldVisualState.rainPositionAttribute =
-    positionAttribute;
-
-  worldVisualState.rainMaterial =
-    material;
 
   updateRainGeometry();
 
   rainGroup.add(
-    rainMesh
+    realisticWorld.rainMesh
   );
 }
 
 
 function updateRainGeometry() {
-  var attribute =
-    worldVisualState
-      .rainPositionAttribute;
-
-  if (!attribute) {
+  if (
+    !realisticWorld.rainMesh
+  ) {
     return;
   }
 
-  var array =
-    attribute.array;
+  var positions =
+    realisticWorld
+      .rainMesh
+      .userData
+      .positionAttribute
+      .array;
 
   for (
-    var dropIndex = 0;
-    dropIndex <
-      rainDrops.length;
-    dropIndex++
+    var index = 0;
+    index <
+      realisticWorld
+        .rainData
+        .length;
+    index++
   ) {
     var drop =
-      rainDrops[
-        dropIndex
-      ];
+      realisticWorld
+        .rainData[
+          index
+        ];
 
-    var arrayIndex =
-      dropIndex * 6;
+    var positionIndex =
+      index * 6;
 
-    array[arrayIndex] =
+    positions[
+      positionIndex
+    ] =
       drop.x;
 
-    array[arrayIndex + 1] =
+    positions[
+      positionIndex + 1
+    ] =
       drop.y;
 
-    array[arrayIndex + 2] =
+    positions[
+      positionIndex + 2
+    ] =
       drop.z;
 
-    array[arrayIndex + 3] =
-      drop.x +
-      drop.drift * 6;
+    positions[
+      positionIndex + 3
+    ] =
+      drop.x - 0.06;
 
-    array[arrayIndex + 4] =
+    positions[
+      positionIndex + 4
+    ] =
       drop.y -
       drop.length;
 
-    array[arrayIndex + 5] =
-      drop.z + 0.26;
+    positions[
+      positionIndex + 5
+    ] =
+      drop.z + 0.12;
   }
 
-  attribute.needsUpdate =
+  realisticWorld
+    .rainMesh
+    .userData
+    .positionAttribute
+    .needsUpdate =
     true;
 }
 
 
-/* =========================================================
-   SKY HELPERS
-========================================================= */
-
-function createWorldStarField() {
-  var quality =
-    worldVisualState.quality ||
-    getWorldQualityProfile();
-
-  var positions =
-    new Float32Array(
-      quality.starCount * 3
-    );
-
-  for (
-    var starIndex = 0;
-    starIndex <
-      quality.starCount;
-    starIndex++
-  ) {
-    positions[
-      starIndex * 3
-    ] =
-      (
-        Math.random() -
-        0.5
-      ) * 180;
-
-    positions[
-      starIndex * 3 + 1
-    ] =
-      6 +
-      Math.random() *
-      58;
-
-    positions[
-      starIndex * 3 + 2
-    ] =
-      -25 -
-      Math.random() *
-      310;
-  }
-
-  var geometry =
-    new THREE.BufferGeometry();
-
-  geometry.setAttribute(
-    "position",
-
-    new THREE.BufferAttribute(
-      positions,
-      3
-    )
-  );
-
-  var material =
-    new THREE.PointsMaterial({
-      color: 0xbfefff,
-      size: 0.16,
-      transparent: true,
-      opacity: 0.72,
-
-      blending:
-        THREE.AdditiveBlending,
-
-      depthWrite: false,
-      sizeAttenuation: true,
-      toneMapped: false
-    });
-
-  var stars =
-    new THREE.Points(
-      geometry,
-      material
-    );
-
-  worldVisualState.starField =
-    stars;
-
-  cityGroup.add(
-    stars
-  );
-}
-
-
-function createHorizonSuryaMandala() {
-  var group =
-    new THREE.Group();
-
-  group.position.set(
-    0,
-    18,
-    -178
-  );
-
-  var glowSprite =
-    new THREE.Sprite(
-      new THREE.SpriteMaterial({
-        map:
-          createWorldGlowTexture(),
-
-        color: 0xffa726,
-
-        transparent: true,
-
-        opacity: 0.82,
-
-        blending:
-          THREE.AdditiveBlending,
-
-        depthWrite: false,
-
-        toneMapped: false
-      })
-    );
-
-  glowSprite.scale.set(
-    28,
-    28,
-    1
-  );
-
-  group.add(
-    glowSprite
-  );
-
-  var core =
-    new THREE.Mesh(
-      new THREE.SphereGeometry(
-        2.7,
-        32,
-        32
-      ),
-
-      new THREE.MeshBasicMaterial({
-        color: 0xffc24b,
-        toneMapped: false
-      })
-    );
-
-  group.add(core);
-
-  var ringColors = [
-    0xffc24b,
-    0xff7a22,
-    0x58ecff
-  ];
-
-  var ringSizes = [
-    4.2,
-    5.6,
-    7.1
-  ];
-
-  for (
-    var ringIndex = 0;
-    ringIndex <
-      ringSizes.length;
-    ringIndex++
-  ) {
-    var ring =
-      new THREE.Mesh(
-        new THREE.TorusGeometry(
-          ringSizes[
-            ringIndex
-          ],
-          0.07,
-          12,
-          96
-        ),
-
-        createWorldGlowMaterial(
-          ringColors[
-            ringIndex
-          ],
-
-          0.86 -
-            ringIndex *
-            0.12
-        )
-      );
-
-    ring.userData.spinDirection =
-      ringIndex % 2 === 0
-        ? 1
-        : -1;
-
-    ring.userData.spinSpeed =
-      0.08 +
-      ringIndex *
-      0.035;
-
-    worldVisualState
-      .horizonRings
-      .push(ring);
-
-    group.add(ring);
-  }
-
-  for (
-    var spokeIndex = 0;
-    spokeIndex < 16;
-    spokeIndex++
-  ) {
-    var spoke =
-      new THREE.Mesh(
-        new THREE.BoxGeometry(
-          0.065,
-          5.8,
-          0.05
-        ),
-
-        createWorldGlowMaterial(
-          spokeIndex % 2 === 0
-            ? 0xffc24b
-            : 0xff7a22,
-
-          0.7
-        )
-      );
-
-    spoke.position.z =
-      -0.05;
-
-    spoke.rotation.z =
-      (
-        Math.PI * 2 *
-        spokeIndex
-      ) / 16;
-
-    group.add(spoke);
-  }
-
-  var isMobile =
-    worldVisualState.quality &&
-    worldVisualState.quality.mobile;
-
-  var horizonLight =
-    new THREE.PointLight(
-      0xff8a24,
-
-      isMobile
-        ? 1.25
-        : 1.85,
-
-      150
-    );
-
-  horizonLight.position.set(
-    0,
-    0,
-    8
-  );
-
-  group.add(
-    horizonLight
-  );
-
-  worldVisualState.horizonSurya =
-    group;
-
-  worldVisualState.horizonCore =
-    core;
-
-  worldVisualState.horizonGlow =
-    glowSprite;
-
-  cityGroup.add(
-    group
-  );
-}
-
-
-/* =========================================================
-   CREATE SKY SYMBOLS
-========================================================= */
-
 function createSkySymbols() {
-  if (!cityGroup) {
-    return;
-  }
-
-  createWorldStarField();
-
-  createHorizonSuryaMandala();
-
-  var quality =
-    worldVisualState.quality ||
-    getWorldQualityProfile();
-
-  var goldMaterial =
-    createWorldGlowMaterial(
-      0xffca52,
-      0.72
-    );
-
-  var cyanMaterial =
-    createWorldGlowMaterial(
-      0x46eaff,
-      0.66
-    );
-
-  var magentaMaterial =
-    createWorldGlowMaterial(
-      0xd45cff,
-      0.58
-    );
-
-  for (
-    var symbolIndex = 0;
-    symbolIndex <
-      quality.skySymbolCount;
-    symbolIndex++
-  ) {
-    var symbol =
-      new THREE.Group();
-
-    var outer =
-      new THREE.Mesh(
-        new THREE.TorusGeometry(
-          0.62 +
-            Math.random() *
-            0.75,
-
-          0.028,
-          10,
-          50
-        ),
-
-        symbolIndex % 3 === 0
-          ? goldMaterial
-          : symbolIndex % 3 === 1
-            ? cyanMaterial
-            : magentaMaterial
-      );
-
-    var inner =
-      new THREE.Mesh(
-        new THREE.TorusGeometry(
-          0.28 +
-            Math.random() *
-            0.25,
-
-          0.018,
-          8,
-          36
-        ),
-
-        symbolIndex % 2 === 0
-          ? cyanMaterial
-          : goldMaterial
-      );
-
-    symbol.add(
-      outer,
-      inner
-    );
-
-    symbol.position.set(
-      (
-        Math.random() -
-        0.5
-      ) * 26,
-
-      6 +
-        Math.random() *
-        10,
-
-      -25 -
-        symbolIndex *
-        17
-    );
-
-    symbol.rotation.x =
-      Math.random() *
-      0.25;
-
-    symbol.rotation.y =
-      Math.random() *
-      0.55;
-
-    symbol.userData.phase =
-      symbolIndex * 0.7;
-
-    symbol.userData.spin =
-      symbolIndex % 2 === 0
-        ? 1
-        : -1;
-
-    symbol.userData.baseY =
-      symbol.position.y;
-
-    worldVisualState
-      .skySymbols
-      .push(symbol);
-
-    cityGroup.add(
-      symbol
-    );
-  }
+  /*
+   * Old neon rings intentionally removed.
+   * effects.js now creates the sunset sky.
+   */
 }
 
 
@@ -2248,28 +1944,18 @@ function createSkySymbols() {
 
 function updateMovingWorld() {
   var currentSpeed =
-    getWorldSpeed();
+    worldSpeed();
 
-  var time =
-    (
-      typeof performance !==
-        "undefined" &&
-      typeof performance.now ===
-        "function"
-    )
+  var currentTime =
+    typeof performance !==
+    "undefined"
       ? performance.now() *
         0.001
       : Date.now() *
         0.001;
 
-  var loopDistance =
-    getWorldRoadLoopDistance();
 
-  var tileDepth =
-    getWorldTileDepth();
-
-
-  /* ROAD MOVEMENT */
+  /* Road */
 
   for (
     var tileIndex = 0;
@@ -2289,116 +1975,12 @@ function updateMovingWorld() {
       tile.position.z > 12
     ) {
       tile.position.z -=
-        loopDistance;
+        worldLoopDistance();
     }
   }
 
 
-  /* ROAD SCANNERS */
-
-  for (
-    var scannerIndex = 0;
-    scannerIndex <
-      worldVisualState
-        .roadScanners
-        .length;
-    scannerIndex++
-  ) {
-    var scanner =
-      worldVisualState
-        .roadScanners[
-          scannerIndex
-        ];
-
-    var scannerPhase =
-      scanner.userData.phase ||
-      0;
-
-    scanner.material.opacity =
-      0.24 +
-      Math.abs(
-        Math.sin(
-          time * 2.8 +
-          scannerPhase
-        )
-      ) * 0.48;
-
-    scanner.position.z =
-      Math.sin(
-        time * 1.6 +
-        scannerPhase
-      ) *
-      tileDepth *
-      0.24;
-  }
-
-
-  /* ROAD MANDALAS */
-
-  for (
-    var mandalaIndex = 0;
-    mandalaIndex <
-      worldVisualState
-        .roadMandalaParts
-        .length;
-    mandalaIndex++
-  ) {
-    var mandala =
-      worldVisualState
-        .roadMandalaParts[
-          mandalaIndex
-        ];
-
-    mandala.rotation.y +=
-      0.008;
-
-    mandala.scale.setScalar(
-      0.94 +
-      Math.sin(
-        time * 2.1 +
-        mandala.userData.phase
-      ) * 0.06
-    );
-  }
-
-
-  /* ENERGY ARCHES */
-
-  for (
-    var archIndex = 0;
-    archIndex <
-      worldVisualState
-        .roadArchLights
-        .length;
-    archIndex++
-  ) {
-    var arch =
-      worldVisualState
-        .roadArchLights[
-          archIndex
-        ];
-
-    if (
-      arch.userData.crown
-    ) {
-      arch.userData.crown
-        .rotation.z +=
-        0.012;
-
-      arch.userData.crown
-        .scale
-        .setScalar(
-          0.92 +
-          Math.sin(
-            time * 2.4 +
-            arch.userData.phase
-          ) * 0.08
-        );
-    }
-  }
-
-
-  /* BUILDINGS */
+  /* Foreground buildings */
 
   for (
     var buildingIndex = 0;
@@ -2411,327 +1993,237 @@ function updateMovingWorld() {
         buildingIndex
       ];
 
-    var buildingPhase =
-      building.userData.phase ||
-      0;
-
-    var speedFactor =
-      building.userData
-        .speedFactor ||
-      0.65;
-
     building.position.z +=
       currentSpeed *
-      speedFactor;
+      building.userData
+        .speedFactor;
 
     if (
       building.position.z >
-      34
+      38
     ) {
       building.position.z -=
-        260;
+        275;
 
       building.position.x =
         building.userData.baseX +
         (
           Math.random() -
           0.5
-        ) * 1.2;
-    }
-
-    if (
-      building.userData.topRing
-    ) {
-      building.userData
-        .topRing
-        .rotation.z +=
-        0.004 +
-        buildingIndex %
-          3 *
-          0.0015;
-    }
-
-    if (
-      building.userData.beacon
-    ) {
-      var beaconPulse =
-        0.82 +
-        Math.sin(
-          time * 3.4 +
-          buildingPhase
-        ) * 0.18;
-
-      building.userData
-        .beacon
-        .scale
-        .setScalar(
-          beaconPulse
-        );
-    }
-
-    if (
-      building.userData.hologram
-    ) {
-      var hologram =
-        building.userData
-          .hologram;
-
-      hologram.material.opacity =
-        0.46 +
-        Math.abs(
-          Math.sin(
-            time * 1.7 +
-            hologram.userData.phase
-          )
-        ) * 0.42;
-
-      hologram.position.y +=
-        Math.sin(
-          time * 1.35 +
-          hologram.userData.phase
-        ) * 0.0015;
-    }
-
-    if (
-      building.userData.tower &&
-      building.userData.tower
-        .material
-    ) {
-      building.userData
-        .tower
-        .material
-        .emissiveIntensity =
-        0.48 +
-        Math.abs(
-          Math.sin(
-            time * 0.72 +
-            buildingPhase
-          )
-        ) * 0.28;
+        ) *
+        1.2;
     }
   }
 
 
-  /* RAIN */
+  /* Distant skyline */
 
   for (
-    var dropIndex = 0;
-    dropIndex <
-      rainDrops.length;
-    dropIndex++
+    var distantIndex = 0;
+    distantIndex <
+      realisticWorld
+        .distantBuildings
+        .length;
+    distantIndex++
   ) {
-    var drop =
-      rainDrops[
-        dropIndex
-      ];
+    var distantBuilding =
+      realisticWorld
+        .distantBuildings[
+          distantIndex
+        ];
 
-    drop.z +=
+    distantBuilding.position.z +=
       currentSpeed *
-      2.15 +
-      0.08;
-
-    drop.y -=
-      drop.fallSpeed;
-
-    drop.x +=
-      drop.drift;
+      distantBuilding
+        .userData
+        .speedFactor;
 
     if (
-      drop.y < -0.5 ||
-      drop.z > 14 ||
-      Math.abs(
-        drop.x
-      ) > 19
+      distantBuilding.position.z >
+      45
     ) {
-      drop.x =
-        (
-          Math.random() -
-          0.5
-        ) * 32;
-
-      drop.y =
-        9 +
-        Math.random() *
-        9;
-
-      drop.z =
-        -110 -
-        Math.random() *
-        70;
-
-      drop.length =
-        0.55 +
-        Math.random() *
-        0.75;
-
-      drop.fallSpeed =
-        0.26 +
-        Math.random() *
-        0.22;
-
-      drop.drift =
-        -0.015 -
-        Math.random() *
-        0.02;
+      distantBuilding.position.z -=
+        315;
     }
   }
 
-  updateRainGeometry();
 
-  if (
-    worldVisualState.rainMaterial
+  /* Side traffic */
+
+  for (
+    var vehicleIndex = 0;
+    vehicleIndex <
+      realisticWorld
+        .traffic
+        .length;
+    vehicleIndex++
   ) {
-    worldVisualState
-      .rainMaterial
-      .opacity =
-      0.32 +
-      Math.min(
-        0.18,
-        currentSpeed *
-        0.12
-      );
+    var vehicle =
+      realisticWorld
+        .traffic[
+          vehicleIndex
+        ];
+
+    vehicle.position.z +=
+      currentSpeed *
+      vehicle.userData
+        .speedFactor;
+
+    vehicle.position.y =
+      0.02 +
+      Math.sin(
+        currentTime *
+        2.2 +
+        vehicle.userData.phase
+      ) *
+      0.008;
+
+    if (
+      vehicle.position.z >
+      34
+    ) {
+      vehicle.position.z =
+        -225 -
+        Math.random() *
+        90;
+    }
   }
 
 
-  /* SURYA HORIZON */
+  /* Sign brightness */
 
-  if (
-    worldVisualState.horizonSurya
+  for (
+    var signIndex = 0;
+    signIndex <
+      realisticWorld
+        .signs
+        .length;
+    signIndex++
   ) {
-    worldVisualState
-      .horizonSurya
-      .position.y =
-      18 +
-      Math.sin(
-        time * 0.55
-      ) * 0.34;
+    var sign =
+      realisticWorld
+        .signs[
+          signIndex
+        ];
 
-    worldVisualState
-      .horizonSurya
+    sign.material.emissiveIntensity =
+      0.18 +
+      Math.sin(
+        currentTime *
+        0.8 +
+        sign.userData.phase
+      ) *
+      0.025;
+  }
+
+
+  /* Plant movement */
+
+  for (
+    var plantIndex = 0;
+    plantIndex <
+      realisticWorld
+        .plants
+        .length;
+    plantIndex++
+  ) {
+    var plant =
+      realisticWorld
+        .plants[
+          plantIndex
+        ];
+
+    plant.userData
+      .leaves
       .rotation.z =
       Math.sin(
-        time * 0.22
-      ) * 0.045;
+        currentTime *
+        1.1 +
+        plant.userData.phase
+      ) *
+      0.035;
   }
 
+
+  /* Landmark flag */
+
   if (
-    worldVisualState.horizonCore
+    realisticWorld.landmark &&
+    realisticWorld
+      .landmark
+      .userData.flag
   ) {
-    var corePulse =
+    realisticWorld
+      .landmark
+      .userData.flag
+      .rotation.y =
+      Math.sin(
+        currentTime *
+        2.2
+      ) *
+      0.12;
+
+    realisticWorld
+      .landmark
+      .userData.flag
+      .scale.x =
       1 +
       Math.sin(
-        time * 2.25
-      ) * 0.07;
-
-    worldVisualState
-      .horizonCore
-      .scale
-      .setScalar(
-        corePulse
-      );
+        currentTime *
+        3.1
+      ) *
+      0.05;
   }
+
+
+  /* Optional rain */
 
   if (
-    worldVisualState.horizonGlow
+    realisticWorld.rainMesh
   ) {
-    var glowPulse =
-      27 +
-      Math.sin(
-        time * 1.35
-      ) * 2.2;
-
-    worldVisualState
-      .horizonGlow
-      .scale
-      .set(
-        glowPulse,
-        glowPulse,
-        1
-      );
-
-    worldVisualState
-      .horizonGlow
-      .material
-      .opacity =
-      0.72 +
-      Math.sin(
-        time * 1.8
-      ) * 0.1;
-  }
-
-  for (
-    var ringIndex = 0;
-    ringIndex <
-      worldVisualState
-        .horizonRings
-        .length;
-    ringIndex++
-  ) {
-    var ring =
-      worldVisualState
-        .horizonRings[
-          ringIndex
-        ];
-
-    ring.rotation.z +=
-      ring.userData.spinSpeed *
-      ring.userData.spinDirection *
-      0.016;
-  }
-
-
-  /* FLOATING SKY SYMBOLS */
-
-  for (
-    var symbolIndex = 0;
-    symbolIndex <
-      worldVisualState
-        .skySymbols
-        .length;
-    symbolIndex++
-  ) {
-    var symbol =
-      worldVisualState
-        .skySymbols[
-          symbolIndex
-        ];
-
-    symbol.rotation.z +=
-      0.0035 *
-      symbol.userData.spin;
-
-    symbol.rotation.y +=
-      0.0018 *
-      symbol.userData.spin;
-
-    symbol.position.y =
-      symbol.userData.baseY +
-      Math.sin(
-        time * 0.72 +
-        symbol.userData.phase
-      ) * 0.35;
-
-    symbol.position.z +=
-      currentSpeed *
-      0.13;
-
-    if (
-      symbol.position.z > 22
+    for (
+      var rainIndex = 0;
+      rainIndex <
+        realisticWorld
+          .rainData
+          .length;
+      rainIndex++
     ) {
-      symbol.position.z -=
-        250;
+      var drop =
+        realisticWorld
+          .rainData[
+            rainIndex
+          ];
+
+      drop.z +=
+        currentSpeed *
+        1.55;
+
+      drop.y -=
+        drop.fall;
+
+      if (
+        drop.y < -0.5 ||
+        drop.z > 14
+      ) {
+        drop.x =
+          (
+            Math.random() -
+            0.5
+          ) * 30;
+
+        drop.y =
+          10 +
+          Math.random() *
+          8;
+
+        drop.z =
+          -110 -
+          Math.random() *
+          70;
+      }
     }
-  }
 
-
-  /* STAR FIELD */
-
-  if (
-    worldVisualState.starField
-  ) {
-    worldVisualState
-      .starField
-      .rotation.y +=
-      0.00008;
+    updateRainGeometry();
   }
 }
