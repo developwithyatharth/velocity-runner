@@ -484,6 +484,7 @@ function ensureGameScreenLayering() {
 
 /* =========================================================
    INITIALIZE THREE.JS
+   Phase R3: Stylized-realistic mobile renderer
 ========================================================= */
 
 function initThree() {
@@ -508,68 +509,92 @@ function initThree() {
 
   ensureGameScreenLayering();
 
-  scene =
-    new THREE.Scene();
+  /* -----------------------------------------------------
+     SCENE AND ATMOSPHERE
+  ----------------------------------------------------- */
+
+  scene = new THREE.Scene();
 
   /*
-   * Warm atmospheric clear colour.
-   * The sky dome in effects.js renders above it.
+   * Warm blue-grey sky.
+   * This is brighter and more natural than the old
+   * almost-black cyberpunk background.
    */
 
   scene.background =
     new THREE.Color(
-      0x91a9bd
+      0x91a7b8
     );
 
   /*
-   * Natural atmospheric perspective.
+   * Warm atmospheric haze gives depth while keeping
+   * obstacles and lanes visible.
    */
 
   scene.fog =
     new THREE.Fog(
-      0x9aa4a8,
-      52,
-      235
+      0xb4a798,
+      42,
+      215
     );
+
+  /* -----------------------------------------------------
+     CAMERA
+  ----------------------------------------------------- */
 
   camera =
     new THREE.PerspectiveCamera(
       56,
-
       window.innerWidth /
-      window.innerHeight,
-
+        window.innerHeight,
       0.1,
       450
     );
 
   camera.position.set(
     0,
-    5.25,
-    9.4
+    4.45,
+    8.85
   );
 
   camera.lookAt(
     0,
     1.45,
-    -14
+    -13
   );
 
-  var mobileDevice =
-    window.innerWidth <= 720;
+  /*
+   * Store the resting camera position for camera shake
+   * and cinematic movement systems.
+   */
+
+  camera.userData.basePosition =
+    camera.position.clone();
+
+  camera.userData.baseLookTarget =
+    new THREE.Vector3(
+      0,
+      1.45,
+      -13
+    );
+
+  /* -----------------------------------------------------
+     WEBGL RENDERER
+  ----------------------------------------------------- */
 
   renderer =
     new THREE.WebGLRenderer({
       canvas: canvas,
-
-      antialias:
-        !mobileDevice,
-
+      antialias: true,
       alpha: false,
-
       powerPreference:
         "high-performance"
     });
+
+  renderer.setClearColor(
+    0x91a7b8,
+    1
+  );
 
   renderer.setSize(
     window.innerWidth,
@@ -577,20 +602,21 @@ function initThree() {
     false
   );
 
+  /*
+   * Keep mobile rendering safe.
+   * High-density phones will not render above 2×.
+   */
+
   renderer.setPixelRatio(
     Math.min(
       window.devicePixelRatio || 1,
-
-      mobileDevice
-        ? 1.25
-        : 1.6
+      2
     )
   );
 
-  renderer.setClearColor(
-    0x91a9bd,
-    1
-  );
+  /* -----------------------------------------------------
+     SHADOWS
+  ----------------------------------------------------- */
 
   renderer.shadowMap.enabled =
     true;
@@ -601,15 +627,28 @@ function initThree() {
   renderer.shadowMap.autoUpdate =
     true;
 
+  /*
+   * Keep legacy Three.js light behaviour because the
+   * current game materials were designed around it.
+   */
+
+  renderer.physicallyCorrectLights =
+    false;
+
+  /* -----------------------------------------------------
+     CINEMATIC COLOUR MANAGEMENT
+  ----------------------------------------------------- */
+
   if (
-    typeof THREE.ACESFilmicToneMapping !==
+    typeof THREE
+      .ACESFilmicToneMapping !==
     "undefined"
   ) {
     renderer.toneMapping =
       THREE.ACESFilmicToneMapping;
 
     renderer.toneMappingExposure =
-      0.92;
+      1.08;
   }
 
   if (
@@ -620,13 +659,9 @@ function initThree() {
       THREE.sRGBEncoding;
   }
 
-  if (
-    "physicallyCorrectLights" in
-    renderer
-  ) {
-    renderer.physicallyCorrectLights =
-      true;
-  }
+  /* -----------------------------------------------------
+     CREATE GAME CONTENT
+  ----------------------------------------------------- */
 
   createMainLighting();
 
@@ -644,181 +679,222 @@ function initThree() {
   onResize();
 
   console.log(
-    "Velocity Runner realistic scene initialized:",
+    "Velocity Runner R3 scene initialized:",
     scene.children.length,
     "scene objects"
   );
 }
+
+
 /* =========================================================
-   LIGHTING
+   STYLIZED-REALISTIC LIGHTING
+   Phase R3
 ========================================================= */
 
 function createMainLighting() {
-  /*
-   * Low ambient light preserves shape and shadows.
-   */
+  if (!scene) {
+    return;
+  }
+
+  /* -----------------------------------------------------
+     SOFT WORLD LIGHT
+  ----------------------------------------------------- */
 
   var ambientLight =
     new THREE.AmbientLight(
-      0xffffff,
-      0.24
+      0xfff3df,
+      0.48
     );
+
+  ambientLight.name =
+    "World Ambient Light";
 
   scene.add(
     ambientLight
   );
 
-
-  /*
-   * Soft sky and warm ground illumination.
-   */
+  /* -----------------------------------------------------
+     SKY AND GROUND LIGHT
+  ----------------------------------------------------- */
 
   var hemisphereLight =
     new THREE.HemisphereLight(
-      0xb9dcff,
-      0x6a4a36,
-      0.82
+      0xcfe7ff,
+      0x665343,
+      1.18
     );
+
+  hemisphereLight.name =
+    "Natural Hemisphere Light";
+
+  hemisphereLight.position.set(
+    0,
+    18,
+    0
+  );
 
   scene.add(
     hemisphereLight
   );
 
+  /* -----------------------------------------------------
+     MAIN SUNLIGHT
+  ----------------------------------------------------- */
 
-  /*
-   * Main warm sunlight.
-   */
-
-  var sunlight =
+  var sunLight =
     new THREE.DirectionalLight(
-      0xffd4a8,
-      1.7
+      0xffd0a3,
+      1.58
     );
 
-  sunlight.position.set(
-    -18,
-    28,
-    14
+  sunLight.name =
+    "Neo Bharat Sunset Sun";
+
+  sunLight.position.set(
+    -9,
+    17,
+    10
   );
 
-  sunlight.castShadow =
+  sunLight.target.position.set(
+    0,
+    0,
+    -28
+  );
+
+  sunLight.castShadow =
     true;
 
-  var shadowResolution =
-    window.innerWidth <= 720
-      ? 1024
-      : 2048;
-
-  sunlight.shadow.mapSize.set(
-    shadowResolution,
-    shadowResolution
+  sunLight.shadow.mapSize.set(
+    1024,
+    1024
   );
 
-  sunlight.shadow.camera.left =
+  /*
+   * Keep the shadow area focused around the player
+   * and visible gameplay zone.
+   */
+
+  sunLight.shadow.camera.left =
     -13;
 
-  sunlight.shadow.camera.right =
+  sunLight.shadow.camera.right =
     13;
 
-  sunlight.shadow.camera.top =
-    15;
+  sunLight.shadow.camera.top =
+    16;
 
-  sunlight.shadow.camera.bottom =
-    -5;
+  sunLight.shadow.camera.bottom =
+    -7;
 
-  sunlight.shadow.camera.near =
+  sunLight.shadow.camera.near =
     1;
 
-  sunlight.shadow.camera.far =
-    90;
+  sunLight.shadow.camera.far =
+    65;
 
-  sunlight.shadow.bias =
-    -0.00035;
+  sunLight.shadow.bias =
+    -0.00015;
 
-  sunlight.shadow.normalBias =
-    0.035;
+  sunLight.shadow.normalBias =
+    0.025;
 
-  sunlight.shadow.radius =
-    3;
+  scene.add(
+    sunLight
+  );
 
-  sunlight.target.position.set(
+  scene.add(
+    sunLight.target
+  );
+
+  /* -----------------------------------------------------
+     COOL SKY FILL
+  ----------------------------------------------------- */
+
+  var skyFill =
+    new THREE.DirectionalLight(
+      0xbad8ff,
+      0.48
+    );
+
+  skyFill.name =
+    "Cool Sky Fill";
+
+  skyFill.position.set(
+    8,
+    9,
+    4
+  );
+
+  skyFill.target.position.set(
     0,
-    0,
+    2,
+    -18
+  );
+
+  scene.add(
+    skyFill
+  );
+
+  scene.add(
+    skyFill.target
+  );
+
+  /* -----------------------------------------------------
+     WARM DISTANT RIM LIGHT
+  ----------------------------------------------------- */
+
+  var sunsetRimLight =
+    new THREE.DirectionalLight(
+      0xff9d52,
+      0.52
+    );
+
+  sunsetRimLight.name =
+    "Sunset Rim Light";
+
+  sunsetRimLight.position.set(
+    10,
+    7,
     -32
   );
 
-  scene.add(
-    sunlight
+  sunsetRimLight.target.position.set(
+    0,
+    2,
+    0
   );
 
   scene.add(
-    sunlight.target
+    sunsetRimLight
   );
 
+  scene.add(
+    sunsetRimLight.target
+  );
 
   /*
-   * Soft cool fill light prevents completely
-   * black shadows without producing neon glare.
+   * Store references so later weather, boss and
+   * environment systems can adjust the lighting.
    */
 
-  var coolFill =
-    new THREE.DirectionalLight(
-      0xa8c8e8,
-      0.34
-    );
+  scene.userData.mainLights = {
+    ambientLight:
+      ambientLight,
 
-  coolFill.position.set(
-    14,
-    10,
-    6
-  );
+    hemisphereLight:
+      hemisphereLight,
 
-  coolFill.target.position.set(
-    0,
-    1,
-    -20
-  );
+    sunLight:
+      sunLight,
 
-  scene.add(
-    coolFill
-  );
+    skyFill:
+      skyFill,
 
-  scene.add(
-    coolFill.target
-  );
-
-
-  /*
-   * Warm horizon rim light.
-   */
-
-  var horizonFill =
-    new THREE.DirectionalLight(
-      0xffb878,
-      0.22
-    );
-
-  horizonFill.position.set(
-    -8,
-    6,
-    -45
-  );
-
-  horizonFill.target.position.set(
-    0,
-    3,
-    -15
-  );
-
-  scene.add(
-    horizonFill
-  );
-
-  scene.add(
-    horizonFill.target
-  );
+    sunsetRimLight:
+      sunsetRimLight
+  };
 }
-
 /* =========================================================
    CREATE GAME GROUPS
 ========================================================= */
