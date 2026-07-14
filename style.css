@@ -4696,3 +4696,42 @@ body.tutorial-open {
       scale(0.8);
   }
 }
+/* =========================================================
+   RUNNOVA H1C — LIVE 3D HERO
+========================================================= */
+
+.home-runner-fallback {
+  transition:
+    opacity 0.35s ease,
+    visibility 0.35s ease,
+    transform 0.35s ease;
+}
+
+#homeScreen.home-3d-character-ready
+.home-runner-fallback {
+  opacity: 0;
+  visibility: hidden;
+
+  transform:
+    translate(-50%, -42%)
+    scale(0.84);
+}
+
+#homeScreen.home-3d-character-ready
+.home-stage-ring {
+  opacity: 0.42;
+}
+
+#homeScreen.home-3d-character-ready
+.home-hero-label {
+  bottom: 1%;
+}
+
+#homeScreen.home-3d-character-ready
+.home-hero-label strong {
+  color: #ffffff;
+
+  text-shadow:
+    0 3px 0 rgba(39, 46, 124, 0.45),
+    0 0 13px rgba(66, 247, 241, 0.56);
+}
