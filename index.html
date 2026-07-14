@@ -5,575 +5,659 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   />
 
   <meta
     name="description"
-    content="Velocity Runner: Rise of Bharat — a futuristic 3D endless runner set in Neo Aryavarta."
+    content="RunNova — a colorful animated 3D endless-runner adventure across an ever-changing world."
   />
 
- <meta
-  name="description"
-  content="RunNova — a colorful 3D endless-runner adventure across an ever-changing world."
-/>
+  <meta name="theme-color" content="#168ee8" />
 
-<title>RunNova — Run Beyond</title>
-  <link rel="stylesheet"href="style.css?v=h1c1"/>
+  <title>RunNova — Run Beyond</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css?v=h1p2"
+  />
 </head>
 
 <body>
 
- <!-- =====================================================
-     RUNNOVA HOME SCREEN
-====================================================== -->
+  <!-- =====================================================
+       RUNNOVA HOME SCREEN
+  ====================================================== -->
 
-<section
-  id="homeScreen"
-  class="screen active runnova-home"
-  aria-label="RunNova home screen"
->
-  <!-- THREE.JS HOME SCENE — USED IN PHASE H1B -->
-
-  <canvas
-    id="homeCanvas"
-    class="home-canvas"
-    aria-hidden="true"
-  ></canvas>
-
-
-  <!-- ANIMATED CSS SKY FALLBACK -->
-
-  <div
-    class="home-sky"
-    aria-hidden="true"
+  <section
+    id="homeScreen"
+    class="screen active runnova-home"
+    aria-label="RunNova home screen"
   >
-    <div class="home-sun"></div>
+    <!-- Live Three.js home scene -->
 
-    <div class="home-cloud home-cloud-one"></div>
-    <div class="home-cloud home-cloud-two"></div>
-    <div class="home-cloud home-cloud-three"></div>
-
-    <div class="home-city-layer home-city-back"></div>
-    <div class="home-city-layer home-city-front"></div>
-
-    <div class="home-track home-track-left"></div>
-    <div class="home-track home-track-right"></div>
-
-    <span class="home-particle particle-one"></span>
-    <span class="home-particle particle-two"></span>
-    <span class="home-particle particle-three"></span>
-    <span class="home-particle particle-four"></span>
-    <span class="home-particle particle-five"></span>
-  </div>
+    <canvas
+      id="homeCanvas"
+      class="home-canvas"
+      aria-hidden="true"
+    ></canvas>
 
 
-  <div class="runnova-home-shell">
+    <!-- Animated CSS fallback world -->
 
-    <!-- TOP PLAYER AND CURRENCY BAR -->
+    <div
+      class="home-sky"
+      aria-hidden="true"
+    >
+      <div class="home-sun"></div>
 
-    <header class="runnova-topbar">
+      <div class="home-cloud home-cloud-one"></div>
+      <div class="home-cloud home-cloud-two"></div>
+      <div class="home-cloud home-cloud-three"></div>
 
-      <button
-        type="button"
-        class="home-profile-card"
-        id="homeProfileBtn"
-        aria-label="Open runner profile"
-      >
-        <span
-          class="home-profile-avatar"
-          aria-hidden="true"
-        >
-          NR
-        </span>
+      <div class="home-city-layer home-city-back"></div>
+      <div class="home-city-layer home-city-front"></div>
 
-        <span class="home-profile-copy">
-          <strong id="homeProfileName">
-            NovaRider
-          </strong>
+      <div class="home-track home-track-left"></div>
+      <div class="home-track home-track-right"></div>
 
-          <small>
-            Level
-            <span id="homePlayerLevel">1</span>
-          </small>
-
-          <span class="home-level-track">
-            <span
-              id="homeLevelProgress"
-              class="home-level-progress"
-            ></span>
-          </span>
-        </span>
-      </button>
-
-
-      <div
-        class="home-currency-row"
-        aria-label="Player currencies"
-      >
-        <button
-          type="button"
-          class="home-currency home-currency-coins"
-          data-home-action="coins"
-          aria-label="Nova Coins"
-        >
-          <span class="currency-icon">N</span>
-
-          <strong id="homeNovaCoins">
-            0
-          </strong>
-
-          <span class="currency-plus">
-            +
-          </span>
-        </button>
-
-        <button
-          type="button"
-          class="home-currency home-currency-crystals"
-          data-home-action="crystals"
-          aria-label="Nova Crystals"
-        >
-          <span class="crystal-icon"></span>
-
-          <strong id="homeNovaCrystals">
-            0
-          </strong>
-
-          <span class="currency-plus">
-            +
-          </span>
-        </button>
-
-        <button
-          type="button"
-          id="homeSettingsBtn"
-          class="home-icon-button"
-          aria-label="Open settings"
-        >
-          <span aria-hidden="true">
-            ⚙
-          </span>
-        </button>
-      </div>
-
-    </header>
-
-
-    <!-- RUNNOVA LOGO -->
-
-    <div class="runnova-brand">
-
-      <div
-        class="runnova-brand-orbit"
-        aria-hidden="true"
-      >
-        <span></span>
-      </div>
-
-      <h1 aria-label="RunNova">
-        <span class="logo-run">
-          RUN
-        </span>
-
-        <span class="logo-nova">
-          NOVA
-        </span>
-      </h1>
-
-      <p>
-        RUN BEYOND
-      </p>
-
+      <span class="home-particle particle-one"></span>
+      <span class="home-particle particle-two"></span>
+      <span class="home-particle particle-three"></span>
+      <span class="home-particle particle-four"></span>
+      <span class="home-particle particle-five"></span>
     </div>
 
 
-    <!-- WORLD TOUR EVENT -->
+    <div class="runnova-home-shell">
 
-    <button
-      type="button"
-      id="homeWorldTourBtn"
-      class="home-event-card world-tour-card"
-      data-home-action="world-tour"
-    >
-      <span
-        class="event-globe"
-        aria-hidden="true"
-      >
-        <span class="event-globe-line"></span>
-      </span>
+      <!-- TOP PLAYER / LEVEL / CURRENCY BAR -->
 
-      <span class="event-copy">
-        <small>SEASON EVENT</small>
+      <header class="runnova-topbar">
 
-        <strong>
-          WORLD TOUR
-        </strong>
+        <div class="home-identity-row">
 
-        <span>
-          Coming soon
-        </span>
-      </span>
-    </button>
+          <!-- Separate runner-name card -->
 
+          <button
+            type="button"
+            id="homeProfileBtn"
+            class="home-name-card"
+            aria-label="Edit runner name"
+          >
+            <span
+              class="home-profile-avatar"
+              aria-hidden="true"
+            >
+              NR
+            </span>
 
-    <!-- FREE REWARD -->
+            <span class="home-name-copy">
+              <small>RUNNER</small>
 
-    <button
-      type="button"
-      id="homeRewardBtn"
-      class="home-event-card reward-card"
-      data-home-action="reward"
-    >
-      <span
-        class="reward-chest"
-        aria-hidden="true"
-      >
-        <span class="reward-chest-lid"></span>
-        <span class="reward-chest-lock"></span>
-      </span>
+              <strong id="homeProfileName">
+                NovaRider
+              </strong>
+            </span>
 
-      <span class="event-copy">
-        <small>FREE REWARD</small>
-
-        <strong>
-          READY
-        </strong>
-
-        <span>
-          Tap to open
-        </span>
-      </span>
-    </button>
+            <span
+              class="home-card-edit"
+              aria-hidden="true"
+            >
+              ✎
+            </span>
+          </button>
 
 
-    <!-- CENTRAL HERO PRESENTATION -->
+          <!-- Separate level card -->
 
-    <main
-      class="home-hero-stage"
-      aria-label="Selected RunNova character"
-    >
-      <div
-        class="home-stage-ring home-stage-ring-one"
-        aria-hidden="true"
-      ></div>
+          <button
+            type="button"
+            id="homeLevelBtn"
+            class="home-level-card"
+            aria-label="View runner level"
+          >
+            <span class="home-level-badge">
+              LV
+            </span>
 
-      <div
-        class="home-stage-ring home-stage-ring-two"
-        aria-hidden="true"
-      ></div>
+            <span class="home-level-copy">
+              <small>CURRENT LEVEL</small>
 
-      <!-- Temporary CSS runner.
-           Replaced by the true 3D model in H1C. -->
+              <strong id="homePlayerLevel">
+                1
+              </strong>
 
-      <div
-        class="home-runner-fallback"
-        aria-hidden="true"
-      >
-        <div class="fallback-runner-shadow"></div>
+              <span class="home-level-track">
+                <span
+                  id="homeLevelProgress"
+                  class="home-level-progress"
+                ></span>
+              </span>
+            </span>
+          </button>
 
-        <div class="fallback-runner">
-          <span class="fallback-hair"></span>
-          <span class="fallback-head"></span>
-          <span class="fallback-body"></span>
-          <span class="fallback-arm fallback-arm-left"></span>
-          <span class="fallback-arm fallback-arm-right"></span>
-          <span class="fallback-leg fallback-leg-left"></span>
-          <span class="fallback-leg fallback-leg-right"></span>
         </div>
 
-        <div class="fallback-board">
+
+        <div
+          class="home-currency-row"
+          aria-label="Player currencies"
+        >
+          <button
+            type="button"
+            class="home-currency home-currency-coins"
+            data-home-action="coins"
+            aria-label="Nova Coins"
+          >
+            <span class="currency-icon">N</span>
+
+            <strong id="homeNovaCoins">
+              0
+            </strong>
+
+            <span class="currency-plus">
+              +
+            </span>
+          </button>
+
+          <button
+            type="button"
+            class="home-currency home-currency-crystals"
+            data-home-action="crystals"
+            aria-label="Nova Crystals"
+          >
+            <span class="crystal-icon"></span>
+
+            <strong id="homeNovaCrystals">
+              0
+            </strong>
+
+            <span class="currency-plus">
+              +
+            </span>
+          </button>
+
+          <button
+            type="button"
+            id="homeSettingsBtn"
+            class="home-icon-button"
+            aria-label="Open settings"
+          >
+            <span aria-hidden="true">
+              ⚙
+            </span>
+          </button>
+        </div>
+
+      </header>
+
+
+      <!-- RUNNOVA LOGO -->
+
+      <div class="runnova-brand">
+        <div
+          class="runnova-brand-orbit"
+          aria-hidden="true"
+        >
           <span></span>
         </div>
 
-        <div class="fallback-board-trail"></div>
+        <h1 aria-label="RunNova">
+          <span class="logo-run">
+            RUN
+          </span>
+
+          <span class="logo-nova">
+            NOVA
+          </span>
+        </h1>
+
+        <p>
+          RUN BEYOND
+        </p>
       </div>
 
-      <div class="home-hero-label">
-        <span>
-          SELECTED RUNNER
+
+      <!-- WORLD TOUR EVENT -->
+
+      <button
+        type="button"
+        id="homeWorldTourBtn"
+        class="home-event-card world-tour-card"
+        data-home-action="world-tour"
+      >
+        <span
+          class="event-globe"
+          aria-hidden="true"
+        >
+          <span class="event-globe-line"></span>
         </span>
 
-        <strong>
-          NOVA
-        </strong>
+        <span class="event-copy">
+          <small>SEASON EVENT</small>
+
+          <strong>
+            WORLD TOUR
+          </strong>
+
+          <span>
+            Coming soon
+          </span>
+        </span>
+      </button>
+
+
+      <!-- FREE REWARD -->
+
+      <button
+        type="button"
+        id="homeRewardBtn"
+        class="home-event-card reward-card"
+        data-home-action="reward"
+      >
+        <span
+          class="reward-chest"
+          aria-hidden="true"
+        >
+          <span class="reward-chest-lid"></span>
+          <span class="reward-chest-lock"></span>
+        </span>
+
+        <span class="event-copy">
+          <small>FREE REWARD</small>
+
+          <strong>
+            READY
+          </strong>
+
+          <span>
+            Tap to open
+          </span>
+        </span>
+      </button>
+
+
+      <!-- CENTRAL 3D HERO PRESENTATION -->
+
+      <main
+        class="home-hero-stage"
+        aria-label="Selected RunNova character"
+      >
+        <div
+          class="home-stage-ring home-stage-ring-one"
+          aria-hidden="true"
+        ></div>
+
+        <div
+          class="home-stage-ring home-stage-ring-two"
+          aria-hidden="true"
+        ></div>
+
+        <!-- CSS fallback: hidden once homeCharacter.js is ready -->
+
+        <div
+          class="home-runner-fallback"
+          aria-hidden="true"
+        >
+          <div class="fallback-runner-shadow"></div>
+
+          <div class="fallback-runner">
+            <span class="fallback-hair"></span>
+            <span class="fallback-head"></span>
+            <span class="fallback-body"></span>
+            <span class="fallback-arm fallback-arm-left"></span>
+            <span class="fallback-arm fallback-arm-right"></span>
+            <span class="fallback-leg fallback-leg-left"></span>
+            <span class="fallback-leg fallback-leg-right"></span>
+          </div>
+
+          <div class="fallback-board">
+            <span></span>
+          </div>
+
+          <div class="fallback-board-trail"></div>
+        </div>
+
+        <div class="home-hero-label">
+          <span>
+            SELECTED RUNNER
+          </span>
+
+          <strong>
+            NOVA
+          </strong>
+        </div>
+      </main>
+
+
+      <!-- MAIN PLAY BUTTON -->
+
+      <button
+        id="homePlayBtn"
+        class="runnova-play-button"
+        type="button"
+        aria-haspopup="dialog"
+        aria-controls="homeSetupModal"
+      >
+        <span
+          class="play-button-icon"
+          aria-hidden="true"
+        ></span>
+
+        <span class="play-button-copy">
+          <strong>
+            PLAY
+          </strong>
+
+          <small>
+            Start your next run
+          </small>
+        </span>
+
+        <span
+          class="play-button-shine"
+          aria-hidden="true"
+        ></span>
+      </button>
+
+
+      <!-- SMALL UTILITY BUTTONS -->
+
+      <div class="home-utility-actions">
+        <button
+          type="button"
+          id="showHomeLeaderboardBtn"
+          class="home-utility-button"
+        >
+          <span aria-hidden="true">🏆</span>
+          Top Runs
+        </button>
+
+        <button
+          type="button"
+          id="tutorialHelpBtn"
+          class="home-utility-button"
+        >
+          <span aria-hidden="true">?</span>
+          How to Play
+        </button>
       </div>
-    </main>
 
 
-    <!-- LARGE HOME PLAY BUTTON -->
+      <!-- BOTTOM NAVIGATION — SHOP REMOVED -->
 
-    <button
-      id="homePlayBtn"
-      class="runnova-play-button"
-      type="button"
-      aria-haspopup="dialog"
-      aria-controls="homeSetupModal"
-    >
-      <span
-        class="play-button-icon"
-        aria-hidden="true"
-      ></span>
-
-      <span class="play-button-copy">
-        <strong>
-          PLAY
-        </strong>
-
-        <small>
-          Start your next run
-        </small>
-      </span>
-
-      <span
-        class="play-button-shine"
-        aria-hidden="true"
-      ></span>
-    </button>
-
-
-    <!-- SMALL UTILITY BUTTONS -->
-
-    <div class="home-utility-actions">
-
-      <button
-        type="button"
-        id="showHomeLeaderboardBtn"
-        class="home-utility-button"
+      <nav
+        class="home-bottom-navigation"
+        aria-label="RunNova home navigation"
       >
-        <span aria-hidden="true">🏆</span>
-        Top Runs
-      </button>
+        <button
+          type="button"
+          class="home-nav-button missions-nav-button"
+          data-home-action="missions"
+        >
+          <span
+            class="home-nav-icon mission-nav-icon"
+            aria-hidden="true"
+          >
+            ◎
+          </span>
 
-      <button
-        type="button"
-        id="tutorialHelpBtn"
-        class="home-utility-button"
-      >
-        <span aria-hidden="true">?</span>
-        How to Play
-      </button>
+          <span>
+            MISSIONS
+          </span>
+
+          <i class="home-nav-notification">
+            !
+          </i>
+        </button>
+
+
+        <button
+          type="button"
+          class="home-nav-button daily-nav-button"
+          data-home-action="daily"
+        >
+          <span
+            class="home-nav-icon"
+            aria-hidden="true"
+          >
+            ★
+          </span>
+
+          <span>
+            DAILY CHALLENGE
+          </span>
+        </button>
+
+
+        <button
+          type="button"
+          class="home-nav-button crew-nav-button"
+          data-home-action="crew"
+        >
+          <span
+            class="home-nav-icon"
+            aria-hidden="true"
+          >
+            ◉
+          </span>
+
+          <span>
+            CREW
+          </span>
+        </button>
+      </nav>
 
     </div>
 
 
-    <!-- BOTTOM NAVIGATION — SHOP REMOVED -->
+    <!-- RUN MODE MODAL -->
 
-    <nav
-      class="home-bottom-navigation"
-      aria-label="RunNova home navigation"
+    <div
+      id="homeSetupModal"
+      class="home-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="homeSetupTitle"
+      aria-hidden="true"
+      hidden
+    >
+      <div
+        class="home-modal-backdrop"
+        data-close-home-modal
+      ></div>
+
+      <div class="home-setup-panel">
+        <button
+          type="button"
+          id="closeHomeSetupBtn"
+          class="home-modal-close"
+          aria-label="Close run setup"
+        >
+          ×
+        </button>
+
+        <div class="setup-panel-badge">
+          NOVA RUN
+        </div>
+
+        <h2 id="homeSetupTitle">
+          Choose Your Run
+        </h2>
+
+        <p>
+          Select a run mode and enter the World Circuit.
+        </p>
+
+        <!--
+          Hidden for compatibility with the existing main.js.
+          The visible name editor is the separate profile modal.
+        -->
+
+        <input
+          type="hidden"
+          id="runnerNameInput"
+          value="NovaRider"
+        />
+
+        <label
+          class="home-field"
+          for="difficultySelect"
+        >
+          <span>
+            Run mode
+          </span>
+
+          <select id="difficultySelect">
+            <option value="">
+              Select run mode
+            </option>
+
+            <option value="easy">
+              Easy Explorer
+            </option>
+
+            <option value="normal">
+              Nova Runner
+            </option>
+
+            <option value="hard">
+              Hyper Legend
+            </option>
+          </select>
+        </label>
+
+        <!-- Existing main.js continues to use this real button -->
+
+        <button
+          id="startBtn"
+          class="home-confirm-play"
+          type="button"
+          disabled
+        >
+          <span class="confirm-play-icon"></span>
+
+          <span>
+            BEGIN RUN
+          </span>
+        </button>
+
+        <small class="setup-panel-note">
+          Your run starts after the first-time tutorial.
+        </small>
+      </div>
+    </div>
+
+
+    <!-- RUNNER NAME EDITOR -->
+
+    <div
+      id="homeNameModal"
+      class="home-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="homeNameModalTitle"
+      aria-hidden="true"
+      hidden
+    >
+      <div
+        class="home-modal-backdrop"
+        data-close-name-modal
+      ></div>
+
+      <div class="home-setup-panel home-name-panel">
+        <button
+          type="button"
+          id="closeHomeNameBtn"
+          class="home-modal-close"
+          aria-label="Close runner name editor"
+        >
+          ×
+        </button>
+
+        <div class="setup-panel-badge">
+          RUNNER PROFILE
+        </div>
+
+        <h2 id="homeNameModalTitle">
+          Choose Your Name
+        </h2>
+
+        <p>
+          This name appears in your profile and leaderboard.
+        </p>
+
+        <label
+          class="home-field"
+          for="homeNameEditor"
+        >
+          <span>
+            Runner name
+          </span>
+
+          <input
+            type="text"
+            id="homeNameEditor"
+            placeholder="Enter runner name"
+            maxlength="18"
+            autocomplete="off"
+          />
+        </label>
+
+        <button
+          type="button"
+          id="saveHomeNameBtn"
+          class="home-confirm-play"
+        >
+          SAVE NAME
+        </button>
+      </div>
+    </div>
+
+
+    <!-- HOME LEADERBOARD -->
+
+    <div
+      class="leaderboard-card leaderboard-hidden runnova-home-leaderboard"
+      id="homeLeaderboardCard"
     >
       <button
         type="button"
-        class="home-nav-button missions-nav-button"
-        data-home-action="missions"
-      >
-        <span
-          class="home-nav-icon mission-nav-icon"
-          aria-hidden="true"
-        >
-          ◎
-        </span>
-
-        <span>
-          MISSIONS
-        </span>
-
-        <i class="home-nav-notification">
-          !
-        </i>
-      </button>
-
-
-      <button
-        type="button"
-        class="home-nav-button daily-nav-button"
-        data-home-action="daily"
-      >
-        <span
-          class="home-nav-icon"
-          aria-hidden="true"
-        >
-          ★
-        </span>
-
-        <span>
-          DAILY CHALLENGE
-        </span>
-      </button>
-
-
-      <button
-        type="button"
-        class="home-nav-button crew-nav-button"
-        data-home-action="crew"
-      >
-        <span
-          class="home-nav-icon"
-          aria-hidden="true"
-        >
-          ◉
-        </span>
-
-        <span>
-          CREW
-        </span>
-      </button>
-    </nav>
-
-  </div>
-
-
-  <!-- PLAYER SETUP MODAL -->
-
-  <div
-    id="homeSetupModal"
-    class="home-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="homeSetupTitle"
-    aria-hidden="true"
-    hidden
-  >
-    <div
-      class="home-modal-backdrop"
-      data-close-home-modal
-    ></div>
-
-    <div class="home-setup-panel">
-
-      <button
-        type="button"
-        id="closeHomeSetupBtn"
-        class="home-modal-close"
-        aria-label="Close player setup"
+        class="leaderboard-close"
+        aria-label="Close leaderboard"
       >
         ×
       </button>
 
-      <div class="setup-panel-badge">
-        NOVA RUN
+      <div class="home-leaderboard-heading">
+        <small>RUNNOVA RECORDS</small>
+        <h3>Top Runs</h3>
       </div>
 
-      <h2 id="homeSetupTitle">
-        Ready to Run?
-      </h2>
-
-      <p>
-        Choose your runner name and pace.
-      </p>
-
-
-      <label
-        class="home-field"
-        for="runnerNameInput"
-      >
-        <span>
-          Runner name
-        </span>
-
-        <input
-          type="text"
-          id="runnerNameInput"
-          placeholder="Enter runner name"
-          maxlength="18"
-          autocomplete="off"
-        />
-      </label>
-
-
-      <label
-        class="home-field"
-        for="difficultySelect"
-      >
-        <span>
-          Run mode
-        </span>
-
-        <select id="difficultySelect">
-          <option value="">
-            Select run mode
-          </option>
-
-          <option value="easy">
-            Easy Explorer
-          </option>
-
-          <option value="normal">
-            Nova Runner
-          </option>
-
-          <option value="hard">
-            Hyper Legend
-          </option>
-        </select>
-      </label>
-
-
-      <!-- This remains the real game-start button
-           used by main.js. -->
+      <ol id="homeLeaderboard"></ol>
 
       <button
-        id="startBtn"
-        class="home-confirm-play"
         type="button"
-        disabled
+        class="leaderboard-clear"
       >
-        <span class="confirm-play-icon"></span>
-
-        <span>
-          BEGIN RUN
-        </span>
+        Clear Scores
       </button>
-
-      <small class="setup-panel-note">
-        Your run starts after the first-time tutorial.
-      </small>
-
-    </div>
-  </div>
-
-
-  <!-- HOME LEADERBOARD -->
-
-  <div
-    class="leaderboard-card leaderboard-hidden runnova-home-leaderboard"
-    id="homeLeaderboardCard"
-  >
-    <button
-      type="button"
-      class="leaderboard-close"
-      aria-label="Close leaderboard"
-    >
-      ×
-    </button>
-
-    <div class="home-leaderboard-heading">
-      <small>RUNNOVA RECORDS</small>
-      <h3>Top Runs</h3>
     </div>
 
-    <ol id="homeLeaderboard"></ol>
 
-    <button
-      type="button"
-      class="leaderboard-clear"
-    >
-      Clear Scores
-    </button>
-  </div>
+    <!-- HOME MESSAGE TOAST -->
+
+    <div
+      id="homeActionToast"
+      class="home-action-toast"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+  </section>
 
 
-  <!-- HOME MESSAGE TOAST -->
-
-  <div
-    id="homeActionToast"
-    class="home-action-toast"
-    role="status"
-    aria-live="polite"
-  ></div>
-
-</section>
   <!-- =====================================================
        GAME SCREEN
   ====================================================== -->
@@ -581,30 +665,17 @@
   <section
     id="gameScreen"
     class="screen"
-    aria-label="Velocity Runner game screen"
+    aria-label="RunNova gameplay"
   >
-
-    <!-- DAMAGE FLASH OVERLAY -->
-
     <div
       id="damageOverlay"
       class="damage-overlay"
-      aria-hidden="true"
     ></div>
 
-
-    <!-- 3D GAME CANVAS -->
-
-    <canvas
-      id="gameCanvas"
-      aria-label="Velocity Runner 3D gameplay area"
-    >
-      Your browser does not support the HTML
-      canvas element.
-    </canvas>
+    <canvas id="gameCanvas"></canvas>
 
 
-    <!-- TOP-LEFT LEADERBOARD BUTTON -->
+    <!-- TOP CONTROLS -->
 
     <button
       type="button"
@@ -613,9 +684,6 @@
     >
       🏆 Top Runs
     </button>
-
-
-    <!-- MISSION PANEL BUTTON -->
 
     <button
       type="button"
@@ -632,7 +700,6 @@
       id="missionPanel"
       class="mission-panel mission-hidden"
     >
-
       <button
         type="button"
         id="closeMissionPanelBtn"
@@ -643,30 +710,16 @@
       </button>
 
       <div class="mission-panel-heading">
-
-        <span>
-          Run Objectives
-        </span>
-
-        <small>
-          Complete missions for bonus shards
-        </small>
-
+        <span>Run Objectives</span>
+        <small>Complete missions for bonus tokens</small>
       </div>
 
       <div id="missionList"></div>
-
     </div>
-
-
-    <!-- MISSION COMPLETION NOTIFICATION -->
 
     <div
       id="missionToast"
       class="mission-toast"
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
     ></div>
 
 
@@ -676,19 +729,16 @@
       id="gameLeaderboardCard"
       class="leaderboard-card in-game-leaderboard leaderboard-hidden"
     >
-
       <button
         type="button"
         id="closeGameLeaderboardBtn"
         class="leaderboard-close"
-        aria-label="Close in-game leaderboard"
+        aria-label="Close leaderboard"
       >
         ×
       </button>
 
-      <h3>
-        Top Runs
-      </h3>
+      <h3>Top Runs</h3>
 
       <ol id="gameLeaderboard"></ol>
 
@@ -699,142 +749,95 @@
       >
         Clear Scores
       </button>
-
     </div>
 
 
     <!-- GAME HUD -->
 
     <div class="hud">
-
       <div>
         Runner:
-        <strong id="runnerName">
-          Aarav Astra
-        </strong>
+        <b id="runnerName">NovaRider</b>
       </div>
 
       <div>
         Distance:
-        <strong id="distance">
-          0
-        </strong>
-        m
+        <b id="distance">0</b> m
       </div>
 
       <div>
-        Surya Shards:
-        <strong id="shards">
-          0
-        </strong>
+        Nova Tokens:
+        <b id="shards">0</b>
       </div>
 
       <div>
         High Score:
-        <strong id="highScore">
-          0
-        </strong>
-        m
+        <b id="highScore">0</b> m
       </div>
 
       <div>
-        Difficulty:
-        <strong id="difficultyText">
-          Normal Warrior
-        </strong>
+        Run Mode:
+        <b id="difficultyText">Nova Runner</b>
       </div>
-
-
-      <!-- SURYA CORE HEALTH -->
 
       <div
         id="coreHealthPanel"
         class="core-health-panel"
       >
-
         <div class="core-health-heading">
+          <span>Nova Core</span>
 
           <span>
-            Surya Core
+            <b id="coreHealth">100</b>%
           </span>
-
-          <span>
-            <strong id="coreHealth">
-              100
-            </strong>%
-          </span>
-
         </div>
 
         <div class="core-health-track">
-
           <div
             id="coreHealthFill"
             class="core-health-fill"
           ></div>
-
         </div>
-
       </div>
-
 
       <div>
         Shield:
-        <strong id="shieldStatus">
-          Empty
-        </strong>
+        <b id="shieldStatus">Empty</b>
       </div>
-
     </div>
 
 
-    <!-- ABILITY STATUS -->
+    <!-- ABILITY / MISSION / BOSS UI -->
 
     <div
       id="abilityText"
       class="ability"
-      role="status"
-      aria-live="polite"
     >
-      Surya Dash Ready
+      Nova Dash Ready
     </div>
-
-
-    <!-- MISSION STATUS -->
 
     <div
       id="missionText"
       class="mission"
-      role="status"
-      aria-live="polite"
     >
-      Protect the Surya Core
+      Keep the Nova Core safe
     </div>
-
-
-    <!-- BOSS HEALTH -->
 
     <div
       id="bossUI"
       class="boss-ui"
     >
-
       <div class="boss-title">
-        AI Guardian
+        Titan Guard
       </div>
 
       <div class="boss-bar">
-
-        <div
-          id="bossHealthFill"
-        ></div>
-
+        <div id="bossHealthFill"></div>
       </div>
-
     </div>
 
 
-    <!-- SHOOT BUTTON -->
+    <!-- GAMEPLAY BUTTONS -->
 
     <button
       id="shootBtn"
@@ -844,9 +847,6 @@
       Shoot
     </button>
 
-
-    <!-- PAUSE BUTTON -->
-
     <button
       id="pauseBtn"
       type="button"
@@ -854,9 +854,6 @@
     >
       Pause
     </button>
-
-
-    <!-- SOUND BUTTON -->
 
     <button
       id="soundBtn"
@@ -866,7 +863,6 @@
     >
       🔊 Sound
     </button>
-
   </section>
 
 
@@ -877,93 +873,30 @@
   <section
     id="gameOverScreen"
     class="screen"
-    aria-label="Velocity Runner game over screen"
   >
-
     <div class="game-over-card">
-
       <p class="eyebrow">
-        Quantum Link Broken
+        NOVA LINK ENDED
       </p>
 
       <h1>
-        Run Ended
+        Run Complete
       </h1>
 
       <p>
         Distance:
-        <strong id="finalDistance">
-          0
-        </strong>
-        m
+        <b id="finalDistance">0</b> m
       </p>
 
       <p>
-        Surya Shards:
-        <strong id="finalShards">
-          0
-        </strong>
+        Nova Tokens:
+        <b id="finalShards">0</b>
       </p>
 
       <p>
-        Difficulty:
-        <strong id="finalDifficulty">
-          Normal Warrior
-        </strong>
+        Run Mode:
+        <b id="finalDifficulty">Nova Runner</b>
       </p>
-
-      <!-- GAME-OVER MISSION SUMMARY -->
-
-<div
-  id="gameOverMissionSummary"
-  class="gameover-mission-summary"
->
-  <div class="mission-summary-heading">
-    <span>Mission Report</span>
-
-    <small id="missionSummaryStatus">
-      Run objectives analysed
-    </small>
-  </div>
-
-  <div class="mission-summary-grid">
-
-    <div class="mission-summary-stat">
-      <span class="mission-summary-label">
-        Missions Completed
-      </span>
-
-      <strong
-        id="finalMissionsCompleted"
-        class="mission-summary-value"
-      >
-        0 / 6
-      </strong>
-    </div>
-
-    <div class="mission-summary-stat">
-      <span class="mission-summary-label">
-        Mission Bonus
-      </span>
-
-      <strong
-        id="finalMissionBonus"
-        class="mission-summary-value"
-      >
-        0 ✦
-      </strong>
-    </div>
-
-  </div>
-
-  <p class="mission-summary-note">
-    Mission bonus shards are included in
-    your final Surya Shards total.
-  </p>
-</div>
-
-
-      <!-- GAME-OVER LEADERBOARD BUTTON -->
 
       <button
         type="button"
@@ -973,44 +906,31 @@
         🏆 Show Top Runs
       </button>
 
-
-      <!-- GAME-OVER LEADERBOARD -->
-
       <div
-        id="gameOverLeaderboardCard"
         class="leaderboard-card gameover-leaderboard leaderboard-hidden"
+        id="gameOverLeaderboardCard"
       >
-
         <button
           type="button"
-          id="closeGameOverLeaderboardBtn"
           class="leaderboard-close"
-          aria-label="Close game-over leaderboard"
+          aria-label="Close leaderboard"
         >
           ×
         </button>
 
-        <h3>
-          Top Runs
-        </h3>
+        <h3>Top Runs</h3>
 
         <ol id="gameOverLeaderboard"></ol>
 
         <button
           type="button"
-          id="clearGameOverLeaderboardBtn"
           class="leaderboard-clear"
         >
           Clear Scores
         </button>
-
       </div>
 
-
-      <!-- GAME-OVER BUTTONS -->
-
       <div class="game-over-buttons">
-
         <button
           id="restartBtn"
           type="button"
@@ -1024,16 +944,13 @@
         >
           Home
         </button>
-
       </div>
-
     </div>
-
   </section>
 
 
   <!-- =====================================================
-       PHASE 2C: FIRST-RUN TUTORIAL
+       FIRST-RUN TUTORIAL
   ====================================================== -->
 
   <div
@@ -1041,27 +958,17 @@
     class="tutorial-overlay"
     aria-hidden="true"
   >
-
     <section
       class="tutorial-panel"
       role="dialog"
       aria-modal="true"
       aria-labelledby="tutorialTitle"
-      aria-describedby="tutorialText"
     >
-
-      <div
-        class="tutorial-panel-glow"
-        aria-hidden="true"
-      ></div>
-
-
-      <!-- TUTORIAL HEADER -->
+      <div class="tutorial-panel-glow"></div>
 
       <div class="tutorial-top-row">
-
         <span class="tutorial-system-label">
-          AARAV TRAINING PROTOCOL
+          RUNNOVA TRAINING
         </span>
 
         <button
@@ -1072,11 +979,7 @@
         >
           ×
         </button>
-
       </div>
-
-
-      <!-- TUTORIAL ICON -->
 
       <div
         id="tutorialIcon"
@@ -1085,9 +988,6 @@
       >
         ↔
       </div>
-
-
-      <!-- TUTORIAL CONTENT -->
 
       <p
         id="tutorialEyebrow"
@@ -1100,15 +1000,14 @@
         id="tutorialTitle"
         class="tutorial-title"
       >
-        Move Through Neo Bharat
+        Move Through the World Circuit
       </h2>
 
       <p
         id="tutorialText"
         class="tutorial-description"
       >
-        Switch lanes quickly to avoid
-        obstacles and enemy attacks.
+        Switch lanes quickly to avoid obstacles and incoming attacks.
       </p>
 
       <div
@@ -1116,11 +1015,7 @@
         class="tutorial-controls"
       ></div>
 
-
-      <!-- TUTORIAL NAVIGATION -->
-
       <div class="tutorial-navigation">
-
         <button
           id="tutorialPreviousBtn"
           class="tutorial-nav-button tutorial-secondary-button"
@@ -1143,11 +1038,7 @@
         >
           Next
         </button>
-
       </div>
-
-
-      <!-- SKIP TUTORIAL -->
 
       <button
         id="tutorialSkipBtn"
@@ -1156,9 +1047,7 @@
       >
         Skip Training
       </button>
-
     </section>
-
   </div>
 
 
@@ -1166,74 +1055,67 @@
        THREE.JS
   ====================================================== -->
 
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
-  ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 
   <!-- =====================================================
        THREE.JS POST-PROCESSING
   ====================================================== -->
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"
-  ></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"
-  ></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"
-  ></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"
-  ></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"
-  ></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"
-  ></script>
-
-  <script
-    src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"
-  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/Pass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
 
 
   <!-- =====================================================
-       VELOCITY RUNNER MODULES
+       RUNNOVA GAME MODULES
+       Keep this order: dependencies first, main.js last.
   ====================================================== -->
 
   <script src="js/config.js?v=phase2c2"></script>
   <script src="js/state.js?v=phase2c2"></script>
-  <script src="js/balance.js?v=phase2d1"></script>
-  <script src="js/missions.js?v=phase2d2"></script>
-  <script src="js/ui.js?v=phase2c2"></script>
-  <script src="js/audio.js?v=phase2c2"></script>
-  <script src="js/leaderboard.js?v=phase2c2"></script>
-  <script src="js/homeScene.js?v=h1b1"></script>
-  <script src="js/homeCharacter.js?v=h1c1"></script>
-  <script src="js/homeUI.js?v=h1a1"></script>
-  <script src="js/world.js?v=realismR2"></script>
+  <script src="js/balance.js?v=mission1"></script>
+  <script src="js/missions.js?v=mission1"></script>
+  <script src="js/ui.js?v=mission1"></script>
+  <script src="js/audio.js?v=mission1"></script>
+  <script src="js/leaderboard.js?v=mission1"></script>
+
+  <script src="js/world.js?v=r2"></script>
   <script src="js/player.js?v=r3"></script>
-  <script src="js/enemies.js?v=enemyFix3"></script>
-  <script src="js/enemyVisuals.js?v=phase2d2"></script>
-  <script src="js/obstacles.js?v=r3c2"></script>
+
+  <script src="js/enemies.js?v=mission1"></script>
+  <script src="js/enemyVisuals.js?v=mission1"></script>
+
+  <script src="js/obstacles.js?v=r4b1"></script>
   <script src="js/obstacleEffects.js?v=r3c2"></script>
   <script src="js/obstaclePatterns.js?v=r4a1"></script>
-  <script src="js/combat.js?v=phase2d2"></script>
-  <script src="js/powerups.js?v=phase2c2"></script>
-  <script src="js/visuals.js?v=visualV3"></script>
+  <script src="js/vehicleTraffic.js?v=r4b1"></script>
+
+  <script src="js/combat.js?v=mission1"></script>
+  <script src="js/powerups.js?v=mission1"></script>
+  <script src="js/visuals.js?v=mission1"></script>
   <script src="js/effects.js?v=r3"></script>
 
-  <!-- Tutorial must load before main.js -->
+  <script src="js/tutorial.js?v=phase2c1"></script>
 
-  <script src="js/tutorial.js?v=phase2c2"></script>
-  <script src="js/main.js?v=r3c1"></script>
+
+  <!-- =====================================================
+       RUNNOVA HOME MODULES
+  ====================================================== -->
+
+  <script src="js/homeScene.js?v=h1c1"></script>
+  <script src="js/homeCharacter.js?v=h1c2"></script>
+  <script src="js/homeUI.js?v=h1a1"></script>
+  <script src="js/homeProfileUI.js?v=h1p1"></script>
+
+
+  <!-- Main gameplay coordinator must load last -->
+
+  <script src="js/main.js?v=r4b1"></script>
 
 </body>
 </html>
