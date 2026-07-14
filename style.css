@@ -4570,3 +4570,129 @@ body.tutorial-open {
     transition-duration: 0.001ms !important;
   }
 }
+/* =========================================================
+   RUNNOVA HOME — PHASE H1B VISUAL INTEGRATION
+   Add this at the very bottom of style.css
+========================================================= */
+
+.home-canvas {
+  opacity: 0;
+  transform: scale(1.025);
+  transform-origin: center;
+  transition:
+    opacity 0.7s ease,
+    transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+#homeScreen.home-3d-ready .home-canvas {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Hide only the temporary flat city and CSS tracks.
+   Keep the CSS sky, sun, particles, logo and runner fallback. */
+
+#homeScreen.home-3d-ready .home-city-layer,
+#homeScreen.home-3d-ready .home-track {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.55s ease,
+    visibility 0.55s ease;
+}
+
+/* Make the remaining CSS sky blend with the transparent 3D canvas. */
+
+#homeScreen.home-3d-ready .home-sky::before {
+  opacity: 0.72;
+}
+
+#homeScreen.home-3d-ready .home-cloud {
+  opacity: 0.24;
+}
+
+#homeScreen.home-3d-ready .home-sun {
+  opacity: 0.58;
+}
+
+/* Improve desktop spacing so the logo no longer covers the runner's head. */
+
+@media (min-width: 900px) and (min-height: 650px) {
+  #homeScreen.home-3d-ready .runnova-brand {
+    top: clamp(52px, 7.5vh, 78px);
+
+    transform:
+      translateX(-50%)
+      translate3d(
+        calc(var(--pointer-x) * 5px),
+        calc(var(--pointer-y) * 3px),
+        0
+      )
+      scale(0.9);
+  }
+
+  #homeScreen.home-3d-ready .home-hero-stage {
+    top: 26%;
+    bottom: 20%;
+  }
+
+  #homeScreen.home-3d-ready .home-runner-fallback {
+    animation-name: rnRunnerHoverH1B;
+  }
+
+  #homeScreen.home-3d-ready .home-event-card {
+    top: 29%;
+  }
+}
+
+@keyframes rnRunnerHoverH1B {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -34%)
+      translateY(0)
+      rotate(-1deg);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -34%)
+      translateY(-12px)
+      rotate(1deg);
+  }
+}
+
+/* Keep the center area readable on portrait phones. */
+
+@media (max-width: 760px) {
+  #homeScreen.home-3d-ready .runnova-brand {
+    top: 84px;
+  }
+
+  #homeScreen.home-3d-ready .home-event-card {
+    top: 27%;
+  }
+
+  #homeScreen.home-3d-ready .home-runner-fallback {
+    animation-name: rnRunnerHoverH1BMobile;
+  }
+}
+
+@keyframes rnRunnerHoverH1BMobile {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -37%)
+      translateY(0)
+      rotate(-1deg)
+      scale(0.8);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -37%)
+      translateY(-9px)
+      rotate(1deg)
+      scale(0.8);
+  }
+}
