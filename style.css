@@ -1997,3 +1997,2576 @@ body.tutorial-open {
     transition-duration: 0.01ms !important;
   }
 }
+/* =========================================================
+   RUNNOVA HOME SCREEN — PHASE H1A
+========================================================= */
+
+:root {
+  --rn-navy: #10245b;
+  --rn-deep-blue: #073d91;
+  --rn-sky: #37c8ff;
+  --rn-cyan: #28edf0;
+  --rn-yellow: #ffc928;
+  --rn-orange: #ff8a25;
+  --rn-coral: #ff536f;
+  --rn-magenta: #dc4ce8;
+  --rn-purple: #7245df;
+  --rn-green: #26d2b7;
+  --rn-white: #fffdf8;
+  --rn-shadow: rgba(18, 32, 82, 0.32);
+}
+
+
+/* Reset the old home-card presentation */
+
+#homeScreen.runnova-home {
+  --pointer-x: 0;
+  --pointer-y: 0;
+
+  position: fixed;
+  inset: 0;
+
+  display: none;
+  overflow: hidden;
+
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+
+  padding: 0;
+
+  color: var(--rn-white);
+
+  background:
+    linear-gradient(
+      180deg,
+      #087ae9 0%,
+      #3acbff 34%,
+      #8ce9ff 62%,
+      #5fdce6 100%
+    );
+
+  isolation: isolate;
+}
+
+#homeScreen.runnova-home.active {
+  display: block;
+}
+
+#homeScreen.runnova-home::before,
+#homeScreen.runnova-home::after {
+  display: none;
+}
+
+
+/* =========================================================
+   HOME CANVAS
+========================================================= */
+
+.home-canvas {
+  position: absolute;
+  inset: 0;
+
+  z-index: 1;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   ANIMATED FALLBACK WORLD
+========================================================= */
+
+.home-sky {
+  position: absolute;
+  inset: 0;
+
+  z-index: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+.home-sky::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 8%,
+      rgba(255, 255, 255, 0.35),
+      transparent 24%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 52%,
+      rgba(70, 223, 229, 0.28) 100%
+    );
+}
+
+.home-sun {
+  position: absolute;
+  top: 8%;
+  right: 14%;
+
+  width: clamp(80px, 11vw, 160px);
+  aspect-ratio: 1;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 232, 0.95) 0%,
+      rgba(255, 235, 144, 0.68) 33%,
+      rgba(255, 232, 126, 0) 72%
+    );
+
+  filter: blur(2px);
+
+  animation:
+    rnSunPulse 5s ease-in-out infinite;
+}
+
+.home-cloud {
+  position: absolute;
+
+  width: 180px;
+  height: 50px;
+
+  border-radius: 999px;
+
+  opacity: 0.72;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  filter: blur(1px);
+
+  animation:
+    rnCloudDrift 25s linear infinite;
+}
+
+.home-cloud::before,
+.home-cloud::after {
+  content: "";
+
+  position: absolute;
+  bottom: 2px;
+
+  border-radius: 50%;
+
+  background: inherit;
+}
+
+.home-cloud::before {
+  left: 25px;
+
+  width: 75px;
+  height: 75px;
+}
+
+.home-cloud::after {
+  right: 24px;
+
+  width: 92px;
+  height: 92px;
+}
+
+.home-cloud-one {
+  top: 17%;
+  left: -220px;
+}
+
+.home-cloud-two {
+  top: 31%;
+  left: -310px;
+
+  transform: scale(0.62);
+
+  opacity: 0.48;
+
+  animation-duration: 34s;
+  animation-delay: -12s;
+}
+
+.home-cloud-three {
+  top: 7%;
+  left: -260px;
+
+  transform: scale(0.42);
+
+  opacity: 0.34;
+
+  animation-duration: 42s;
+  animation-delay: -25s;
+}
+
+.home-city-layer {
+  position: absolute;
+  right: -4%;
+  bottom: 11%;
+  left: -4%;
+
+  transform:
+    translateX(
+      calc(
+        var(--pointer-x) *
+        -4px
+      )
+    );
+
+  transform-origin: bottom;
+
+  transition: transform 0.25s ease-out;
+}
+
+.home-city-back {
+  height: 31%;
+
+  opacity: 0.42;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 3%,
+      #4b8fc1 3% 8%,
+      transparent 8% 10%,
+      #347bad 10% 16%,
+      transparent 16% 19%,
+      #4595bf 19% 24%,
+      transparent 24% 28%,
+      #3c7eaf 28% 35%,
+      transparent 35% 39%,
+      #4a9bc4 39% 45%,
+      transparent 45% 49%,
+      #3077aa 49% 57%,
+      transparent 57% 60%,
+      #468db7 60% 67%,
+      transparent 67% 71%,
+      #3178aa 71% 78%,
+      transparent 78% 81%,
+      #4e9ac0 81% 88%,
+      transparent 88% 91%,
+      #357eaf 91% 97%,
+      transparent 97%
+    );
+
+  clip-path:
+    polygon(
+      0 100%,
+      0 56%,
+      6% 56%,
+      6% 20%,
+      10% 20%,
+      10% 72%,
+      16% 72%,
+      16% 42%,
+      22% 42%,
+      22% 10%,
+      27% 10%,
+      27% 65%,
+      34% 65%,
+      34% 31%,
+      39% 31%,
+      39% 58%,
+      46% 58%,
+      46% 18%,
+      51% 18%,
+      51% 74%,
+      58% 74%,
+      58% 38%,
+      65% 38%,
+      65% 6%,
+      70% 6%,
+      70% 62%,
+      77% 62%,
+      77% 28%,
+      83% 28%,
+      83% 68%,
+      90% 68%,
+      90% 16%,
+      96% 16%,
+      96% 100%
+    );
+}
+
+.home-city-front {
+  bottom: 4%;
+
+  height: 25%;
+
+  opacity: 0.68;
+
+  background:
+    linear-gradient(
+      90deg,
+      #876de4,
+      #32bad2 22%,
+      #ff6e8d 44%,
+      #f9ac42 63%,
+      #42bfd9 82%,
+      #8e63df
+    );
+
+  clip-path:
+    polygon(
+      0 100%,
+      0 42%,
+      8% 42%,
+      8% 70%,
+      14% 70%,
+      14% 25%,
+      21% 25%,
+      21% 61%,
+      29% 61%,
+      29% 8%,
+      35% 8%,
+      35% 73%,
+      44% 73%,
+      44% 35%,
+      51% 35%,
+      51% 64%,
+      59% 64%,
+      59% 18%,
+      66% 18%,
+      66% 74%,
+      74% 74%,
+      74% 31%,
+      81% 31%,
+      81% 58%,
+      89% 58%,
+      89% 12%,
+      96% 12%,
+      96% 100%
+    );
+}
+
+.home-track {
+  position: absolute;
+  bottom: -16%;
+
+  width: 54%;
+  height: 73%;
+
+  border-radius: 50% 50% 0 0;
+
+  border: clamp(18px, 3vw, 42px)
+    solid rgba(255, 105, 105, 0.84);
+
+  box-shadow:
+    0 0 0 9px rgba(255, 205, 65, 0.72),
+    inset 0 0 0 6px rgba(255, 255, 255, 0.42);
+
+  transform-origin: bottom;
+
+  opacity: 0.84;
+}
+
+.home-track-left {
+  left: -22%;
+
+  transform:
+    rotate(-26deg)
+    perspective(500px)
+    rotateX(48deg);
+}
+
+.home-track-right {
+  right: -25%;
+
+  border-color: rgba(48, 220, 246, 0.9);
+
+  transform:
+    rotate(29deg)
+    perspective(500px)
+    rotateX(48deg);
+}
+
+.home-particle {
+  position: absolute;
+
+  width: 8px;
+  height: 18px;
+
+  border-radius: 999px;
+
+  background: var(--rn-yellow);
+
+  animation:
+    rnParticleFloat 7s linear infinite;
+}
+
+.particle-one {
+  top: 24%;
+  left: 17%;
+}
+
+.particle-two {
+  top: 53%;
+  left: 8%;
+
+  background: var(--rn-coral);
+
+  animation-delay: -2s;
+}
+
+.particle-three {
+  top: 31%;
+  right: 13%;
+
+  background: var(--rn-magenta);
+
+  animation-delay: -4s;
+}
+
+.particle-four {
+  top: 63%;
+  right: 21%;
+
+  background: var(--rn-cyan);
+
+  animation-delay: -1s;
+}
+
+.particle-five {
+  top: 14%;
+  left: 64%;
+
+  background: var(--rn-white);
+
+  animation-delay: -5s;
+}
+
+
+/* =========================================================
+   HOME LAYOUT
+========================================================= */
+
+.runnova-home-shell {
+  position: relative;
+
+  z-index: 5;
+
+  width: min(1180px, 100%);
+  height: 100%;
+  min-height: 100dvh;
+
+  margin: 0 auto;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.runnova-topbar {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: clamp(14px, 3vw, 38px);
+  left: clamp(14px, 3vw, 38px);
+
+  z-index: 20;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 18px;
+}
+
+.home-profile-card,
+.home-currency,
+.home-icon-button {
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.4);
+
+  color: var(--rn-white);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(11, 79, 174, 0.94),
+      rgba(20, 42, 115, 0.94)
+    );
+
+  box-shadow:
+    0 10px 22px rgba(14, 37, 93, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.home-profile-card {
+  display: flex;
+  align-items: center;
+
+  min-width: 190px;
+
+  padding: 7px 13px 7px 7px;
+
+  border-radius: 18px;
+
+  text-align: left;
+}
+
+.home-profile-avatar {
+  display: grid;
+  flex: 0 0 48px;
+  place-items: center;
+
+  width: 48px;
+  height: 48px;
+
+  border:
+    3px solid
+    rgba(255, 255, 255, 0.82);
+
+  border-radius: 14px;
+
+  color: #182552;
+
+  background:
+    linear-gradient(
+      145deg,
+      #5cfff1,
+      #ffc94b 52%,
+      #ff6098
+    );
+
+  box-shadow:
+    0 0 0 3px rgba(28, 232, 237, 0.26);
+
+  font-size: 16px;
+  font-weight: 1000;
+}
+
+.home-profile-copy {
+  display: grid;
+
+  min-width: 105px;
+  margin-left: 10px;
+}
+
+.home-profile-copy strong {
+  max-width: 128px;
+
+  overflow: hidden;
+
+  font-size: 15px;
+  line-height: 1.1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-profile-copy small {
+  margin-top: 3px;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.home-level-track {
+  display: block;
+
+  width: 100%;
+  height: 6px;
+
+  margin-top: 5px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: rgba(8, 24, 73, 0.64);
+}
+
+.home-level-progress {
+  display: block;
+
+  width: 26%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--rn-yellow),
+      var(--rn-orange)
+    );
+
+  box-shadow:
+    0 0 8px rgba(255, 206, 42, 0.7);
+}
+
+.home-currency-row {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.home-currency {
+  display: flex;
+  align-items: center;
+
+  min-height: 46px;
+
+  padding: 4px 6px 4px 8px;
+
+  border-radius: 15px;
+}
+
+.home-currency strong {
+  min-width: 48px;
+
+  padding: 0 7px;
+
+  font-size: 15px;
+  text-align: center;
+}
+
+.currency-icon {
+  display: grid;
+  place-items: center;
+
+  width: 31px;
+  height: 31px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.7);
+
+  border-radius: 50%;
+
+  color: #d05b00;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #fff7ae,
+      #ffd62c 40%,
+      #ff8c17 75%
+    );
+
+  box-shadow:
+    0 3px 0 #c85913;
+
+  font-size: 17px;
+  font-weight: 1000;
+}
+
+.crystal-icon {
+  width: 27px;
+  height: 31px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #e4ffff,
+      #42ecff 38%,
+      #6456e8 70%,
+      #dc55f0
+    );
+
+  clip-path:
+    polygon(
+      50% 0,
+      91% 26%,
+      80% 78%,
+      50% 100%,
+      17% 77%,
+      8% 27%
+    );
+
+  filter:
+    drop-shadow(
+      0 0 6px rgba(72, 235, 255, 0.72)
+    );
+}
+
+.currency-plus {
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 9px;
+
+  background:
+    rgba(255, 255, 255, 0.16);
+
+  font-size: 20px;
+  line-height: 1;
+}
+
+.home-icon-button {
+  display: grid;
+  place-items: center;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 15px;
+
+  font-size: 23px;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.runnova-brand {
+  position: absolute;
+  top: clamp(84px, 12vh, 122px);
+  left: 50%;
+
+  z-index: 12;
+
+  width: min(570px, 76vw);
+
+  transform:
+    translateX(-50%)
+    translate3d(
+      calc(var(--pointer-x) * 5px),
+      calc(var(--pointer-y) * 3px),
+      0
+    );
+
+  text-align: center;
+
+  transition: transform 0.18s ease-out;
+
+  filter:
+    drop-shadow(
+      0 14px 10px rgba(11, 39, 111, 0.28)
+    );
+}
+
+.runnova-brand-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  z-index: -1;
+
+  width: 62%;
+  aspect-ratio: 1;
+
+  border:
+    clamp(10px, 1.8vw, 20px)
+    solid
+    rgba(25, 229, 238, 0.76);
+
+  border-right-color:
+    rgba(86, 80, 218, 0.82);
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(-18deg);
+
+  box-shadow:
+    0 0 0 7px rgba(18, 117, 216, 0.28),
+    inset 0 0 22px rgba(255, 255, 255, 0.4);
+
+  animation:
+    rnLogoOrbit 14s linear infinite;
+}
+
+.runnova-brand-orbit span {
+  position: absolute;
+  top: -15px;
+  right: 19%;
+
+  width: 26px;
+  height: 26px;
+
+  background: var(--rn-yellow);
+
+  clip-path:
+    polygon(
+      50% 0,
+      63% 35%,
+      100% 50%,
+      63% 65%,
+      50% 100%,
+      36% 65%,
+      0 50%,
+      36% 35%
+    );
+
+  filter:
+    drop-shadow(
+      0 3px 0 #d56c16
+    );
+}
+
+.runnova-brand h1 {
+  position: relative;
+
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+
+  margin: 0;
+
+  transform: skew(-6deg);
+
+  font-family:
+    Impact,
+    Haettenschweiler,
+    "Arial Black",
+    sans-serif;
+
+  font-size:
+    clamp(58px, 9vw, 112px);
+
+  font-weight: 1000;
+  line-height: 0.78;
+
+  letter-spacing: -0.07em;
+
+  text-transform: uppercase;
+
+  filter:
+    drop-shadow(
+      0 9px 0 #16205b
+    )
+    drop-shadow(
+      0 15px 0 #712ca1
+    );
+}
+
+.logo-run {
+  color: #fffdf4;
+
+  -webkit-text-stroke:
+    clamp(2px, 0.3vw, 5px)
+    #21326a;
+
+  text-shadow:
+    inset 0 4px 0 white;
+}
+
+.logo-nova {
+  color: var(--rn-yellow);
+
+  -webkit-text-stroke:
+    clamp(2px, 0.3vw, 5px)
+    #622664;
+
+  text-shadow:
+    0 5px 0 var(--rn-orange);
+}
+
+.runnova-brand p {
+  display: inline-block;
+
+  margin-top: 25px;
+  padding: 6px 17px;
+
+  border-radius: 999px;
+
+  color: #17336d;
+
+  background:
+    rgba(255, 255, 255, 0.84);
+
+  box-shadow:
+    0 6px 14px rgba(26, 49, 113, 0.2);
+
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: 0.26em;
+}
+
+
+/* =========================================================
+   EVENT CARDS
+========================================================= */
+
+.home-event-card {
+  position: absolute;
+  top: 31%;
+
+  z-index: 16;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 168px;
+
+  padding: 10px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.58);
+
+  border-radius: 20px;
+
+  color: white;
+
+  box-shadow:
+    0 13px 26px rgba(18, 32, 82, 0.27),
+    inset 0 2px 0 rgba(255, 255, 255, 0.22);
+
+  text-align: left;
+
+  backdrop-filter: blur(8px);
+}
+
+.world-tour-card {
+  left: clamp(16px, 4vw, 58px);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15, 107, 198, 0.94),
+      rgba(28, 55, 143, 0.95)
+    );
+}
+
+.reward-card {
+  right: clamp(16px, 4vw, 58px);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(154, 57, 194, 0.94),
+      rgba(74, 47, 164, 0.95)
+    );
+}
+
+.event-copy {
+  display: grid;
+}
+
+.event-copy small {
+  color: rgba(255, 255, 255, 0.76);
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.event-copy strong {
+  margin: 2px 0;
+
+  font-size: 16px;
+  line-height: 1;
+}
+
+.event-copy > span {
+  color: #ffed8a;
+
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.event-globe {
+  position: relative;
+
+  display: grid;
+  place-items: center;
+
+  width: 48px;
+  height: 48px;
+
+  border:
+    3px solid
+    #84fff6;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 36% 28%,
+      #83fff2,
+      #12b5dc 45%,
+      #2067c4 72%
+    );
+
+  box-shadow:
+    0 0 15px rgba(71, 255, 240, 0.48);
+}
+
+.event-globe::before,
+.event-globe::after {
+  content: "";
+
+  position: absolute;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.7);
+
+  border-radius: 50%;
+}
+
+.event-globe::before {
+  width: 22px;
+  height: 42px;
+}
+
+.event-globe::after {
+  width: 41px;
+  height: 20px;
+}
+
+.reward-chest {
+  position: relative;
+
+  width: 52px;
+  height: 37px;
+
+  border:
+    3px solid
+    #e7faff;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #78fff4,
+      #4c61e4 55%,
+      #c34ee0
+    );
+
+  box-shadow:
+    0 0 15px rgba(91, 239, 255, 0.5),
+    inset 0 -7px 0 rgba(26, 40, 126, 0.4);
+}
+
+.reward-chest-lid {
+  position: absolute;
+  top: -9px;
+  right: -4px;
+  left: -4px;
+
+  height: 15px;
+
+  border:
+    3px solid
+    #f2ffff;
+
+  border-radius: 8px 8px 4px 4px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f7d354,
+      #ff8d3c
+    );
+}
+
+.reward-chest-lock {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+
+  width: 11px;
+  height: 14px;
+
+  border-radius: 3px;
+
+  transform: translateX(-50%);
+
+  background: #fff3a5;
+}
+
+
+/* =========================================================
+   HERO STAGE
+========================================================= */
+
+.home-hero-stage {
+  position: absolute;
+  top: 23%;
+  bottom: 22%;
+  left: 50%;
+
+  z-index: 8;
+
+  width: min(570px, 70vw);
+
+  transform:
+    translateX(-50%)
+    translate3d(
+      calc(var(--pointer-x) * -8px),
+      calc(var(--pointer-y) * -5px),
+      0
+    );
+
+  transition: transform 0.2s ease-out;
+
+  pointer-events: none;
+}
+
+.home-stage-ring {
+  position: absolute;
+  top: 51%;
+  left: 50%;
+
+  border-radius: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    rotateX(70deg);
+
+  border:
+    5px solid
+    rgba(69, 255, 246, 0.48);
+
+  box-shadow:
+    0 0 26px rgba(30, 241, 239, 0.45);
+}
+
+.home-stage-ring-one {
+  width: 72%;
+  height: 41%;
+
+  animation:
+    rnStageRing 5s ease-in-out infinite;
+}
+
+.home-stage-ring-two {
+  width: 51%;
+  height: 29%;
+
+  border-color:
+    rgba(255, 217, 62, 0.54);
+
+  animation:
+    rnStageRing 5s ease-in-out
+    -2.5s infinite reverse;
+}
+
+.home-runner-fallback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 280px;
+  height: 410px;
+
+  transform:
+    translate(-50%, -45%);
+
+  animation:
+    rnRunnerHover 3.2s ease-in-out infinite;
+}
+
+.fallback-runner-shadow {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+
+  width: 175px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  transform: translateX(-50%);
+
+  background:
+    rgba(18, 43, 99, 0.26);
+
+  filter: blur(8px);
+}
+
+.fallback-runner {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+
+  width: 155px;
+  height: 310px;
+
+  transform:
+    translateX(-50%)
+    rotate(-4deg);
+}
+
+.fallback-head {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+
+  width: 71px;
+  height: 77px;
+
+  border-radius: 48% 48% 43% 43%;
+
+  transform: translateX(-50%);
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffd8b8,
+      #eaa07d
+    );
+
+  box-shadow:
+    inset -8px -6px 0 rgba(137, 61, 78, 0.12),
+    0 9px 14px rgba(23, 50, 108, 0.18);
+}
+
+.fallback-hair {
+  position: absolute;
+  top: 9px;
+  left: 47%;
+
+  z-index: 2;
+
+  width: 84px;
+  height: 66px;
+
+  border-radius: 58% 46% 52% 34%;
+
+  transform:
+    translateX(-50%)
+    rotate(-10deg);
+
+  background:
+    linear-gradient(
+      145deg,
+      #292256,
+      #7540b0 50%,
+      #ef4aa9
+    );
+
+  box-shadow:
+    -21px 16px 0 -10px #413070;
+}
+
+.fallback-body {
+  position: absolute;
+  top: 96px;
+  left: 50%;
+
+  width: 91px;
+  height: 112px;
+
+  border-radius: 27px 27px 36px 36px;
+
+  transform: translateX(-50%);
+
+  background:
+    linear-gradient(
+      135deg,
+      #20d8dc,
+      #188fc9 54%,
+      #5650ca
+    );
+
+  box-shadow:
+    inset -13px -4px 0 rgba(23, 40, 112, 0.2);
+}
+
+.fallback-arm {
+  position: absolute;
+  top: 111px;
+
+  width: 25px;
+  height: 116px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #27d9d9 0 42%,
+      #f2b18d 43%
+    );
+
+  transform-origin: top;
+}
+
+.fallback-arm-left {
+  left: 24px;
+
+  transform: rotate(32deg);
+}
+
+.fallback-arm-right {
+  right: 23px;
+
+  transform: rotate(-46deg);
+}
+
+.fallback-leg {
+  position: absolute;
+  top: 191px;
+
+  width: 31px;
+  height: 128px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #20265d,
+      #4730a4 58%,
+      #ff4d9c 59% 67%,
+      #222b61 68%
+    );
+
+  transform-origin: top;
+}
+
+.fallback-leg-left {
+  left: 49px;
+
+  transform: rotate(14deg);
+}
+
+.fallback-leg-right {
+  right: 42px;
+
+  transform: rotate(-22deg);
+}
+
+.fallback-board {
+  position: absolute;
+  bottom: 42px;
+  left: 50%;
+
+  width: 245px;
+  height: 48px;
+
+  border:
+    5px solid
+    #efffff;
+
+  border-radius: 60% 40% 52% 48%;
+
+  transform:
+    translateX(-50%)
+    rotate(-5deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      #7456ed,
+      #efffff 35%,
+      #36e9ed 70%,
+      #ef4da6
+    );
+
+  box-shadow:
+    0 12px 0 #3547a9,
+    0 20px 22px rgba(23, 73, 170, 0.45),
+    0 0 32px rgba(45, 249, 246, 0.7);
+}
+
+.fallback-board span {
+  position: absolute;
+  right: 30px;
+  bottom: -18px;
+
+  width: 93px;
+  height: 19px;
+
+  border-radius: 50%;
+
+  background:
+    rgba(66, 255, 247, 0.84);
+
+  filter: blur(8px);
+}
+
+.fallback-board-trail {
+  position: absolute;
+  right: 48%;
+  bottom: 45px;
+
+  width: 240px;
+  height: 27px;
+
+  border-radius: 50%;
+
+  transform:
+    rotate(-7deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(54, 255, 244, 0.77)
+    );
+
+  filter: blur(7px);
+
+  animation:
+    rnBoardTrail 1.2s ease-in-out infinite;
+}
+
+.home-hero-label {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+
+  display: grid;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+.home-hero-label span {
+  color:
+    rgba(255, 255, 255, 0.76);
+
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+}
+
+.home-hero-label strong {
+  margin-top: 2px;
+
+  font-size: 19px;
+  letter-spacing: 0.08em;
+
+  text-shadow:
+    0 4px 0 rgba(23, 52, 126, 0.32);
+}
+
+
+/* =========================================================
+   PLAY BUTTON
+========================================================= */
+
+.runnova-play-button {
+  position: absolute;
+  bottom: 116px;
+  left: 50%;
+
+  z-index: 28;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 14px;
+
+  width: min(410px, 72vw);
+  min-height: 82px;
+
+  overflow: hidden;
+
+  border:
+    4px solid
+    rgba(255, 255, 255, 0.9);
+
+  border-radius: 25px;
+
+  transform: translateX(-50%);
+
+  color: #14265c;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffeb44,
+      #ffc21d 58%,
+      #ff941f
+    );
+
+  box-shadow:
+    0 9px 0 #cc671e,
+    0 16px 25px rgba(30, 54, 124, 0.34),
+    inset 0 4px 0 rgba(255, 255, 255, 0.54);
+
+  animation:
+    rnPlayPulse 2.6s ease-in-out infinite;
+}
+
+.runnova-play-button:hover {
+  transform:
+    translateX(-50%)
+    translateY(-4px)
+    scale(1.02);
+}
+
+.runnova-play-button:active {
+  transform:
+    translateX(-50%)
+    translateY(5px)
+    scale(0.98);
+
+  box-shadow:
+    0 4px 0 #cc671e,
+    0 9px 16px rgba(30, 54, 124, 0.3);
+}
+
+.play-button-icon {
+  width: 0;
+  height: 0;
+
+  border-top: 16px solid transparent;
+  border-bottom: 16px solid transparent;
+  border-left: 25px solid white;
+
+  filter:
+    drop-shadow(
+      0 4px 0 rgba(179, 84, 19, 0.35)
+    );
+}
+
+.play-button-copy {
+  display: grid;
+
+  text-align: left;
+}
+
+.play-button-copy strong {
+  font-size:
+    clamp(30px, 4vw, 44px);
+
+  font-weight: 1000;
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+}
+
+.play-button-copy small {
+  margin-top: 5px;
+
+  color: rgba(28, 45, 99, 0.72);
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.play-button-shine {
+  position: absolute;
+  top: -80%;
+  left: -25%;
+
+  width: 20%;
+  height: 260%;
+
+  transform: rotate(20deg);
+
+  background:
+    rgba(255, 255, 255, 0.46);
+
+  filter: blur(3px);
+
+  animation:
+    rnPlayShine 3.2s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   UTILITY ACTIONS
+========================================================= */
+
+.home-utility-actions {
+  position: absolute;
+  right: 18px;
+  bottom: 121px;
+
+  z-index: 24;
+
+  display: grid;
+
+  gap: 8px;
+}
+
+.home-utility-button {
+  min-height: 36px;
+
+  padding: 7px 12px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.48);
+
+  border-radius: 13px;
+
+  color: white;
+
+  background:
+    rgba(13, 59, 145, 0.82);
+
+  box-shadow:
+    0 6px 12px rgba(20, 43, 103, 0.24);
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+
+.home-bottom-navigation {
+  position: absolute;
+  right: clamp(14px, 3vw, 38px);
+  bottom:
+    max(
+      13px,
+      env(safe-area-inset-bottom)
+    );
+  left: clamp(14px, 3vw, 38px);
+
+  z-index: 30;
+
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap:
+    clamp(8px, 1.5vw, 18px);
+
+  max-width: 730px;
+
+  margin: 0 auto;
+}
+
+.home-nav-button {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  min-height: 79px;
+
+  padding: 9px 13px;
+
+  border:
+    3px solid
+    rgba(255, 255, 255, 0.62);
+
+  border-radius: 21px;
+
+  color: white;
+
+  box-shadow:
+    0 8px 0 rgba(29, 48, 113, 0.43),
+    0 14px 20px rgba(27, 45, 102, 0.22),
+    inset 0 3px 0 rgba(255, 255, 255, 0.27);
+
+  font-size:
+    clamp(11px, 1.5vw, 15px);
+
+  font-weight: 1000;
+  letter-spacing: 0.02em;
+
+  text-shadow:
+    0 2px 0 rgba(37, 32, 106, 0.36);
+}
+
+.home-nav-button:hover {
+  transform:
+    translateY(-4px)
+    scale(1.015);
+}
+
+.home-nav-button:active {
+  transform:
+    translateY(4px)
+    scale(0.98);
+
+  box-shadow:
+    0 4px 0 rgba(29, 48, 113, 0.43);
+}
+
+.missions-nav-button {
+  background:
+    linear-gradient(
+      145deg,
+      #24c9f3,
+      #1573d0
+    );
+}
+
+.daily-nav-button {
+  background:
+    linear-gradient(
+      145deg,
+      #c061ed,
+      #7041cf
+    );
+}
+
+.crew-nav-button {
+  background:
+    linear-gradient(
+      145deg,
+      #43e4cd,
+      #0d9da8
+    );
+}
+
+.home-nav-icon {
+  display: grid;
+  place-items: center;
+
+  width: 43px;
+  height: 43px;
+
+  border-radius: 14px;
+
+  color: white;
+
+  background:
+    rgba(255, 255, 255, 0.17);
+
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.24);
+
+  font-size: 23px;
+  font-style: normal;
+}
+
+.home-nav-notification {
+  position: absolute;
+  top: -8px;
+  right: -5px;
+
+  display: grid;
+  place-items: center;
+
+  width: 27px;
+  height: 27px;
+
+  border:
+    3px solid
+    white;
+
+  border-radius: 50%;
+
+  color: white;
+
+  background: var(--rn-coral);
+
+  box-shadow:
+    0 4px 8px rgba(91, 25, 75, 0.3);
+
+  font-size: 15px;
+  font-style: normal;
+}
+
+
+/* =========================================================
+   PLAYER SETUP MODAL
+========================================================= */
+
+.home-modal[hidden] {
+  display: none;
+}
+
+.home-modal {
+  position: fixed;
+  inset: 0;
+
+  z-index: 500;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+}
+
+.home-modal-backdrop {
+  position: absolute;
+  inset: 0;
+
+  opacity: 0;
+
+  background:
+    rgba(12, 24, 72, 0.58);
+
+  backdrop-filter: blur(9px);
+
+  transition:
+    opacity 0.22s ease;
+}
+
+.home-setup-panel {
+  position: relative;
+
+  z-index: 1;
+
+  width: min(430px, 92vw);
+
+  padding: 32px 27px 26px;
+
+  border:
+    3px solid
+    rgba(255, 255, 255, 0.74);
+
+  border-radius: 28px;
+
+  opacity: 0;
+
+  transform:
+    translateY(35px)
+    scale(0.94);
+
+  color: #16255e;
+
+  background:
+    linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.97),
+      rgba(226, 250, 255, 0.97)
+    );
+
+  box-shadow:
+    0 22px 55px rgba(14, 29, 91, 0.38),
+    inset 0 4px 0 white;
+
+  text-align: center;
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s
+      cubic-bezier(0.2, 0.8, 0.2, 1.15);
+}
+
+.home-modal.is-open
+.home-modal-backdrop {
+  opacity: 1;
+}
+
+.home-modal.is-open
+.home-setup-panel {
+  opacity: 1;
+
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+.home-modal-close {
+  position: absolute;
+  top: 11px;
+  right: 12px;
+
+  display: grid;
+  place-items: center;
+
+  width: 35px;
+  height: 35px;
+
+  border-radius: 12px;
+
+  color: white;
+
+  background: #26448d;
+
+  font-size: 24px;
+  line-height: 1;
+}
+
+.setup-panel-badge {
+  display: inline-block;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--rn-purple),
+      var(--rn-magenta)
+    );
+
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 0.15em;
+}
+
+.home-setup-panel h2 {
+  margin-top: 13px;
+
+  font-size: 34px;
+  font-weight: 1000;
+  line-height: 1;
+}
+
+.home-setup-panel > p {
+  margin: 8px 0 21px;
+
+  color: rgba(22, 37, 94, 0.68);
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.home-field {
+  display: grid;
+
+  gap: 7px;
+
+  margin-top: 14px;
+
+  text-align: left;
+}
+
+.home-field > span {
+  padding-left: 5px;
+
+  color: #274587;
+
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#homeScreen #runnerNameInput,
+#homeScreen #difficultySelect {
+  width: 100%;
+  height: 51px;
+
+  padding: 0 16px;
+
+  border:
+    2px solid
+    rgba(44, 110, 190, 0.27);
+
+  border-radius: 15px;
+
+  outline: none;
+
+  color: #14255d;
+
+  background:
+    rgba(232, 249, 255, 0.9);
+
+  box-shadow:
+    inset 0 2px 7px
+    rgba(37, 69, 137, 0.08);
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+#homeScreen #runnerNameInput:focus,
+#homeScreen #difficultySelect:focus {
+  border-color:
+    rgba(35, 204, 220, 0.9);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(35, 204, 220, 0.14);
+}
+
+.home-confirm-play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 11px;
+
+  width: 100%;
+  min-height: 57px;
+
+  margin-top: 21px;
+
+  border:
+    3px solid
+    rgba(255, 255, 255, 0.86);
+
+  border-radius: 17px;
+
+  color: #14265d;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffe443,
+      #ffad1f
+    );
+
+  box-shadow:
+    0 6px 0 #d1691d,
+    0 11px 18px rgba(54, 63, 129, 0.2);
+
+  font-size: 18px;
+  font-weight: 1000;
+}
+
+.home-confirm-play:disabled {
+  opacity: 0.46;
+
+  cursor: not-allowed;
+
+  filter: grayscale(0.25);
+
+  box-shadow:
+    0 4px 0 #9f8668;
+}
+
+.confirm-play-icon {
+  width: 0;
+  height: 0;
+
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 15px solid white;
+}
+
+.setup-panel-note {
+  display: block;
+
+  margin-top: 15px;
+
+  color: rgba(27, 44, 98, 0.56);
+
+  font-size: 10px;
+  font-weight: 750;
+}
+
+
+/* =========================================================
+   HOME LEADERBOARD
+========================================================= */
+
+#homeScreen
+.runnova-home-leaderboard {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+
+  z-index: 550;
+
+  width: min(430px, 92vw);
+  max-height: 72vh;
+
+  overflow-y: auto;
+
+  transform:
+    translate(-50%, -50%);
+
+  border:
+    3px solid
+    rgba(255, 255, 255, 0.74);
+
+  border-radius: 27px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      160deg,
+      rgba(17, 77, 169, 0.97),
+      rgba(62, 45, 145, 0.97)
+    );
+
+  box-shadow:
+    0 23px 55px rgba(13, 30, 88, 0.42);
+}
+
+.home-leaderboard-heading small {
+  color:
+    rgba(255, 255, 255, 0.66);
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.home-leaderboard-heading h3 {
+  margin-top: 3px;
+
+  font-size: 29px;
+}
+
+
+/* =========================================================
+   HOME ACTION TOAST
+========================================================= */
+
+.home-action-toast {
+  position: fixed;
+  top: 91px;
+  left: 50%;
+
+  z-index: 700;
+
+  max-width: min(360px, 86vw);
+
+  padding: 11px 18px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.64);
+
+  border-radius: 999px;
+
+  opacity: 0;
+
+  transform:
+    translate(-50%, -20px)
+    scale(0.94);
+
+  color: white;
+
+  background:
+    rgba(24, 54, 135, 0.92);
+
+  box-shadow:
+    0 10px 25px rgba(11, 31, 86, 0.3);
+
+  pointer-events: none;
+
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+
+.home-action-toast.is-visible {
+  opacity: 1;
+
+  transform:
+    translate(-50%, 0)
+    scale(1);
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes rnCloudDrift {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform:
+      translateX(
+        calc(100vw + 430px)
+      );
+  }
+}
+
+@keyframes rnSunPulse {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.72;
+  }
+
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes rnParticleFloat {
+  0% {
+    transform:
+      translateY(20px)
+      rotate(0deg);
+
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.9;
+  }
+
+  85% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform:
+      translateY(-160px)
+      rotate(280deg);
+
+    opacity: 0;
+  }
+}
+
+@keyframes rnLogoOrbit {
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(342deg);
+  }
+}
+
+@keyframes rnStageRing {
+  0%,
+  100% {
+    opacity: 0.35;
+
+    transform:
+      translate(-50%, -50%)
+      rotateX(70deg)
+      scale(0.92);
+  }
+
+  50% {
+    opacity: 0.78;
+
+    transform:
+      translate(-50%, -50%)
+      rotateX(70deg)
+      scale(1.08);
+  }
+}
+
+@keyframes rnRunnerHover {
+  0%,
+  100% {
+    transform:
+      translate(-50%, -45%)
+      translateY(0)
+      rotate(-1deg);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -45%)
+      translateY(-12px)
+      rotate(1deg);
+  }
+}
+
+@keyframes rnBoardTrail {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform:
+      rotate(-7deg)
+      scaleX(0.82);
+  }
+
+  50% {
+    opacity: 0.92;
+    transform:
+      rotate(-7deg)
+      scaleX(1.12);
+  }
+}
+
+@keyframes rnPlayPulse {
+  0%,
+  100% {
+    filter:
+      drop-shadow(
+        0 0 0 rgba(255, 229, 63, 0)
+      );
+  }
+
+  50% {
+    filter:
+      drop-shadow(
+        0 0 18px rgba(255, 231, 62, 0.52)
+      );
+  }
+}
+
+@keyframes rnPlayShine {
+  0%,
+  52% {
+    left: -30%;
+    opacity: 0;
+  }
+
+  63% {
+    opacity: 0.8;
+  }
+
+  85%,
+  100% {
+    left: 125%;
+    opacity: 0;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE LAYOUT
+========================================================= */
+
+@media (max-width: 760px) {
+  .runnova-topbar {
+    align-items: center;
+
+    gap: 8px;
+  }
+
+  .home-profile-card {
+    min-width: 0;
+
+    padding: 5px;
+  }
+
+  .home-profile-avatar {
+    flex-basis: 42px;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+  }
+
+  .home-profile-copy {
+    display: none;
+  }
+
+  .home-currency {
+    min-height: 41px;
+
+    padding: 3px 5px;
+  }
+
+  .home-currency strong {
+    min-width: 38px;
+
+    padding: 0 4px;
+
+    font-size: 13px;
+  }
+
+  .currency-icon {
+    width: 27px;
+    height: 27px;
+
+    font-size: 14px;
+  }
+
+  .crystal-icon {
+    width: 23px;
+    height: 27px;
+  }
+
+  .currency-plus {
+    width: 23px;
+    height: 23px;
+
+    border-radius: 7px;
+
+    font-size: 16px;
+  }
+
+  .home-icon-button {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 13px;
+
+    font-size: 19px;
+  }
+
+  .runnova-brand {
+    top: 92px;
+
+    width: 88vw;
+  }
+
+  .runnova-brand h1 {
+    font-size:
+      clamp(54px, 17vw, 86px);
+  }
+
+  .runnova-brand p {
+    margin-top: 20px;
+
+    font-size: 9px;
+  }
+
+  .home-event-card {
+    top: 28%;
+
+    min-width: 0;
+
+    padding: 8px;
+
+    border-radius: 16px;
+  }
+
+  .world-tour-card {
+    left: 10px;
+  }
+
+  .reward-card {
+    right: 10px;
+  }
+
+  .event-globe {
+    width: 39px;
+    height: 39px;
+  }
+
+  .reward-chest {
+    width: 42px;
+    height: 31px;
+  }
+
+  .event-copy small {
+    font-size: 7px;
+  }
+
+  .event-copy strong {
+    font-size: 12px;
+  }
+
+  .event-copy > span {
+    font-size: 8px;
+  }
+
+  .home-hero-stage {
+    top: 24%;
+    bottom: 23%;
+
+    width: 92vw;
+  }
+
+  .home-runner-fallback {
+    transform:
+      translate(-50%, -44%)
+      scale(0.8);
+  }
+
+  .runnova-play-button {
+    bottom: 111px;
+
+    width: min(350px, 76vw);
+    min-height: 68px;
+
+    border-radius: 21px;
+  }
+
+  .play-button-copy strong {
+    font-size: 31px;
+  }
+
+  .play-button-copy small {
+    display: none;
+  }
+
+  .home-utility-actions {
+    right: 9px;
+    bottom: 105px;
+
+    transform: scale(0.82);
+    transform-origin: right bottom;
+  }
+
+  .home-bottom-navigation {
+    gap: 7px;
+  }
+
+  .home-nav-button {
+    flex-direction: column;
+
+    gap: 3px;
+
+    min-height: 75px;
+
+    padding: 7px 3px;
+
+    border-radius: 17px;
+
+    font-size:
+      clamp(8px, 2.6vw, 11px);
+  }
+
+  .home-nav-icon {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 11px;
+
+    font-size: 18px;
+  }
+}
+
+
+@media (max-height: 700px) {
+  .runnova-brand {
+    top: 72px;
+
+    transform:
+      translateX(-50%)
+      scale(0.82);
+  }
+
+  .home-event-card {
+    top: 29%;
+  }
+
+  .home-runner-fallback {
+    transform:
+      translate(-50%, -45%)
+      scale(0.74);
+  }
+
+  .runnova-play-button {
+    bottom: 99px;
+
+    min-height: 61px;
+  }
+
+  .home-bottom-navigation {
+    bottom: 8px;
+  }
+
+  .home-nav-button {
+    min-height: 62px;
+  }
+
+  .home-nav-icon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  #homeScreen *,
+  #homeScreen *::before,
+  #homeScreen *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
