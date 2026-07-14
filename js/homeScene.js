@@ -274,8 +274,8 @@
       renderer.toneMapping =
         THREE.ACESFilmicToneMapping;
 
-      renderer.toneMappingExposure =
-        1.08;
+     renderer.toneMappingExposure =
+  0.92;
     }
 
     if (
@@ -306,32 +306,37 @@
     scene =
       new THREE.Scene();
 
-    scene.fog =
-      new THREE.FogExp2(
-        0x88def3,
-        0.018
-      );
+ /*
+ * Linear fog keeps the distant city atmospheric without
+ * washing out buildings close to the character.
+ */
 
-    camera =
-      new THREE.PerspectiveCamera(
-        48,
-        1,
-        0.1,
-        220
-      );
+scene.fog =
+  new THREE.Fog(
+    0x8edcf2,
+    48,
+    132
+  );
 
-    camera.position.set(
-      0,
-      8.4,
-      17.5
-    );
+   camera =
+  new THREE.PerspectiveCamera(
+    44,
+    1,
+    0.1,
+    220
+  );
 
-    camera.lookAt(
-      0,
-      4.3,
-      -22
-    );
+camera.position.set(
+  0,
+  8.3,
+  19.2
+);
 
+camera.lookAt(
+  0,
+  4.65,
+  -19
+);
     clock =
       new THREE.Clock();
 
@@ -348,89 +353,126 @@
   /* =======================================================
      LIGHTING
   ======================================================= */
+function setupLights() {
+  /*
+   * Controlled sky lighting.
+   * The old lighting made every building almost white.
+   */
 
-  function setupLights() {
-    var hemisphereLight =
-      new THREE.HemisphereLight(
-        0xe9fbff,
-        0x506582,
-        1.35
-      );
-
-    hemisphereLight.position.set(
-      0,
-      22,
-      0
+  var hemisphereLight =
+    new THREE.HemisphereLight(
+      0xf2fbff,
+      0x29445e,
+      0.92
     );
 
-    scene.add(
-      hemisphereLight
+  hemisphereLight.position.set(
+    0,
+    22,
+    0
+  );
+
+  scene.add(
+    hemisphereLight
+  );
+
+
+  /*
+   * Warm directional sunlight creates readable surfaces
+   * and separates buildings from the sky.
+   */
+
+  var sunlight =
+    new THREE.DirectionalLight(
+      0xffe3b8,
+      1.08
     );
 
+  sunlight.position.set(
+    -12,
+    20,
+    13
+  );
 
-    var sunlight =
-      new THREE.DirectionalLight(
-        0xfff0c5,
-        1.55
-      );
+  sunlight.castShadow =
+    true;
 
-    sunlight.position.set(
-      -11,
-      20,
-      13
+  sunlight.shadow.mapSize.set(
+    1024,
+    1024
+  );
+
+  sunlight.shadow.camera.left =
+    -24;
+
+  sunlight.shadow.camera.right =
+    24;
+
+  sunlight.shadow.camera.top =
+    24;
+
+  sunlight.shadow.camera.bottom =
+    -12;
+
+  sunlight.shadow.camera.near =
+    1;
+
+  sunlight.shadow.camera.far =
+    80;
+
+  sunlight.shadow.bias =
+    -0.0002;
+
+  sunlight.shadow.normalBias =
+    0.025;
+
+  scene.add(
+    sunlight
+  );
+
+
+  /*
+   * Cyan fill keeps the RunNova atmosphere colorful.
+   */
+
+  var cyanFill =
+    new THREE.DirectionalLight(
+      0x58e8ff,
+      0.48
     );
 
-    sunlight.castShadow =
-      true;
+  cyanFill.position.set(
+    10,
+    8,
+    8
+  );
 
-    sunlight.shadow.mapSize.set(
-      1024,
-      1024
+  scene.add(
+    cyanFill
+  );
+
+
+  /*
+   * Magenta rim separates the hero and moving objects
+   * from the background.
+   */
+
+  var rimLight =
+    new THREE.DirectionalLight(
+      0xff4fb2,
+      0.62
     );
 
-    sunlight.shadow.camera.left =
-      -24;
+  rimLight.position.set(
+    13,
+    10,
+    -20
+  );
 
-    sunlight.shadow.camera.right =
-      24;
-
-    sunlight.shadow.camera.top =
-      24;
-
-    sunlight.shadow.camera.bottom =
-      -12;
-
-    sunlight.shadow.camera.near =
-      1;
-
-    sunlight.shadow.camera.far =
-      80;
-
-    sunlight.shadow.bias =
-      -0.0002;
-
-    sunlight.shadow.normalBias =
-      0.025;
-
-    scene.add(sunlight);
-
-
-    var rimLight =
-      new THREE.DirectionalLight(
-        0xff70c7,
-        0.5
-      );
-
-    rimLight.position.set(
-      14,
-      10,
-      -22
-    );
-
-    scene.add(rimLight);
-  }
-
-
+  scene.add(
+    rimLight
+  );
+}
   /* =======================================================
      BUILDINGS
   ======================================================= */
@@ -738,23 +780,25 @@
       );
 
 
-    var buildingColors = [
-      0x4c86c8,
-      0xe07091,
-      0x4eb7a9,
-      0xd99a54,
-      0x7d6bcb,
-      0x4f9fbb
-    ];
+   var buildingColors = [
+  0x357bb4,
+  0xc65f83,
+  0x349889,
+  0xc98043,
+  0x6657b8,
+  0x347f9d,
+  0x8562ad
+];
 
 
     var accentColors = [
-      0x2eece8,
-      0xffc234,
-      0xf24fa4,
-      0x8d6cff,
-      0x4ce1a1
-    ];
+  0x35f3eb,
+  0xffc936,
+  0xff4da6,
+  0x8b6cff,
+  0x48e6ad,
+  0xff784f
+];
 
 
     [-1, 1].forEach(
