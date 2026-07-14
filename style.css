@@ -4735,3 +4735,288 @@ body.tutorial-open {
     0 3px 0 rgba(39, 46, 124, 0.45),
     0 0 13px rgba(66, 247, 241, 0.56);
 }
+/* =========================================================
+   RUNNOVA PLAY BUTTON POSITION FIX
+========================================================= */
+
+.runnova-play-button {
+  left: 50%;
+
+  /*
+   * Keep horizontal centering separate from animation.
+   * This prevents scale from changing the X translation.
+   */
+
+  translate: -50% 0;
+  transform: none;
+  transform-origin: center center;
+}
+
+.runnova-play-button:hover {
+  translate: -50% -4px;
+  transform: scale(1.02);
+}
+
+.runnova-play-button:active {
+  translate: -50% 5px;
+  transform: scale(0.98);
+}
+/* =========================================================
+   RUNNOVA NAME AND LEVEL CARDS
+========================================================= */
+
+.home-identity-row {
+  display: flex;
+  align-items: stretch;
+
+  gap: 8px;
+}
+
+.home-name-card,
+.home-level-card {
+  min-height: 58px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.44);
+
+  border-radius: 17px;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(14, 84, 185, 0.96),
+      rgba(26, 43, 113, 0.96)
+    );
+
+  box-shadow:
+    0 9px 20px
+      rgba(14, 37, 93, 0.28),
+    inset 0 2px 0
+      rgba(255, 255, 255, 0.2);
+}
+
+.home-name-card {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  min-width: 205px;
+
+  padding: 6px 36px 6px 7px;
+
+  text-align: left;
+}
+
+.home-name-copy {
+  display: grid;
+
+  min-width: 0;
+
+  margin-left: 10px;
+}
+
+.home-name-copy small,
+.home-level-copy small {
+  color:
+    rgba(255, 255, 255, 0.66);
+
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+}
+
+.home-name-copy strong {
+  max-width: 112px;
+
+  margin-top: 2px;
+
+  overflow: hidden;
+
+  font-size: 15px;
+  line-height: 1.1;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-card-edit {
+  position: absolute;
+  top: 50%;
+  right: 11px;
+
+  display: grid;
+  place-items: center;
+
+  width: 23px;
+  height: 23px;
+
+  border-radius: 8px;
+
+  transform: translateY(-50%);
+
+  background:
+    rgba(255, 255, 255, 0.14);
+
+  font-size: 12px;
+}
+
+.home-level-card {
+  display: flex;
+  align-items: center;
+
+  min-width: 132px;
+
+  padding: 7px 10px;
+}
+
+.home-level-badge {
+  display: grid;
+  flex: 0 0 39px;
+  place-items: center;
+
+  width: 39px;
+  height: 39px;
+
+  border:
+    2px solid
+    rgba(255, 255, 255, 0.7);
+
+  border-radius: 13px;
+
+  color: #173267;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff176,
+      #ffb82d
+    );
+
+  box-shadow:
+    0 3px 0 #cd691a;
+
+  font-size: 13px;
+  font-weight: 1000;
+}
+
+.home-level-copy {
+  display: grid;
+
+  width: 68px;
+
+  margin-left: 9px;
+
+  text-align: left;
+}
+
+.home-level-copy strong {
+  margin: 1px 0 3px;
+
+  font-size: 18px;
+  line-height: 1;
+}
+
+.home-level-card
+.home-level-track {
+  height: 5px;
+
+  margin-top: 1px;
+}
+
+
+/* Name modal input */
+
+.home-name-panel {
+  width: min(410px, 92vw);
+}
+
+#homeNameEditor {
+  width: 100%;
+  height: 51px;
+
+  padding: 0 16px;
+
+  border:
+    2px solid
+    rgba(44, 110, 190, 0.27);
+
+  border-radius: 15px;
+
+  outline: none;
+
+  color: #14255d;
+
+  background:
+    rgba(232, 249, 255, 0.9);
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+#homeNameEditor:focus {
+  border-color:
+    rgba(35, 204, 220, 0.9);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(35, 204, 220, 0.14);
+}
+
+
+/* Mobile identity cards */
+
+@media (max-width: 760px) {
+  .home-identity-row {
+    gap: 5px;
+  }
+
+  .home-name-card {
+    min-width: 0;
+
+    padding-right: 7px;
+  }
+
+  .home-name-copy {
+    display: none;
+  }
+
+  .home-card-edit {
+    display: none;
+  }
+
+  .home-level-card {
+    min-width: 0;
+
+    padding: 5px;
+  }
+
+  .home-level-copy {
+    width: 39px;
+
+    margin-left: 5px;
+  }
+
+  .home-level-copy small {
+    display: none;
+  }
+
+  .home-level-copy strong {
+    font-size: 15px;
+  }
+
+  .home-level-badge {
+    width: 34px;
+    height: 34px;
+
+    flex-basis: 34px;
+
+    border-radius: 11px;
+
+    font-size: 11px;
+  }
+}
