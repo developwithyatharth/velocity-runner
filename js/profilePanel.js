@@ -1,5 +1,5 @@
 /* =========================================================
-   profilePanel.js — RunNova H2C
+   profilePanel.js
 
    Professional player profile and statistics dashboard.
 
